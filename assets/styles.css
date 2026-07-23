@@ -11,6 +11,7 @@
   --gray-200: #e5e5e5;
   --gray-100: #f5f5f2;
   --white: #fff;
+  --whatsapp-green: #25d366;
   --shadow: 0 18px 45px rgba(16, 44, 32, 0.12);
   --radius: 18px;
   --max-width: 1180px;
@@ -751,6 +752,13 @@ details p {
   font-size: 0.84rem;
 }
 
+/* El glifo hereda el color del contenedor mediante fill: currentColor. */
+.icon-whatsapp {
+  width: 1.2em;
+  height: 1.2em;
+  flex: 0 0 auto;
+}
+
 .floating-whatsapp {
   position: fixed;
   right: 20px;
@@ -761,10 +769,19 @@ details p {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #187a4a;
+  background: var(--whatsapp-green);
   color: var(--white);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.23);
-  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
+.floating-whatsapp:hover {
+  transform: scale(1.07);
+}
+
+.floating-whatsapp .icon-whatsapp {
+  width: 32px;
+  height: 32px;
 }
 
 .toast {
@@ -916,6 +933,7 @@ details p {
 
   .btn:hover,
   .service-card:hover,
+  .floating-whatsapp:hover,
   .gallery-item:hover img {
     transform: none;
   }
