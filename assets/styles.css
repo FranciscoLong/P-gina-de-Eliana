@@ -63,6 +63,19 @@ button {
   outline-offset: 3px;
 }
 
+/*
+  El sprite de iconos no debe ocupar espacio. No alcanza con el atributo
+  [hidden]: la regla del navegador que lo oculta está declarada en el
+  namespace HTML y <svg> vive en el namespace SVG, así que no le aplica y
+  el elemento renderiza a su tamaño intrínseco por defecto (300x150 px).
+*/
+.svg-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 .container {
   width: min(100% - 32px, var(--max-width));
   margin-inline: auto;
