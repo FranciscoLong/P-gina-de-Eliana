@@ -228,8 +228,8 @@ p {
   align-items: center;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(10, 29, 20, 0.93) 0%, rgba(10, 29, 20, 0.76) 48%, rgba(10, 29, 20, 0.22) 100%),
-    url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1900&q=85") center/cover;
+    linear-gradient(90deg, rgba(10, 29, 20, 0.93) 0%, rgba(10, 29, 20, 0.78) 48%, rgba(10, 29, 20, 0.4) 100%),
+    url("oficina-frente.jpg") center/cover;
 }
 
 .hero-content {
@@ -889,7 +889,7 @@ details p {
     min-height: 650px;
     background:
       linear-gradient(rgba(10, 29, 20, 0.82), rgba(10, 29, 20, 0.86)),
-      url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85") center/cover;
+      url("oficina-frente.jpg") center/cover;
   }
 
   .section {
