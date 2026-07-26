@@ -228,6 +228,7 @@ p {
   align-items: center;
   overflow: hidden;
   background:
+    linear-gradient(to top, rgba(245, 239, 227, 1) 0, rgba(245, 239, 227, 0.96) 96px, rgba(245, 239, 227, 0) 260px),
     linear-gradient(90deg, rgba(245, 239, 227, 0.9) 0%, rgba(245, 239, 227, 0.68) 46%, rgba(245, 239, 227, 0.32) 100%),
     url("esquina-escribania.jpg") center/cover;
 }
@@ -903,6 +904,7 @@ details p {
   .hero {
     min-height: 650px;
     background:
+      linear-gradient(to top, rgba(245, 239, 227, 1) 0, rgba(245, 239, 227, 0.96) 96px, rgba(245, 239, 227, 0) 260px),
       linear-gradient(rgba(245, 239, 227, 0.84), rgba(245, 239, 227, 0.8)),
       url("esquina-escribania.jpg") center/cover;
   }
