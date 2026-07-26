@@ -228,8 +228,8 @@ p {
   align-items: center;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(10, 29, 20, 0.93) 0%, rgba(10, 29, 20, 0.78) 48%, rgba(10, 29, 20, 0.4) 100%),
-    url("oficina-frente.jpg") center/cover;
+    linear-gradient(90deg, rgba(245, 239, 227, 0.9) 0%, rgba(245, 239, 227, 0.68) 46%, rgba(245, 239, 227, 0.32) 100%),
+    url("esquina-escribania.jpg") center/cover;
 }
 
 .hero-content {
@@ -240,12 +240,12 @@ p {
 }
 
 .hero .eyebrow {
-  color: #f0c9cf;
+  color: var(--red-700);
 }
 
 .hero h1,
 .hero p {
-  color: var(--white);
+  color: var(--green-950);
 }
 
 .hero-brand {
@@ -263,7 +263,7 @@ p {
 
 .hero-profession {
   margin-top: 8px;
-  color: var(--white);
+  color: var(--green-900);
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -331,8 +331,23 @@ p {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  color: rgba(255, 255, 255, 0.84);
+  color: var(--gray-700);
   font-size: 0.92rem;
+}
+
+/*
+  Sobre el hero claro (capa crema) los botones secundarios blancos no se ven;
+  se les da contorno verde. El resto de .btn-secondary (banda roja de
+  urgencias, tarjeta verde de contacto) sigue en blanco.
+*/
+.hero .btn-secondary {
+  border-color: var(--green-900);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--green-900);
+}
+
+.hero .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .intro-grid {
@@ -888,8 +903,8 @@ details p {
   .hero {
     min-height: 650px;
     background:
-      linear-gradient(rgba(10, 29, 20, 0.82), rgba(10, 29, 20, 0.86)),
-      url("oficina-frente.jpg") center/cover;
+      linear-gradient(rgba(245, 239, 227, 0.84), rgba(245, 239, 227, 0.8)),
+      url("esquina-escribania.jpg") center/cover;
   }
 
   .section {
