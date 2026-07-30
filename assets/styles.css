@@ -103,7 +103,7 @@ h1,
 h2,
 h3 {
   font-family: "Cormorant Garamond", serif;
-  color: var(--green-950);
+  color: var(--black);
   line-height: 1.1;
 }
 
@@ -186,7 +186,7 @@ p {
 
 .brand-copy strong {
   display: block;
-  color: var(--green-950);
+  color: var(--black);
   font-family: "Handlee", cursive;
   font-size: 1.22rem;
   line-height: 1;
@@ -208,9 +208,22 @@ p {
   font-weight: 600;
 }
 
-.nav-links a:hover,
-.nav-links a:focus-visible {
+/*
+  El rojo de hover es para los enlaces de texto del menu, que van sobre blanco.
+  "Reservar turno" es un boton con fondo verde oscuro: ahi el rojo queda en
+  1.37:1 y el texto desaparece. Por eso se excluyen los .btn y se les da abajo
+  su propia inversion.
+*/
+.nav-links a:not(.btn):hover,
+.nav-links a:not(.btn):focus-visible {
   color: var(--red-700);
+}
+
+.nav-links .btn-dark:hover,
+.nav-links .btn-dark:focus-visible {
+  border-color: var(--green-950);
+  background: var(--white);
+  color: var(--green-950);
 }
 
 .menu-button {
@@ -246,7 +259,7 @@ p {
 
 .hero h1,
 .hero p {
-  color: var(--green-950);
+  color: var(--black);
 }
 
 .hero-brand {
@@ -261,7 +274,7 @@ p {
 
 .hero-profession {
   margin-top: 8px;
-  color: var(--green-900);
+  color: var(--black);
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -324,19 +337,10 @@ p {
   background: transparent;
 }
 
-.hero-note {
-  margin-top: 24px;
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  color: var(--gray-700);
-  font-size: 0.92rem;
-}
-
 /*
   Sobre el hero claro (capa crema) los botones secundarios blancos no se ven;
-  se les da contorno verde. El resto de .btn-secondary (banda roja de
-  urgencias, tarjeta verde de contacto) sigue en blanco.
+  se les da contorno verde. El otro .btn-secondary (tarjeta verde de
+  contacto) sigue en blanco.
 */
 .hero .btn-secondary {
   border-color: var(--green-900);
@@ -393,24 +397,9 @@ p {
   margin-top: 16px;
 }
 
-.credentials {
-  display: grid;
-  gap: 12px;
-  margin: 28px 0;
-  list-style: none;
-}
-
-.credentials li {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  color: var(--gray-700);
-}
-
-.credentials li::before {
-  content: "✓";
-  color: var(--red-700);
-  font-weight: 800;
+/* La separacion que antes daba el margen de la lista de credenciales. */
+.intro-copy .btn {
+  margin-top: 28px;
 }
 
 .services-grid {
@@ -515,7 +504,7 @@ p {
 }
 
 label {
-  color: var(--green-950);
+  color: var(--black);
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -566,6 +555,16 @@ textarea {
 .checkbox-row label {
   font-weight: 500;
   color: var(--gray-700);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.form-actions .btn {
+  flex: 1 1 210px;
 }
 
 .noscript-notice {
@@ -624,7 +623,8 @@ textarea {
 }
 
 .location-card h2,
-.location-card p {
+.location-card p,
+.location-card .eyebrow {
   color: var(--white);
 }
 
@@ -674,29 +674,12 @@ details {
 
 summary {
   cursor: pointer;
-  color: var(--green-950);
+  color: var(--black);
   font-weight: 700;
 }
 
 details p {
   padding-top: 12px;
-}
-
-.urgent-banner {
-  padding: 22px 0;
-  background: var(--red-700);
-  color: var(--white);
-}
-
-.urgent-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 22px;
-}
-
-.urgent-content p {
-  color: var(--white);
 }
 
 .site-footer {
@@ -749,7 +732,8 @@ details p {
 }
 
 /* El glifo hereda el color del contenedor mediante fill: currentColor. */
-.icon-whatsapp {
+.icon-whatsapp,
+.icon-email {
   width: 1.2em;
   height: 1.2em;
   flex: 0 0 auto;
@@ -853,7 +837,6 @@ details p {
 
 @media (max-width: 680px) {
   .topbar-content,
-  .urgent-content,
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
