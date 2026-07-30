@@ -23,8 +23,10 @@ compilación** — se abre directamente en el navegador.
 ├── assets/
 │   ├── styles.css                  Todos los estilos
 │   ├── main.js                     Menú móvil, formulario de turnos, copiar dirección
-│   ├── logo-isbarbo-gfeller.svg    Logo (placeholder — reemplazar por el real)
-│   └── favicon.svg                 Ícono de la pestaña
+│   ├── logo-isbarbo-gfeller.webp   Logo definitivo optimizado
+│   ├── eliana-isbarbo-gfeller.webp Retrato optimizado de la escribana
+│   ├── *.webp                      Fotografías optimizadas de la oficina
+│   └── favicon.png                 Ícono de la pestaña y dispositivos
 ├── CNAME                           Dominio propio para GitHub Pages
 ├── CONFIGURAR-DOMINIO.md           Guía para apuntar el dominio en NIC Uruguay
 └── README.md
@@ -53,11 +55,6 @@ Para activar el dominio propio, ver **[CONFIGURAR-DOMINIO.md](CONFIGURAR-DOMINIO
 
 ## Pendientes de contenido
 
-- [ ] Reemplazar el logo placeholder por el real (`assets/logo-isbarbo-gfeller.svg`).
-- [ ] Subir imagen para compartir en redes: `assets/og-isbarbo-gfeller.jpg`
-      (JPG o PNG de 1200×630 px; WhatsApp y Facebook no muestran SVG).
-- [ ] Reemplazar las fotos provisorias (de Unsplash) por las reales de la
-      oficina y de la escribana.
 - [ ] Completar el enlace real de Google Calendar en `assets/main.js`
       (constante `CALENDAR_BOOKING_URL`).
 - [ ] Cargar las coordenadas del local en los datos estructurados (`geo`).

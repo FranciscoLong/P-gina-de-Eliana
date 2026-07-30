@@ -1,10 +1,10 @@
 :root {
-  --green-950: #102c20;
-  --green-900: #173d2b;
-  --green-800: #205238;
-  --green-100: #e7f0ea;
-  --red-700: #8f1f2f;
-  --red-600: #a52a3a;
+  --green-950: #055126;
+  --green-900: #087535;
+  --green-800: #0a823c;
+  --green-100: #e6f2eb;
+  --red-700: #b50d11;
+  --red-600: #c31318;
   --black: #141414;
   --gray-700: #4f4f4f;
   --gray-500: #777;
@@ -230,7 +230,7 @@ p {
   background:
     linear-gradient(to top, rgba(245, 239, 227, 1) 0, rgba(245, 239, 227, 0.96) 96px, rgba(245, 239, 227, 0) 260px),
     linear-gradient(90deg, rgba(245, 239, 227, 0.9) 0%, rgba(245, 239, 227, 0.68) 46%, rgba(245, 239, 227, 0.32) 100%),
-    url("esquina-escribania.jpg") center/cover;
+    url("esquina-escribania.webp") center/cover;
 }
 
 .hero-content {
@@ -250,11 +250,8 @@ p {
 }
 
 .hero-brand {
-  width: 112px;
+  width: 116px;
   margin-bottom: 18px;
-  padding: 10px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
 }
 
 .hero-brand img {
@@ -462,36 +459,6 @@ p {
   font-weight: 700;
 }
 
-.coverage-panel {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 46px;
-  padding: 42px;
-  border-radius: var(--radius);
-  background: var(--green-950);
-  color: var(--white);
-}
-
-.coverage-panel h2,
-.coverage-panel p {
-  color: var(--white);
-}
-
-.coverage-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  gap: 12px;
-}
-
-.coverage-list span {
-  padding: 9px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
-  color: var(--white);
-  font-size: 0.9rem;
-}
-
 .booking-grid {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
@@ -529,7 +496,7 @@ p {
 
 .booking-list li::before {
   content: "•";
-  color: #efc5cb;
+  color: #f2c6c7;
 }
 
 .booking-form {
@@ -580,8 +547,8 @@ textarea {
 .form-notice {
   padding: 14px 16px;
   border-left: 4px solid var(--red-700);
-  background: #fbf3f4;
-  color: #5b353a;
+  background: #fdf1f2;
+  color: #621013;
   font-size: 0.88rem;
 }
 
@@ -607,8 +574,8 @@ textarea {
   padding: 18px 20px;
   border-left: 4px solid var(--red-700);
   border-radius: 6px;
-  background: #fbf3f4;
-  color: #5b353a;
+  background: #fdf1f2;
+  color: #621013;
 }
 
 .noscript-notice a {
@@ -671,7 +638,7 @@ textarea {
 .contact-list strong {
   display: block;
   margin-bottom: 3px;
-  color: #efc5cb;
+  color: #f2c6c7;
   font-size: 0.82rem;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -734,7 +701,7 @@ details p {
 
 .site-footer {
   padding: 54px 0 24px;
-  background: #0d1e16;
+  background: #032f18;
   color: var(--white);
 }
 
@@ -860,7 +827,6 @@ details p {
   }
 
   .intro-grid,
-  .coverage-panel,
   .booking-grid,
   .location-grid {
     grid-template-columns: 1fr;
@@ -906,7 +872,7 @@ details p {
     background:
       linear-gradient(to top, rgba(245, 239, 227, 1) 0, rgba(245, 239, 227, 0.96) 96px, rgba(245, 239, 227, 0) 260px),
       linear-gradient(rgba(245, 239, 227, 0.84), rgba(245, 239, 227, 0.8)),
-      url("esquina-escribania.jpg") center/cover;
+      url("esquina-escribania.webp") center/cover;
   }
 
   .section {
@@ -937,7 +903,6 @@ details p {
     right: 12px;
   }
 
-  .coverage-panel,
   .location-card,
   .booking-card {
     padding: 28px;
