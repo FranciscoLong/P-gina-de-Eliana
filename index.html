@@ -143,7 +143,7 @@
         "name": "¿Qué documentación debo llevar?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "La documentación depende de cada trámite. Luego de coordinar la consulta, Eliana te indicará qué antecedentes necesitás presentar."
+          "text": "La documentación depende de cada trámite. Luego de coordinar la consulta, te indico qué antecedentes necesitás presentar."
         }
       },
       {
@@ -151,7 +151,7 @@
         "name": "¿Realizan títulos y transferencias de automotores?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sí. Se atienden compraventas, transferencias, certificados, poderes y otros trámites vinculados a vehículos."
+          "text": "Sí. Atiendo compraventas, transferencias, certificados, poderes y otros trámites vinculados a vehículos."
         }
       },
       {
@@ -159,7 +159,7 @@
         "name": "¿Atienden asuntos de alquileres y arrendamientos?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sí. Se redactan y revisan contratos de arrendamiento, garantías, inventarios y documentación relacionada."
+          "text": "Sí. Redacto y reviso contratos de arrendamiento, garantías, inventarios y documentación relacionada."
         }
       },
       {
@@ -479,20 +479,20 @@
             </ul>
           </aside>
 
-          <form class="booking-form" id="bookingForm">
+          <form class="booking-form" id="bookingForm" autocomplete="on">
             <div class="field">
               <label for="name">Nombre y apellido</label>
-              <input id="name" name="name" type="text" autocomplete="name" required>
+              <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" required>
             </div>
 
             <div class="field">
               <label for="phone">Teléfono</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
             </div>
 
             <div class="field">
               <label for="email">Correo electrónico</label>
-              <input id="email" name="email" type="email" autocomplete="email" required>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required>
             </div>
 
             <div class="field">
@@ -580,8 +580,8 @@
           <span class="eyebrow">Oficina</span>
           <h2>Un espacio preparado para atenderte</h2>
           <p>
-            La escribanía cuenta con espacios preparados para consultas y reuniones,
-            en un entorno cómodo y reservado.
+            Cuento con espacios preparados para consultas y reuniones, en un
+            entorno cómodo y reservado.
           </p>
         </div>
 
@@ -675,14 +675,14 @@
             <summary>¿Qué documentación debo llevar?</summary>
             <p>
               La documentación depende de cada trámite. Luego de coordinar la
-              consulta, Eliana te indicará qué antecedentes necesitás presentar.
+              consulta, te indico qué antecedentes necesitás presentar.
             </p>
           </details>
 
           <details>
             <summary>¿Realizan títulos y transferencias de automotores?</summary>
             <p>
-              Sí. Se atienden compraventas, transferencias, certificados, poderes y
+              Sí. Atiendo compraventas, transferencias, certificados, poderes y
               otros trámites vinculados a vehículos.
             </p>
           </details>
@@ -690,7 +690,7 @@
           <details>
             <summary>¿Atienden asuntos de alquileres y arrendamientos?</summary>
             <p>
-              Sí. Se redactan y revisan contratos de arrendamiento, garantías,
+              Sí. Redacto y reviso contratos de arrendamiento, garantías,
               inventarios y documentación relacionada.
             </p>
           </details>
