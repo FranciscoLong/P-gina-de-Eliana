@@ -53,8 +53,8 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=intro-sobremi-20260731">
-  <script src="assets/main.js?v=agenda-modal-20260730" defer></script>
+  <link rel="stylesheet" href="assets/styles.css?v=modal-sin-volver-20260731">
+  <script src="assets/main.js?v=modal-sin-volver-20260731" defer></script>
 
   <script type="application/ld+json">
   {
@@ -287,6 +287,10 @@
     <symbol id="icon-service-check" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10"/>
       <path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="M18 6 6 18"/>
+      <path d="m6 6 12 12"/>
     </symbol>
   </svg>
 
@@ -543,6 +547,10 @@
                 <svg aria-hidden="true"><use href="#icon-service-check"></use></svg>
                 <a href="#turnos" data-service="Firmas, poderes y certificados">Declaraciones juradas<span class="service-cta" aria-hidden="true">Consultar</span></a>
               </li>
+               <li>
+                <svg aria-hidden="true"><use href="#icon-service-check"></use></svg>
+                <a href="#turnos" data-service="Firmas, poderes y certificados">Minuta notarial BPS<span class="service-cta" aria-hidden="true">Consultar</span></a>
+              </li>
             </ul>
           </article>
 
@@ -579,7 +587,11 @@
             <ul class="service-list">
               <li>
                 <svg aria-hidden="true"><use href="#icon-service-check"></use></svg>
-                <a href="#turnos" data-service="Otro trámite">Trámites ante cualquier organismo público y/o privado<span class="service-cta" aria-hidden="true">Consultar</span></a>
+                <a href="#turnos" data-service="Otro trámite">Trámites ante organismos públicos y/o privados<span class="service-cta" aria-hidden="true">Consultar</span></a>
+              </li>
+               <li>
+                <svg aria-hidden="true"><use href="#icon-service-check"></use></svg>
+                <a href="#turnos" data-service="Otro trámite">Tasaciones<span class="service-cta" aria-hidden="true">Consultar</span></a>
               </li>
 
             </ul>
@@ -631,7 +643,7 @@
             <summary>¿La escribana atiende fuera de Rosario?</summary>
             <p>
               Sí. Se pueden coordinar traslados y actuaciones en otras localidades,
-              según el tipo de trámite y la disponibilidad.
+              según el tipo de trámite y la disponibilidad. Ademas contamos con escritorio en la ciudad de Tarariras.
             </p>
           </details>
 
@@ -712,7 +724,7 @@
     <dialog class="booking-dialog" id="bookingDialog" aria-labelledby="bookingDialogTitle">
       <div class="booking-dialog-panel">
         <button class="booking-dialog-close" id="closeBookingDialog" type="button" aria-label="Cerrar">
-          ×
+          <svg aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
         </button>
 
         <div class="booking-dialog-step" id="bookingChannelStep">
@@ -752,9 +764,6 @@
         </div>
 
         <div class="booking-dialog-step" id="bookingEmailStep" hidden>
-          <button class="booking-dialog-back" id="backToChannels" type="button">
-            ← Volver
-          </button>
           <span class="booking-dialog-eyebrow">Solicitud por correo</span>
           <h2 id="bookingEmailTitle">Completá tus datos</h2>
           <p class="booking-dialog-service">

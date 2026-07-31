@@ -11,7 +11,6 @@ const bookingChannelStep = document.getElementById("bookingChannelStep");
 const bookingEmailStep = document.getElementById("bookingEmailStep");
 const whatsappChoice = document.getElementById("whatsappChoice");
 const emailChoice = document.getElementById("emailChoice");
-const backToChannelsButton = document.getElementById("backToChannels");
 const bookingForm = document.getElementById("bookingForm");
 const preferredDate = document.getElementById("preferredDate");
 const serviceInput = document.getElementById("service");
@@ -154,11 +153,6 @@ openBookingDialogButtons.forEach((button) => {
 });
 
 closeBookingDialogButton.addEventListener("click", closeBookingDialog);
-
-backToChannelsButton.addEventListener("click", () => {
-  showChannelStep();
-  emailChoice.focus();
-});
 
 emailChoice.addEventListener("click", () => {
   bookingChannelStep.hidden = true;
