@@ -493,11 +493,6 @@ p {
   line-height: 1.75;
 }
 
-.intro-copy h2 + p {
-  color: var(--black);
-  font-size: 1.04rem;
-}
-
 .intro-copy p + p {
   margin-top: 16px;
 }

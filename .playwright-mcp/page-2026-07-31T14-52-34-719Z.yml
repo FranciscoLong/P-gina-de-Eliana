@@ -1,0 +1,243 @@
+- generic [active] [ref=f32e1]:
+  - generic [ref=f32e2]: Lunes a viernes de 9:30 a 12:30 y de 15:00 a 19:00
+  - banner [ref=f32e5]:
+    - navigation "Navegación principal" [ref=f32e6]:
+      - link "Ir al inicio" [ref=f32e7] [cursor=pointer]:
+        - /url: "#inicio"
+        - img "Logo de Eliana Isbarbo Gfeller" [ref=f32e8]
+        - strong [ref=f32e10]: Eliana Isbarbo Gfeller
+      - button "Abrir menú" [ref=f32e11] [cursor=pointer]: ☰
+  - main [ref=f32e12]:
+    - generic [ref=f32e14]:
+      - img "Logo de Eliana Isbarbo Gfeller" [ref=f32e16]
+      - heading "Eliana Isbarbo Gfeller Escribana Pública" [level=1] [ref=f32e17]:
+        - generic [ref=f32e18]: Eliana Isbarbo Gfeller
+        - generic [ref=f32e19]: Escribana Pública
+      - paragraph [ref=f32e20]: El verdadero valor de mi profesión está en acompañar a las personas con cercanía, responsabilidad y confianza. Como Escribana trabajo para ofrecer seguridad jurídica y un asesoramiento claro, haciendo que cada cliente se sienta respaldado en cada decisión que tome.
+      - generic [ref=f32e21]:
+        - link "Reservar turno" [ref=f32e22] [cursor=pointer]:
+          - /url: "#turnos"
+        - link "Cómo llegar" [ref=f32e23] [cursor=pointer]:
+          - /url: https://maps.app.goo.gl/rCgRTZrHCtpmQmU78
+    - generic [ref=f32e25]:
+      - generic [ref=f32e26]:
+        - img "Escribana Eliana Isbarbo Gfeller en su oficina de Rosario" [ref=f32e27]
+        - generic [ref=f32e28]:
+          - strong [ref=f32e29]: 7 años
+          - text: de experiencia profesional
+      - generic [ref=f32e30]:
+        - generic [ref=f32e31]: Sobre mí
+        - heading "Escribana y Rematadora" [level=2] [ref=f32e32]
+        - paragraph [ref=f32e33]: Soy Escribana Pública, egresada de la Universidad de la República en 2018, y Rematadora, graduada en el Instituto Aldey en 2017.
+        - paragraph [ref=f32e34]: Entiendo que detrás de cada trámite notarial o negocio inmobiliario hay decisiones importantes. Por eso, mi compromiso es brindarte un asesoramiento claro, cercano y responsable, garantizando la seriedad y confianza que necesitas para avanzar con absoluta tranquilidad.
+        - paragraph [ref=f32e35]: La combinación de mi formación notarial y mi visión como rematadora me permite ofrecerte un respaldo integral, cuidando cada detalle de tu operación de principio a fin.
+    - generic [ref=f32e37]:
+      - generic [ref=f32e38]:
+        - generic [ref=f32e39]: Trámites y consultas
+        - heading "Servicios notariales" [level=2] [ref=f32e40]
+        - paragraph [ref=f32e41]:
+          - text: "Selecciona el trámite que necesitas y elige cómo prefieres gestionarlo: por WhatsApp o por correo electrónico. Si no encuentras el tuyo, en"
+          - link "Reservar turno" [ref=f32e42] [cursor=pointer]:
+            - /url: "#turnos"
+          - text: puedes coordinar una consulta general.
+      - generic [ref=f32e43]:
+        - article [ref=f32e44]:
+          - heading "Automotores" [level=3] [ref=f32e49]
+          - list [ref=f32e50]:
+            - listitem [ref=f32e51]:
+              - link "Compraventas y transferencias" [ref=f32e54] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Compraventas y transferencias
+                - generic [ref=f32e55]: Consultar
+            - listitem [ref=f32e56]:
+              - link "Títulos y certificados" [ref=f32e59] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Títulos y certificados
+                - generic [ref=f32e60]: Consultar
+            - listitem [ref=f32e61]:
+              - link "Poderes y documentación vehicular" [ref=f32e64] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Poderes y documentación vehicular
+                - generic [ref=f32e65]: Consultar
+        - article [ref=f32e66]:
+          - heading "Inmuebles y contratos" [level=3] [ref=f32e71]
+          - list [ref=f32e72]:
+            - listitem [ref=f32e73]:
+              - link "Compraventas y estudio de antecedentes" [ref=f32e76] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Compraventas y estudio de antecedentes
+                - generic [ref=f32e77]: Consultar
+            - listitem [ref=f32e78]:
+              - link "Arrendamientos, alquileres y garantías" [ref=f32e81] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Arrendamientos, alquileres y garantías
+                - generic [ref=f32e82]: Consultar
+            - listitem [ref=f32e83]:
+              - link "Hipotecas y documentación financiera" [ref=f32e86] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Hipotecas y documentación financiera
+                - generic [ref=f32e87]: Consultar
+        - article [ref=f32e88]:
+          - heading "Familia y sucesiones" [level=3] [ref=f32e93]
+          - list [ref=f32e94]:
+            - listitem [ref=f32e95]:
+              - link "Sucesiones" [ref=f32e98] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Sucesiones
+                - generic [ref=f32e99]: Consultar
+            - listitem [ref=f32e100]:
+              - link "Testamentos" [ref=f32e103] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Testamentos
+                - generic [ref=f32e104]: Consultar
+            - listitem [ref=f32e105]:
+              - link "Particiones y disposiciones patrimoniales" [ref=f32e108] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Particiones y disposiciones patrimoniales
+                - generic [ref=f32e109]: Consultar
+        - article [ref=f32e110]:
+          - heading "Firmas, poderes y certificados" [level=3] [ref=f32e115]
+          - list [ref=f32e116]:
+            - listitem [ref=f32e117]:
+              - link "Certificación de firmas" [ref=f32e120] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Certificación de firmas
+                - generic [ref=f32e121]: Consultar
+            - listitem [ref=f32e122]:
+              - link "Poderes y autorizaciones" [ref=f32e125] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Poderes y autorizaciones
+                - generic [ref=f32e126]: Consultar
+            - listitem [ref=f32e127]:
+              - link "Declaraciones juradas y certificados" [ref=f32e130] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Declaraciones juradas y certificados
+                - generic [ref=f32e131]: Consultar
+        - article [ref=f32e132]:
+          - heading "Empresas y sociedades" [level=3] [ref=f32e137]
+          - list [ref=f32e138]:
+            - listitem [ref=f32e139]:
+              - link "Constitución de sociedades" [ref=f32e142] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Constitución de sociedades
+                - generic [ref=f32e143]: Consultar
+            - listitem [ref=f32e144]:
+              - link "Contratos civiles y comerciales" [ref=f32e147] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Contratos civiles y comerciales
+                - generic [ref=f32e148]: Consultar
+            - listitem [ref=f32e149]:
+              - link "Certificados y documentación societaria" [ref=f32e152] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Certificados y documentación societaria
+                - generic [ref=f32e153]: Consultar
+        - article [ref=f32e154]:
+          - heading "Otros trámites" [level=3] [ref=f32e159]
+          - list [ref=f32e160]:
+            - listitem [ref=f32e161]:
+              - link "Gestiones ante registros y organismos" [ref=f32e164] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Gestiones ante registros y organismos
+                - generic [ref=f32e165]: Consultar
+            - listitem [ref=f32e166]:
+              - link "Consultas notariales generales" [ref=f32e169] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Consultas notariales generales
+                - generic [ref=f32e170]: Consultar
+            - listitem [ref=f32e171]:
+              - link "Otros trámites y documentación" [ref=f32e174] [cursor=pointer]:
+                - /url: "#turnos"
+                - text: Otros trámites y documentación
+                - generic [ref=f32e175]: Consultar
+    - generic [ref=f32e177]:
+      - generic [ref=f32e178]:
+        - generic [ref=f32e179]: Agenda
+        - heading "Reservar turno" [level=2] [ref=f32e180]
+        - paragraph [ref=f32e181]:
+          - text: Podés elegir un trámite en
+          - link "Servicios notariales" [ref=f32e182] [cursor=pointer]:
+            - /url: "#servicios"
+          - text: o pedir el turno directamente desde este formulario. Elegí el canal que te resulte más cómodo.
+        - paragraph [ref=f32e183]: Las solicitudes quedan sujetas a confirmación.
+      - generic [ref=f32e184]:
+        - generic [ref=f32e185]:
+          - heading "Coordiná tu consulta" [level=3] [ref=f32e186]
+          - paragraph [ref=f32e187]: Podés consultar disponibilidad por WhatsApp sin completar datos o enviar una solicitud más detallada por correo.
+          - button "Solicitar turno" [ref=f32e188] [cursor=pointer]
+        - list [ref=f32e189]:
+          - listitem [ref=f32e190]:
+            - generic [ref=f32e194]:
+              - strong [ref=f32e195]: 45 minutos
+              - generic [ref=f32e196]: Duración estimada de la consulta
+          - listitem [ref=f32e197]:
+            - generic [ref=f32e201]:
+              - strong [ref=f32e202]: Sujeto a confirmación
+              - generic [ref=f32e203]: La escribana confirma la fecha y el horario
+    - generic [ref=f32e205]:
+      - generic [ref=f32e206]:
+        - generic [ref=f32e207]: Preguntas frecuentes
+        - heading "Información antes de tu consulta" [level=2] [ref=f32e208]
+      - generic [ref=f32e209]:
+        - group [ref=f32e210]:
+          - generic "¿Es necesario reservar turno?" [ref=f32e211] [cursor=pointer]
+        - group [ref=f32e212]:
+          - generic "¿Qué documentación debo llevar?" [ref=f32e213] [cursor=pointer]
+        - group [ref=f32e214]:
+          - generic "¿Realizan títulos y transferencias de automotores?" [ref=f32e215] [cursor=pointer]
+        - group [ref=f32e216]:
+          - generic "¿Atienden asuntos de alquileres y arrendamientos?" [ref=f32e217] [cursor=pointer]
+        - group [ref=f32e218]:
+          - generic "¿La escribana atiende fuera de Rosario?" [ref=f32e219] [cursor=pointer]
+        - group [ref=f32e220]:
+          - generic "¿Es posible realizar consultas a distancia?" [ref=f32e221] [cursor=pointer]
+    - generic [ref=f32e223]:
+      - generic [ref=f32e224]:
+        - generic [ref=f32e225]: Contacto y ubicación
+        - heading "Escribana en Rosario" [level=2] [ref=f32e226]
+        - paragraph [ref=f32e227]: Sarandí 294 esquina 18 de Julio, Rosario, departamento de Colonia, Uruguay.
+        - list [ref=f32e228]:
+          - listitem [ref=f32e229]:
+            - strong [ref=f32e230]: Teléfono y WhatsApp
+            - link "+598 91 048 471" [ref=f32e231] [cursor=pointer]:
+              - /url: tel:+59891048471
+          - listitem [ref=f32e232]:
+            - strong [ref=f32e233]: Correo electrónico
+            - link "esc.isbarbo@gmail.com" [ref=f32e234] [cursor=pointer]:
+              - /url: mailto:esc.isbarbo@gmail.com
+        - generic [ref=f32e235]:
+          - link "Abrir en Maps" [ref=f32e236] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/rCgRTZrHCtpmQmU78
+          - button "Copiar dirección" [ref=f32e237] [cursor=pointer]
+      - iframe [ref=f32e239]
+  - contentinfo [ref=f32e240]:
+    - generic [ref=f32e241]:
+      - generic [ref=f32e242]:
+        - heading "Eliana Isbarbo Gfeller" [level=3] [ref=f32e243]
+        - paragraph [ref=f32e244]: Escribana Pública
+        - paragraph [ref=f32e245]: Atención notarial personalizada en Rosario, Colonia. Con disponibilidad para acudir a otras localidades según tus necesidades.
+      - generic [ref=f32e246]:
+        - heading "Contacto" [level=3] [ref=f32e247]
+        - list [ref=f32e248]:
+          - listitem [ref=f32e249]:
+            - generic [ref=f32e250]: Teléfono y WhatsApp
+            - link "+598 91 048 471" [ref=f32e251] [cursor=pointer]:
+              - /url: tel:+59891048471
+          - listitem [ref=f32e252]:
+            - generic [ref=f32e253]: Correo electrónico
+            - link "esc.isbarbo@gmail.com" [ref=f32e254] [cursor=pointer]:
+              - /url: mailto:esc.isbarbo@gmail.com
+      - generic [ref=f32e255]:
+        - heading "Ubicación y horarios" [level=3] [ref=f32e256]
+        - list [ref=f32e257]:
+          - listitem [ref=f32e258]:
+            - generic [ref=f32e259]: Dirección
+            - text: Sarandí 294, Rosario
+          - listitem [ref=f32e260]:
+            - generic [ref=f32e261]: Horario
+            - text: Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00
+    - generic [ref=f32e262]:
+      - generic [ref=f32e263]: © 2026 Eliana Isbarbo Gfeller - Escribana Pública.
+      - generic [ref=f32e264]: La información de este sitio es general y no sustituye asesoramiento profesional individual.
+  - link "Contactar por WhatsApp" [ref=f32e265] [cursor=pointer]:
+    - /url: https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacerte%20una%20consulta%20notarial.
+  - status
