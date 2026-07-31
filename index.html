@@ -53,7 +53,7 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=modal-sin-volver-20260731">
+  <link rel="stylesheet" href="assets/styles.css?v=correo-proximamente-20260731">
   <script src="assets/main.js?v=modal-sin-volver-20260731" defer></script>
 
   <script type="application/ld+json">
@@ -669,9 +669,6 @@
             directamente desde este formulario. Elegí el canal que te resulte
             más cómodo.
           </p>
-          <p class="section-note">
-            Las solicitudes quedan sujetas a confirmación.
-          </p>
         </div>
 
         <noscript>
@@ -688,8 +685,8 @@
           <div class="booking-overview-copy">
             <h3>Coordiná tu consulta</h3>
             <p>
-              Podés consultar disponibilidad por WhatsApp sin completar datos o
-              enviar una solicitud más detallada por correo.
+              Consultá disponibilidad por WhatsApp, sin completar formularios.
+              La solicitud por correo estará disponible próximamente.
             </p>
             <button class="btn btn-dark" type="button" data-booking-open>
               Solicitar turno
@@ -746,13 +743,16 @@
               </span>
             </button>
 
-            <button class="booking-channel booking-channel-email" id="emailChoice" type="button">
+            <button class="booking-channel booking-channel-email" id="emailChoice" type="button" disabled>
               <span class="booking-channel-icon">
                 <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
               </span>
               <span>
-                <strong>Correo electrónico</strong>
-                <small>Enviá una solicitud con fecha, horario y tus datos.</small>
+                <strong>
+                  Correo electrónico
+                  <span class="booking-channel-badge">Próximamente</span>
+                </strong>
+                <small>Por ahora coordiná tu turno por WhatsApp.</small>
               </span>
             </button>
           </div>

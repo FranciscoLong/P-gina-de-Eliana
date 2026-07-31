@@ -135,18 +135,6 @@ p {
   font-size: 1.05rem;
 }
 
-/* Aclaración destacada dentro del encabezado de una sección. */
-.section-heading p.section-note {
-  display: inline-block;
-  margin-top: 14px;
-  padding: 9px 16px;
-  border-radius: 999px;
-  background: var(--green-100);
-  color: var(--green-900);
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
 /* Links que cruzan de una sección a otra: se leen como link, sin negrita. */
 .section-heading p a {
   color: var(--green-900);
@@ -812,13 +800,34 @@ body.modal-open {
     background 0.2s ease;
 }
 
-.booking-channel:hover {
+.booking-channel:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 18px 36px rgba(16, 44, 32, 0.2);
 }
 
+/* Canal todavia no disponible: se ve, pero no invita a apretarlo. */
+.booking-channel:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.booking-channel-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--gray-200);
+  color: var(--gray-700);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 /* Al presionar, el boton se hunde y la sombra se achica. */
-.booking-channel:active {
+.booking-channel:active:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(16, 44, 32, 0.16);
 }
@@ -834,7 +843,7 @@ body.modal-open {
   color: var(--green-950);
 }
 
-.booking-channel-email:hover {
+.booking-channel-email:hover:not(:disabled) {
   border-color: var(--green-900);
   background: var(--green-100);
 }
