@@ -135,6 +135,33 @@ p {
   font-size: 1.05rem;
 }
 
+/* Aclaración destacada dentro del encabezado de una sección. */
+.section-heading p.section-note {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--green-100);
+  color: var(--green-900);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Links que cruzan de una sección a otra: se leen como link, sin negrita. */
+.section-heading p a {
+  color: var(--green-900);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.section-heading p a:hover,
+.section-heading p a:focus-visible {
+  color: var(--red-700);
+  text-decoration-thickness: 2px;
+}
+
 .topbar {
   padding: 8px 0;
   background: var(--green-950);
@@ -214,9 +241,43 @@ p {
   1.37:1 y el texto desaparece. Por eso se excluyen los .btn y se les da abajo
   su propia inversion.
 */
+.nav-links a:not(.btn) {
+  position: relative;
+  display: inline-block;
+  transition: color 0.25s ease;
+}
+
+/*
+  El subrayado se dibuja por fuera de la caja (bottom negativo) para que al
+  aparecer no altere la altura del enlace ni desplace el texto del menu.
+*/
+.nav-links a:not(.btn)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--red-700);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
 .nav-links a:not(.btn):hover,
 .nav-links a:not(.btn):focus-visible {
   color: var(--red-700);
+}
+
+/*
+  Entra desde la izquierda y sale hacia la derecha: el origen cambia solo en
+  el estado hover, asi el trazo acompaña al mouse en vez de replegarse.
+*/
+.nav-links a:not(.btn):hover::after,
+.nav-links a:not(.btn):focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
 }
 
 .nav-links .btn-dark:hover,
@@ -537,6 +598,40 @@ p {
   text-underline-offset: 3px;
 }
 
+.service-cta {
+  display: inline-block; /* evita que el subrayado del link lo atraviese */
+  margin-left: 8px;
+  white-space: nowrap;
+  color: var(--red-700);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Con mouse aparece al pasar por encima; en pantallas táctiles queda visible. */
+@media (hover: hover) {
+  .service-cta {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  .service-list a:hover .service-cta,
+  .service-list a:focus-visible .service-cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-cta {
+    transition: none;
+    transform: none;
+  }
+}
+
 .booking-overview {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -544,6 +639,7 @@ p {
   align-items: center;
   padding: 38px 40px;
   border: 1px solid rgba(16, 44, 32, 0.1);
+  border-left: 5px solid var(--green-900);
   border-radius: var(--radius);
   background: var(--white);
   box-shadow: 0 18px 45px rgba(16, 44, 32, 0.09);
@@ -558,6 +654,16 @@ p {
   max-width: 520px;
   margin-bottom: 24px;
   line-height: 1.7;
+}
+
+.booking-overview-copy .booking-note {
+  margin-top: 18px;
+  margin-bottom: 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--green-100);
+  color: var(--gray-700);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .booking-facts {
@@ -894,6 +1000,7 @@ textarea {
 
 .location-card {
   padding: 34px;
+  border-left: 5px solid var(--red-700);
   border-radius: var(--radius);
   background: var(--green-950);
   color: var(--white);
@@ -1084,29 +1191,6 @@ details p {
 }
 
 @media (max-width: 960px) {
-  .nav-links {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 16px;
-    right: 16px;
-    display: none;
-    padding: 22px;
-    border: 1px solid var(--gray-200);
-    border-radius: 14px;
-    background: var(--white);
-    box-shadow: var(--shadow);
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .menu-button {
-    display: block;
-  }
-
   .intro-grid,
   .location-grid {
     grid-template-columns: 1fr;
@@ -1136,6 +1220,36 @@ details p {
 
   .footer-brand {
     grid-column: 1 / -1;
+  }
+}
+
+/*
+  El menu horizontal necesita 680px (marca + enlaces + separacion) y entra
+  holgado hasta los 760px de viewport. Recien por debajo se colapsa en el
+  desplegable, asi las pantallas medianas conservan los enlaces a la vista.
+*/
+@media (max-width: 760px) {
+  .nav-links {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 16px;
+    right: 16px;
+    display: none;
+    padding: 22px;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .menu-button {
+    display: block;
   }
 }
 

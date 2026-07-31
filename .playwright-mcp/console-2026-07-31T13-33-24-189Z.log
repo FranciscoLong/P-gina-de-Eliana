@@ -1,0 +1,4 @@
+[    1710ms] [ERROR] ReferenceError: google is not defined
+    at b (https://maps.gstatic.com/maps-api-v3/embed/js/65/11b/intl/es_ALL/init_embed.js:490:584)
+    at nn (https://maps.gstatic.com/maps-api-v3/embed/js/65/11b/intl/es_ALL/init_embed.js:223:400)
+    at a (https://maps.gstatic.com/maps-api-v3/embed/js/65/11b/intl/es_ALL/init_embed.js:222:38) @ https://maps.gstatic.com/maps-api-v3/embed/js/65/11b/intl/es_ALL/init_embed.js:490
