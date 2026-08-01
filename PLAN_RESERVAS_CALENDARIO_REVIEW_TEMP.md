@@ -86,13 +86,23 @@ cambios locales existentes en `README.md`, `index.html`, `assets/main.js` y
 
 ## 4. Decisiones todavía pendientes
 
+Decisión cerrada el 1 de agosto de 2026: la confirmación es manual. El cliente
+propone un horario; Eliana lo aprueba o rechaza, puede agregar una nota al
+rechazo y el sistema informa ambas decisiones por correo. El cliente no es
+invitado del evento de Google Calendar.
+
+Decisión de seguridad temporal del 1 de agosto de 2026: la opción de agenda y
+las dos APIs permanecen desactivadas hasta aprobar una prueba controlada con
+Calendar, correo de Eliana, aprobación, rechazo con nota y concurrencia.
+WhatsApp continúa disponible y conserva el trámite seleccionado. La preparación
+técnica de esta entrega no autoriza a habilitar producción.
+
 No asumir estos valores durante la implementación sin confirmación:
 
 - Anticipación mínima para reservar.
 - Intervalo o descanso entre consultas.
 - Máximo de reservas por día.
 - Si todos los servicios duran 45 minutos o existen excepciones.
-- Si la confirmación será siempre automática o habrá casos sujetos a aprobación.
 - Cancelación inicial por WhatsApp o cancelación autoservicio mediante enlace.
 - Calendarios personales o secundarios que deben bloquear disponibilidad.
 
@@ -112,7 +122,9 @@ Funciones de Vercel: validación, Turnstile, firma e idempotencia
         ↓
 Google Apps Script ejecutado como Eliana
         ↓
-Bloqueo → segunda comprobación → creación del evento → invitación
+Bloqueo → evento pendiente → correo de revisión a Eliana
+        ↓
+Aprobación/rechazo → correo con la decisión al cliente
 ```
 
 ### 5.1 Por qué Apps Script
@@ -120,7 +132,7 @@ Bloqueo → segunda comprobación → creación del evento → invitación
 La cuenta operativa es una cuenta personal `@gmail.com`. Una cuenta de servicio
 de Google necesita delegación de dominio para completar asistentes, algo propio
 de Google Workspace. Apps Script puede ejecutarse como la propietaria, consultar
-sus calendarios, crear eventos, agregar invitados y enviar invitaciones sin
+sus calendarios, crear eventos pendientes y enviar correos de decisión sin
 exponer credenciales al navegador.
 
 ### 5.2 Responsabilidad de Vercel
@@ -142,9 +154,11 @@ el secreto de Apps Script ni credenciales de Google.
 - Devolver solamente franjas y estados de disponibilidad.
 - Adquirir un bloqueo exclusivo antes de reservar.
 - Revalidar el horario dentro del bloqueo.
-- Crear el evento en el calendario de turnos.
+- Crear un evento pendiente que bloquee provisionalmente el horario.
 - Guardar el trámite y los datos mínimos.
-- Agregar el correo del cliente como invitado y enviar la invitación.
+- Enviar a Eliana un enlace seguro de revisión sin efectos por una simple vista previa.
+- Confirmar o eliminar el evento según su decisión y avisar al cliente por correo.
+- Permitir una nota opcional de hasta 500 caracteres cuando Eliana rechaza.
 - Registrar idempotencia para que un reintento no duplique la reserva.
 
 El código de Apps Script debe quedar versionado en el repositorio; su URL de
@@ -203,30 +217,31 @@ Solicitud:
 
 Resultados esperados:
 
-- `201`: reserva creada y confirmada.
+- `202`: solicitud creada y pendiente de decisión de Eliana.
 - `400`: datos inválidos.
 - `403`: origen o validación antibot rechazados.
 - `409`: el horario dejó de estar disponible.
 - `429`: demasiados intentos.
 - `502/503`: Google no respondió o el servicio está temporalmente indisponible.
 
-No mostrar confirmación al usuario hasta recibir éxito real del backend.
+No mostrar la solicitud como confirmada: el éxito del backend sólo prueba que
+quedó pendiente y que Eliana fue notificada.
 
 ## 7. Evento de Google Calendar
 
 Contenido mínimo sugerido:
 
-- Título: `Consulta notarial — {trámite}`.
+- Título pendiente: `PENDIENTE — Consulta notarial — {trámite}`.
+- Al aprobar: `Consulta notarial — {trámite}`.
 - Inicio y fin en `America/Montevideo`.
 - Ubicación del estudio cuando corresponda.
-- Invitado: correo proporcionado por el cliente.
 - Descripción privada:
   - Nombre.
   - Teléfono.
   - Trámite.
   - Explicación breve.
   - Identificador interno de reserva.
-- Invitados sin permiso para modificar la cita ni invitar a terceros.
+- El cliente no se agrega como invitado; recibe un correo propio con la decisión.
 
 El reviewer debe comprobar que la explicación y otros datos personales no
 aparezcan en logs, respuestas de disponibilidad ni partes públicas del sitio.
@@ -276,7 +291,7 @@ una reserva exitosa.
 7. Solicitar nombre, correo, teléfono y explicación breve.
 8. Mostrar consentimiento y control antibot.
 9. Deshabilitar el botón mientras se procesa.
-10. Mostrar confirmación solamente después de crear el evento.
+10. Mostrar que la solicitud quedó pendiente después de crear el bloqueo y avisar a Eliana.
 
 Casos de error:
 
@@ -307,8 +322,10 @@ Casos de error:
 
 - Consultar el calendario existente con eventos ocupados, sin revelar sus
   detalles.
-- Crear un evento con trámite, invitado y descripción.
-- Confirmar que la invitación llega al correo de prueba.
+- Crear un evento pendiente con trámite y descripción, sin invitados.
+- Confirmar que Eliana recibe el enlace de revisión.
+- Aprobar y verificar el correo de confirmación al cliente.
+- Rechazar con nota y verificar el correo de rechazo y la liberación del horario.
 - Repetir la misma solicitud sin duplicar el evento.
 - Ejecutar dos reservas simultáneas para el mismo horario.
 - Simular errores y cuotas de Google.
@@ -337,7 +354,9 @@ Casos de error:
 - El servidor revalida el horario al confirmar.
 - Dos usuarios no pueden reservar el mismo horario.
 - Un reintento no duplica la cita.
-- La invitación se envía al correo indicado.
+- El cliente nunca recibe una invitación de Calendar.
+- Eliana recibe la solicitud y el cliente recibe por correo tanto la aprobación
+  como el rechazo, incluyendo la nota opcional cuando corresponda.
 - No existe ninguna credencial o secreto en HTML, JavaScript público, commits o
   logs.
 - No se almacena información personal en `sessionStorage`.
@@ -363,7 +382,7 @@ Casos de error:
 - Código versionado de Apps Script.
 - Pruebas unitarias e integración con resultados.
 - Evidencia de una reserva real controlada en el calendario existente.
-- Evidencia de invitación recibida.
+- Evidencia de los correos de solicitud, aprobación y rechazo con nota.
 - Evidencia de prueba simultánea y ausencia de duplicados.
 - Lista de variables requeridas en Vercel y propiedades requeridas en Apps
   Script.
@@ -400,8 +419,10 @@ Casos de error:
   https://developers.google.com/apps-script/guides/web
 - Calendar Service para Apps Script:
   https://developers.google.com/apps-script/reference/calendar
-- Creación de eventos, invitados e invitaciones:
+- Creación y actualización de eventos:
   https://developers.google.com/apps-script/reference/calendar/calendar
+- Envío de correos desde Apps Script:
+  https://developers.google.com/apps-script/reference/mail/mail-app
 - Lock Service:
   https://developers.google.com/apps-script/reference/lock
 - Cuotas de Apps Script:

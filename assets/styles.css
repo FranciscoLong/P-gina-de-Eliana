@@ -927,7 +927,27 @@ p {
   background: var(--white);
 }
 
-.booking-fallback-whatsapp { width: 100%; justify-content: center; }
+.booking-fallback-whatsapp {
+  width: 100%;
+  justify-content: center;
+  border-color: var(--green-900);
+  background: var(--white);
+  color: var(--green-950);
+}
+
+.booking-fallback-whatsapp:hover {
+  border-color: var(--green-950);
+  background: var(--green-100);
+  color: var(--green-950);
+}
+
+.booking-fallback-whatsapp:focus-visible {
+  border-color: var(--green-950);
+  background: var(--white);
+  color: var(--green-950);
+  box-shadow: 0 0 0 3px rgba(32, 82, 56, 0.2);
+  outline: none;
+}
 
 /*
   Mientras falte algo (fecha, horario, datos, consentimiento o verificación) el
@@ -1087,13 +1107,13 @@ body.modal-open {
     background 0.2s ease;
 }
 
-.booking-channel:hover {
+.booking-channel:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 18px 36px rgba(16, 44, 32, 0.2);
 }
 
 /* Al presionar, el boton se hunde y la sombra se achica. */
-.booking-channel:active {
+.booking-channel:active:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(16, 44, 32, 0.16);
 }
@@ -1109,9 +1129,45 @@ body.modal-open {
   color: var(--green-950);
 }
 
-.booking-channel-calendar:hover {
+.booking-channel-calendar:hover:not(:disabled) {
   border-color: var(--green-900);
   background: var(--green-100);
+}
+
+.booking-channel-calendar:disabled {
+  border-color: var(--gray-200);
+  background: var(--gray-100);
+  color: var(--gray-700);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.booking-channel-calendar:disabled .booking-channel-icon {
+  background: var(--gray-200);
+}
+
+.booking-channel-status {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f5e5e6;
+  color: #7d1f25;
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.booking-calendar-unavailable {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--red-700);
+  border-radius: 6px;
+  background: #fdf1f2;
+  color: #621013;
+  font-size: 0.86rem;
+  line-height: 1.55;
 }
 
 .booking-channel-icon {

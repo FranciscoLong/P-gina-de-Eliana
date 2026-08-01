@@ -60,6 +60,13 @@ test("valida, acota y no acepta campos críticos ausentes", () => {
   assert.equal(validateBooking({}, NOW).valid, false);
 });
 
+test("acepta tanto un trámite seleccionado como la consulta notarial general", () => {
+  assert.equal(validateBooking(validBooking({ serviceCode: "testamentos" }), NOW).valid, true);
+  const general = validateBooking(validBooking({ serviceCode: "consulta-notarial" }), NOW);
+  assert.equal(general.valid, true);
+  assert.equal(SERVICES[general.value.serviceCode], "Consulta notarial");
+});
+
 test("rechaza horarios pasados, fuera de la grilla y explicaciones mayores a 400", () => {
   assert.equal(validateBooking(validBooking({ start: "2026-08-01T09:30:00-03:00" }), NOW).valid, false);
   assert.equal(validateBooking(validBooking({ start: "2026-08-03T09:45:00-03:00" }), NOW).valid, false);

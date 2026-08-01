@@ -1,6 +1,11 @@
 "use strict";
 
 const TURNSTILE_ACTION = "booking";
+const BOOKING_UNAVAILABLE_MESSAGE = "La agenda en línea está temporalmente no disponible.";
+
+function bookingEnabled() {
+  return process.env.BOOKING_ENABLED === "true";
+}
 
 function allowedOrigins() {
   return (process.env.BOOKING_ALLOWED_ORIGINS || "")
@@ -65,4 +70,11 @@ async function verifyTurnstile(token, ip) {
     && allowedHosts.includes(result.hostname);
 }
 
-module.exports = { TURNSTILE_ACTION, originAllowed, send, verifyTurnstile };
+module.exports = {
+  BOOKING_UNAVAILABLE_MESSAGE,
+  TURNSTILE_ACTION,
+  bookingEnabled,
+  originAllowed,
+  send,
+  verifyTurnstile
+};

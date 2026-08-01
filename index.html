@@ -53,10 +53,10 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=calendario-modal-20260801c">
+  <link rel="stylesheet" href="assets/styles.css?v=calendario-modal-20260801d">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script src="assets/service-messages.js?v=mensajes-servicios-20260731" defer></script>
-  <script src="assets/main.js?v=calendario-modal-20260801c" defer></script>
+  <script src="assets/main.js?v=calendario-modal-20260801d" defer></script>
 
   <script type="application/ld+json">
   {
@@ -126,10 +126,10 @@
       },
       {
         "@type": "Question",
-        "name": "¿La reserva de turno queda confirmada automáticamente?",
+        "name": "¿La solicitud de turno queda confirmada automáticamente?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sí. Al completar la reserva en la agenda en línea, recibís la confirmación por correo electrónico. Las consultas realizadas por WhatsApp se coordinan manualmente."
+          "text": "No. Elegís el horario que te sirve y Eliana lo confirma o rechaza. Recibís la respuesta por correo electrónico."
         }
       },
       {
@@ -608,11 +608,10 @@
           </details>
 
           <details>
-            <summary>¿La reserva queda confirmada automáticamente?</summary>
+            <summary>¿La solicitud queda confirmada automáticamente?</summary>
             <p>
-              Sí. Al completar la reserva en la agenda en línea, recibís la
-              confirmación por correo electrónico. Las consultas realizadas por
-              WhatsApp se coordinan manualmente.
+              No. Elegís el horario que te sirve y Eliana lo confirma o rechaza.
+              Recibís la respuesta por correo electrónico.
             </p>
           </details>
 
@@ -665,9 +664,8 @@
           <span class="eyebrow">Agenda</span>
           <h2>Reservar turno</h2>
           <p>
-            Elegí un día y un horario disponible en la agenda en línea. Para
-            consultas urgentes o atención en otra localidad, también podés
-            comunicarte por WhatsApp.
+            La agenda en línea está temporalmente desactivada mientras completamos
+            pruebas de Calendar y correo. Podés coordinar tu consulta por WhatsApp.
           </p>
         </div>
 
@@ -685,9 +683,8 @@
           <div class="booking-overview-copy">
             <h3>Coordiná tu consulta</h3>
             <p>
-              Reservá directamente en la agenda y recibí la confirmación por
-              correo electrónico, o escribinos por WhatsApp si necesitás una
-              coordinación especial.
+              La agenda en línea está temporalmente no disponible. Mientras
+              completamos las pruebas, coordiná tu consulta por WhatsApp.
             </p>
             <button class="btn btn-dark" type="button" data-booking-open>
               Elegir cómo reservar
@@ -710,8 +707,8 @@
                 <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
               </span>
               <span>
-                <strong>Confirmación por correo</strong>
-                <small>Al completar la reserva en la agenda</small>
+                <strong>Respuesta por correo</strong>
+                <small>Después de que Eliana revise la solicitud</small>
               </span>
             </li>
           </ul>
@@ -738,13 +735,16 @@
               class="booking-channel booking-channel-calendar"
               id="calendarChoice"
               type="button"
+              disabled
+              aria-describedby="bookingCalendarUnavailable"
             >
               <span class="booking-channel-icon">
                 <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
               </span>
               <span>
                 <strong>Agenda en línea</strong>
-                <small>Elegí un horario disponible y recibí la confirmación por correo.</small>
+                <span class="booking-channel-status">Temporalmente no disponible</span>
+                <small>Estamos validando el flujo con Calendar y correo antes de habilitarlo.</small>
               </span>
             </button>
 
@@ -760,9 +760,14 @@
 
           </div>
 
+          <p class="booking-calendar-unavailable" id="bookingCalendarUnavailable">
+            La agenda en línea permanece desactivada durante las pruebas. WhatsApp
+            sigue disponible y conserva el trámite seleccionado.
+          </p>
+
           <p class="booking-dialog-note">
-            La consulta dura aproximadamente 45 minutos. Para reservar en línea,
-            completá los datos de contacto y confirmá el horario elegido.
+            La consulta dura aproximadamente 45 minutos. Cuando la agenda vuelva
+            a estar habilitada, el horario elegido quedará sujeto a revisión.
           </p>
         </div>
 
@@ -806,7 +811,7 @@
                 type="button"
                 hidden
               >Reservar por WhatsApp</button>
-              <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Confirmar reserva</button>
+              <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Solicitar horario</button>
               <button class="btn btn-dark" id="bookingDone" type="button" hidden>Cerrar</button>
             </div>
           </form>

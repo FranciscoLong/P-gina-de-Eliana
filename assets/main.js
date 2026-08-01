@@ -225,6 +225,9 @@ function openBookingDialog(service = "Consulta notarial") {
   }
 
   document.body.classList.add("modal-open");
+  requestAnimationFrame(() => {
+    (calendarChoice.disabled ? whatsappChoice : calendarChoice).focus();
+  });
 }
 
 function closeBookingDialog() {
@@ -253,7 +256,7 @@ calendarChoice.addEventListener("click", showBookingCalendar);
 
 backToBookingChannels.addEventListener("click", () => {
   showBookingChannels();
-  calendarChoice.focus();
+  (calendarChoice.disabled ? whatsappChoice : calendarChoice).focus();
 });
 
 bookingDialog.addEventListener("click", (event) => {
@@ -319,18 +322,18 @@ function syncSuggestedDetails(force = false) {
 }
 
 /*
-  Con la reserva ya confirmada el formulario queda vacío y el botón de confirmar
-  no tiene nada que hacer: se reemplaza por uno de cerrar, así no parece que
-  falta un paso. Vuelve atrás en cuanto el usuario empieza otra reserva.
+  Cuando la solicitud ya fue enviada el formulario queda vacío y el botón de
+  solicitar no tiene nada que hacer: se reemplaza por uno de cerrar. Vuelve
+  atrás en cuanto el usuario empieza otra solicitud.
 */
-function setBookingCompleted(completed) {
-  bookingSubmit.hidden = completed;
-  bookingDone.hidden = !completed;
+function setBookingSubmitted(submitted) {
+  bookingSubmit.hidden = submitted;
+  bookingDone.hidden = !submitted;
 }
 
 function resetBookingAttempt() {
   sessionStorage.removeItem("bookingAttemptId");
-  setBookingCompleted(false);
+  setBookingSubmitted(false);
 }
 
 /*
@@ -353,7 +356,7 @@ function resetTurnstile() {
 
 async function loadAvailability() {
   selectedSlot = null;
-  setBookingCompleted(false);
+  setBookingSubmitted(false);
   updateSubmitState();
   setBookingStatus("Cargando disponibilidad…");
   const from = ymd(new Date());
@@ -567,7 +570,7 @@ bookingForm.addEventListener("submit", async (event) => {
   };
   sessionStorage.setItem("bookingAttemptId", payload.idempotencyKey);
   bookingSubmit.disabled = true;
-  setBookingStatus("Confirmando la reserva…");
+  setBookingStatus("Enviando la solicitud…");
 
   try {
     const response = await fetch("/api/bookings", {
@@ -577,7 +580,7 @@ bookingForm.addEventListener("submit", async (event) => {
     });
     const data = await readApiResponse(response);
     if (!response.ok || !data) {
-      throw Object.assign(new Error(data?.error || "No se pudo confirmar la reserva."), {
+      throw Object.assign(new Error(data?.error || "No se pudo enviar la solicitud."), {
         status: response.status
       });
     }
@@ -590,16 +593,16 @@ bookingForm.addEventListener("submit", async (event) => {
     syncSuggestedDetails();
     selectedSlot = null;
     resetTurnstile();
-    setBookingStatus("Tu reserva quedó confirmada. Recibirás la invitación por correo.");
-    renderSlots(); // El horario reservado ya no debe quedar marcado como elegido.
-    setBookingCompleted(true);
+    await loadAvailability();
+    setBookingStatus("Solicitud enviada. Eliana revisará el horario y recibirás su respuesta por correo.");
+    setBookingSubmitted(true);
     bookingDone.focus();
   } catch (error) {
     resetTurnstile();
     setBookingStatus(
       error.status === 409
         ? "Ese horario acaba de ocuparse. Elegí otro."
-        : "No pudimos confirmar la reserva en este momento. Tus datos siguen en el formulario; podés reintentar o reservar por WhatsApp.",
+        : "No pudimos enviar la solicitud en este momento. Tus datos siguen en el formulario; podés reintentar o reservar por WhatsApp.",
       true,
       error.status !== 409
     );

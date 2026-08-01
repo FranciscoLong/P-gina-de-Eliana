@@ -2,11 +2,19 @@
 
 const { isValidService, dateRange } = require("../lib/booking");
 const { callAppsScript } = require("../lib/apps-script-client");
-const { originAllowed, send } = require("./_security");
+const {
+  BOOKING_UNAVAILABLE_MESSAGE,
+  bookingEnabled,
+  originAllowed,
+  send
+} = require("./_security");
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
     return send(res, 405, { error: "Método no permitido." });
+  }
+  if (!bookingEnabled()) {
+    return send(res, 503, { error: BOOKING_UNAVAILABLE_MESSAGE });
   }
   if (!originAllowed(req)) {
     return send(res, 403, { error: "Origen no autorizado." });
