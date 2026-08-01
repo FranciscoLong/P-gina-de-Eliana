@@ -224,15 +224,16 @@ siempre que coincida con el contenido visible.
 
 ### Unificar la descripción profesional
 
-Actualmente el JSON-LD utiliza `Escribana pública y procuradora`, mientras que
-la biografía visible destaca `Escribana y Rematadora`.
+Se confirmó que los títulos profesionales comunicados son `Escribana Pública` y
+`Rematadora`. El JSON-LD y la biografía visible utilizan ahora la misma
+descripción, sin incluir otros títulos.
 
 Acciones:
 
-- [ ] Confirmar cuáles son los títulos profesionales que deben comunicarse.
-- [ ] Utilizar la misma descripción profesional en el contenido visible y en el
+- [x] Confirmar cuáles son los títulos profesionales que deben comunicarse.
+- [x] Utilizar la misma descripción profesional en el contenido visible y en el
   JSON-LD.
-- [ ] No incluir títulos o afiliaciones que no puedan verificarse.
+- [x] No incluir títulos o afiliaciones que no puedan verificarse.
 
 ### Completar `LegalService` con información verificada
 
