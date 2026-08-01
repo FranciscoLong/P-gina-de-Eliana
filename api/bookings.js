@@ -1,7 +1,7 @@
 "use strict";
 
 const { validateBooking } = require("../lib/booking");
-const { callAppsScript } = require("../lib/apps-script-client");
+const { assertAppsScriptWorkflow, callAppsScript } = require("../lib/apps-script-client");
 const {
   BOOKING_UNAVAILABLE_MESSAGE,
   bookingEnabled,
@@ -47,6 +47,7 @@ module.exports = async (req, res) => {
     .slice(0, 128);
 
   try {
+    await assertAppsScriptWorkflow();
     const result = await callAppsScript("booking", checked.value);
     const status = result.data?.status === "pending" ? 202 : result.created ? 201 : 200;
     return send(res, status, result.data);

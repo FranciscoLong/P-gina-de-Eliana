@@ -6,6 +6,7 @@ var DEFAULT_RETENTION_DAYS = 30;
 var OPENING_WINDOWS = [["09:30", "12:30"], ["15:00", "19:00"]];
 var HORIZON_DAYS = 45;
 var MAINTENANCE_HANDLER = "maintainBookingWorkflow";
+var BOOKING_WORKFLOW_VERSION = "manual-approval-v1";
 
 function doGet(e) {
   return approvalPage_(e && e.parameter && e.parameter.approvalToken);
@@ -21,8 +22,17 @@ function doPost(e) {
     var request = JSON.parse(payloadJson);
     var action = envelope.action;
     validateSignedRequest_(envelope, payloadJson);
-    if (action === "availability") return json_({ ok: true, data: availability_(request) });
-    if (action === "booking") return json_(book_(request));
+    if (action === "workflow-status") {
+      return json_({ ok: true, workflowVersion: BOOKING_WORKFLOW_VERSION, data: { ready: true } });
+    }
+    if (action === "availability") {
+      return json_({ ok: true, workflowVersion: BOOKING_WORKFLOW_VERSION, data: availability_(request) });
+    }
+    if (action === "booking") {
+      var bookingResult = book_(request);
+      bookingResult.workflowVersion = BOOKING_WORKFLOW_VERSION;
+      return json_(bookingResult);
+    }
     return json_({ ok: false, status: 400, message: "Acción inválida." });
   } catch (error) {
     return json_({ ok: false, status: error.status || 502, message: safeMessage_(error) });

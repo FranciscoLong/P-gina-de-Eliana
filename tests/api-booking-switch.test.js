@@ -56,10 +56,28 @@ test("el kill switch sólo habilita con el valor exacto true", async () => {
 });
 
 test("la configuración pública sólo habilita una Preview con site key válida", async () => {
-  const names = ["BOOKING_ENABLED", "VERCEL_ENV", "TURNSTILE_SITE_KEY"];
+  const names = [
+    "BOOKING_ENABLED",
+    "VERCEL_ENV",
+    "TURNSTILE_SITE_KEY",
+    "APPS_SCRIPT_WEB_APP_URL",
+    "APPS_SCRIPT_SHARED_SECRET"
+  ];
   const previous = Object.fromEntries(names.map((name) => [name, process.env[name]]));
+  const previousFetch = global.fetch;
   process.env.BOOKING_ENABLED = "true";
   process.env.TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+  process.env.APPS_SCRIPT_WEB_APP_URL = "https://script.example/exec";
+  process.env.APPS_SCRIPT_SHARED_SECRET = "apps-script-secret";
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      ok: true,
+      workflowVersion: "manual-approval-v1",
+      data: { ready: true }
+    })
+  });
 
   process.env.VERCEL_ENV = "production";
   const production = responseRecorder();
@@ -75,6 +93,16 @@ test("la configuración pública sólo habilita una Preview con site key válida
   });
   assert.equal(preview.headers["cache-control"], "private, no-store, max-age=0");
 
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({ ok: false, status: 400, message: "Acción inválida." })
+  });
+  const outdated = responseRecorder();
+  await bookingConfigHandler({ method: "GET" }, outdated);
+  assert.deepEqual(outdated.body, { enabled: false, turnstileSiteKey: "" });
+
+  global.fetch = previousFetch;
   names.forEach((name) => restoreEnv(name, previous[name]));
 });
 
@@ -97,13 +125,25 @@ test("/api/bookings propaga el 429 de Apps Script", async () => {
   process.env.APPS_SCRIPT_WEB_APP_URL = "https://script.example/exec";
   process.env.APPS_SCRIPT_SHARED_SECRET = "apps-script-secret";
 
-  global.fetch = async (url) => {
+  global.fetch = async (url, options = {}) => {
     if (String(url).includes("turnstile")) {
       return {
         json: async () => ({
           success: true,
           action: "booking",
           hostname: "www.escribaniaisbarbo.com.uy"
+        })
+      };
+    }
+    const action = JSON.parse(options.body).action;
+    if (action === "workflow-status") {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          ok: true,
+          workflowVersion: "manual-approval-v1",
+          data: { ready: true }
         })
       };
     }

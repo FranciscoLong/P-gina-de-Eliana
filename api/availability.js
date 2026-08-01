@@ -1,7 +1,7 @@
 "use strict";
 
 const { isValidService, dateRange } = require("../lib/booking");
-const { callAppsScript } = require("../lib/apps-script-client");
+const { assertAppsScriptWorkflow, callAppsScript } = require("../lib/apps-script-client");
 const {
   BOOKING_UNAVAILABLE_MESSAGE,
   bookingEnabled,
@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    await assertAppsScriptWorkflow();
     const result = await callAppsScript("availability", { serviceCode, from, to });
     return send(res, 200, result.data);
   } catch (error) {

@@ -101,6 +101,11 @@ Para una prueba controlada en Preview, configurá sólo para la rama de prueba:
 usarse únicamente en Preview. El servidor admite como origen sólo `VERCEL_URL` o
 `VERCEL_BRANCH_URL` exactos, además de los orígenes configurados explícitamente.
 
+Antes de habilitar el navegador y antes de cada reserva, Vercel ejecuta una
+comprobación firmada de `workflow-status`. Apps Script debe responder exactamente
+`manual-approval-v1`; una versión ausente o anterior falla cerrada sin crear
+eventos ni enviar correos.
+
 Para Apps Script, creá un proyecto con `google-apps-script/Code.js` y configurá
 estas *Script properties* obligatorias:
 

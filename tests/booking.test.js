@@ -9,7 +9,11 @@ const {
   slotsForDate,
   validateBooking
 } = require("../lib/booking");
-const { signEnvelope } = require("../lib/apps-script-client");
+const {
+  BOOKING_WORKFLOW_VERSION,
+  assertAppsScriptWorkflow,
+  signEnvelope
+} = require("../lib/apps-script-client");
 
 const NOW = new Date("2026-08-01T12:00:00-03:00");
 const TODAY = "2026-08-01";
@@ -92,4 +96,39 @@ test("firma los mismos bytes cuando el payload contiene acentos", () => {
     signEnvelope("booking", payload, "secret", "1", "nonce"),
     signEnvelope("booking", JSON.stringify(payload), "secret", "1", "nonce")
   );
+});
+
+test("la precondición firmada rechaza un Apps Script anterior antes de reservar", async () => {
+  const previousUrl = process.env.APPS_SCRIPT_WEB_APP_URL;
+  const previousSecret = process.env.APPS_SCRIPT_SHARED_SECRET;
+  const previousFetch = global.fetch;
+  process.env.APPS_SCRIPT_WEB_APP_URL = "https://script.example/exec";
+  process.env.APPS_SCRIPT_SHARED_SECRET = "apps-script-secret";
+
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({ ok: false, status: 400, message: "Acción inválida." })
+  });
+  await assert.rejects(
+    assertAppsScriptWorkflow(),
+    (error) => error.code === "INCOMPATIBLE_WORKFLOW" && error.status === 503
+  );
+
+  global.fetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      ok: true,
+      workflowVersion: BOOKING_WORKFLOW_VERSION,
+      data: { ready: true }
+    })
+  });
+  assert.equal(await assertAppsScriptWorkflow(), true);
+
+  global.fetch = previousFetch;
+  if (previousUrl === undefined) delete process.env.APPS_SCRIPT_WEB_APP_URL;
+  else process.env.APPS_SCRIPT_WEB_APP_URL = previousUrl;
+  if (previousSecret === undefined) delete process.env.APPS_SCRIPT_SHARED_SECRET;
+  else process.env.APPS_SCRIPT_SHARED_SECRET = previousSecret;
 });
