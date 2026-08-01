@@ -1,0 +1,5 @@
+# Archivos de trabajo que no forman parte del sitio público.
+*.md
+tests/
+.playwright-mcp/
+**/.DS_Store

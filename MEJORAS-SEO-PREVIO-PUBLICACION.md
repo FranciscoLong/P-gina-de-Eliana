@@ -80,8 +80,8 @@ El sitemap debe contener únicamente la URL canónica:
 
 Acciones:
 
-- [ ] Crear `robots.txt` permitiendo el rastreo y declarando el sitemap.
-- [ ] Crear `sitemap.xml` con la URL canónica.
+- [x] Crear `robots.txt` permitiendo el rastreo y declarando el sitemap.
+- [x] Crear `sitemap.xml` con la URL canónica.
 - [ ] Verificar el dominio en Google Search Console.
 - [ ] Enviar el sitemap desde Search Console.
 - [ ] Inspeccionar la portada y solicitar su indexación.
@@ -104,8 +104,8 @@ con código 200.
 
 Acciones:
 
-- [ ] Mantener `www` como versión canónica en HTML, Open Graph y JSON-LD.
-- [ ] Configurar una redirección permanente 308 desde el dominio sin `www` hacia
+- [x] Mantener `www` como versión canónica en HTML, Open Graph y JSON-LD.
+- [x] Configurar una redirección permanente 308 desde el dominio sin `www` hacia
   `www`.
 - [ ] Confirmar que la redirección conserva la ruta y los parámetros.
 - [ ] Repetir la prueba desde distintas redes después de finalizar la propagación
@@ -138,7 +138,7 @@ Acciones:
   sitio web y fotografías— también estén completos y actualizados.
 - [ ] Usar la categoría principal más específica disponible para escribanía o
   servicio notarial.
-- [ ] Mantener un único Perfil de Empresa, correspondiente a la sede oficial de
+- [x] Mantener un único Perfil de Empresa, correspondiente a la sede oficial de
   Rosario; no crear una segunda ficha ni publicar una segunda dirección para
   Tarariras mientras funcione como oficina de apoyo.
 - [ ] Configurar en el perfil las zonas de servicio reales del departamento de
@@ -180,9 +180,9 @@ Sugerencias:
   > localidades del departamento de Colonia, según el trámite y la
   > disponibilidad.
 
-- [ ] Mantener en el pie, contacto, mapa y datos estructurados únicamente la
+- [x] Mantener en el pie, contacto, mapa y datos estructurados únicamente la
   dirección oficial de Rosario.
-- [ ] No publicar para Tarariras una dirección, horario, mapa, datos
+- [x] No publicar para Tarariras una dirección, horario, mapa, datos
   estructurados `LocalBusiness` ni un segundo Perfil de Empresa de Google.
 - [ ] Mencionar el departamento de Colonia de forma natural en el título, la
   introducción, la sección de contacto y el texto sobre zonas de atención.
@@ -214,7 +214,7 @@ que el marcado represente fielmente la página:
   siguen vigentes.
 - [ ] Usar exactamente la misma pregunta y respuesta en el HTML y en el JSON-LD.
 - [ ] Revisar ambos bloques juntos cada vez que se modifique una respuesta.
-- [ ] Mantener respuestas generales y derivar los casos particulares a una
+- [x] Mantener respuestas generales y derivar los casos particulares a una
   consulta personal.
 
 Google dejó de mostrar resultados enriquecidos de tipo FAQ en mayo de 2026. Por
@@ -254,30 +254,38 @@ No se deben completar propiedades con datos aproximados o no confirmados.
 
 ### Reforzar Rosario y el departamento de Colonia en la portada
 
-El `h1` puede conservar el nombre y la profesión, dejando claro en el texto
-inmediato que la sede está en Rosario y que se coordinan actuaciones en el resto
-del departamento.
+El `h1` conserva el nombre y la profesión, y el texto inmediato deja claro que
+la oficina está en Rosario, departamento de Colonia.
 
-Título recomendado para buscadores:
+Implementación:
 
-> Escribana en Rosario y departamento de Colonia | Eliana Isbarbo Gfeller
+- [x] Usar el siguiente título para buscadores:
 
-Texto introductorio sugerido:
+  > Escribana en Rosario, Colonia | Eliana Isbarbo Gfeller
 
-> Escribana pública con oficina en Rosario. Atención notarial y actuaciones
-> coordinadas en Tarariras y otras localidades del departamento de Colonia.
+- [x] Presentar inmediatamente la ubicación oficial con este texto:
 
-La ubicación oficial debe seguir siendo Rosario. El departamento y Tarariras se
-mencionan para explicar la cobertura real del servicio, no para simular sedes
-adicionales.
+  > Soy Escribana Pública con oficina en Rosario, departamento de Colonia.
+  > Brindo servicios notariales y acompaño a las personas con cercanía,
+  > responsabilidad y confianza, ofreciendo seguridad jurídica y un
+  > asesoramiento claro en cada decisión.
+
+Esta redacción también responde de forma natural a búsquedas como `escribano en
+Rosario` o `escribano en Colonia`, sin cambiar incorrectamente la profesión
+visible de `Escribana Pública` ni repetir palabras clave de forma artificial.
+
+La ubicación oficial sigue siendo Rosario. La forma de comunicar Tarariras y
+otras zonas de atención queda pendiente de definición para no presentarlas como
+sedes adicionales.
 
 ### Acortar la descripción para buscadores
 
-La descripción actual tiene aproximadamente 178 caracteres y puede truncarse.
+La descripción anterior tenía aproximadamente 178 caracteres y podía truncarse.
 
-Texto sugerido:
+- [x] Utilizar una descripción más breve y enfocada en los servicios principales:
 
-> Escribana pública en Rosario, Colonia. Asesoramiento en automotores, inmuebles, sucesiones, arrendamientos y certificaciones. Coordiná tu consulta.
+  > Escribana pública en Rosario, departamento de Colonia. Servicios notariales
+  > para automotores, inmuebles, sucesiones, arrendamientos y certificaciones.
 
 No existe una penalización por una descripción larga; el objetivo es controlar
 mejor qué mensaje puede ver la persona en los resultados.
@@ -289,10 +297,10 @@ servicios contiene expresiones como `Explora`, `si tienes` y `puedes`.
 
 Acciones:
 
-- [ ] Usar voseo de manera consistente: `Explorá`, `si tenés` y `podés`.
-- [ ] Cambiar `asesoría` por `asesoramiento` para mantener el vocabulario del
+- [x] Usar voseo de manera consistente: `Explorá`, `si tenés` y `podés`.
+- [x] Cambiar `asesoría` por `asesoramiento` para mantener el vocabulario del
   resto del sitio.
-- [ ] Corregir `Ademas` por `Además`.
+- [x] Corregir `Ademas` por `Además`.
 - [ ] Uniformar mayúsculas en los nombres de servicios.
 - [ ] Revisar ortografía y tono antes de cada publicación.
 
@@ -352,8 +360,8 @@ Las mejoras recomendadas son incrementales:
 - [ ] Crear variantes responsive de la imagen principal y del retrato para
   evitar que un teléfono descargue siempre las versiones completas.
 - [ ] Utilizar `srcset` y `sizes`, `<picture>` o `image-set()` según corresponda.
-- [ ] Mantener la precarga de la imagen principal.
-- [ ] Mantener carga diferida en el retrato y el mapa.
+- [x] Mantener la precarga de la imagen principal.
+- [x] Mantener carga diferida en el retrato y el mapa.
 - [ ] Usar nombres de archivo versionados y caché larga `immutable` para CSS,
   JavaScript e imágenes.
 - [ ] Evaluar si conviene reducir o alojar localmente las tres familias
