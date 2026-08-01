@@ -82,9 +82,16 @@ function book_(request) {
         location: getProperty_("BOOKING_LOCATION") || ""
       }
     );
-    event.setVisibility(CalendarApp.Visibility.PRIVATE);
-    event.setTag("bookingApprovalToken", token);
-    if (CalendarApp.EventColor && CalendarApp.EventColor.YELLOW) event.setColor(CalendarApp.EventColor.YELLOW);
+    try {
+      event.setVisibility(CalendarApp.Visibility.PRIVATE);
+      event.setTag("bookingApprovalToken", token);
+      if (CalendarApp.EventColor && CalendarApp.EventColor.YELLOW) event.setColor(CalendarApp.EventColor.YELLOW);
+    } catch (error) {
+      try { event.deleteEvent(); } catch (cleanupError) {
+        logTechnicalFailure_("rollback_unconfigured_event", { status: "pending", decision: null }, cleanupError);
+      }
+      throw statusError_(502, "No se pudo preparar el bloqueo provisional. La solicitud no fue creada.");
+    }
 
     var now = Date.now();
     var response = {
@@ -153,6 +160,7 @@ function decideApproval_(token, decision, note) {
       if (Date.now() >= approval.expiresAt) {
         approval = beginDecision_(token, approval, "expired", "");
       } else {
+        if (decision === "approve") assertPendingEventMatches_(approval);
         approval = beginDecision_(token, approval, decision === "approve" ? "confirmed" : "rejected", note);
       }
     } else if (approval.decision && approval.decision !== "expired") {
@@ -183,6 +191,7 @@ function resumeApproval_(token, approval) {
     approval = applyCalendarDecision_(token, approval);
   }
   if (approval.status === "confirmed" || approval.status === "rejected") {
+    syncDecisionIdempotency_(approval);
     approval = queueClientNotification_(token, approval);
   }
   if (approval.status === "notification_pending") {
@@ -200,6 +209,7 @@ function applyCalendarDecision_(token, approval) {
     if (!pendingEvent) {
       throw statusError_(409, "El bloqueo pendiente ya no existe en el calendario. La confirmación no fue enviada.");
     }
+    assertEventMatchesApproval_(pendingEvent, approval);
     pendingEvent.setTitle("Consulta notarial — " + SERVICES_()[request.serviceCode]);
     pendingEvent.setDescription("Estado: Confirmado por Eliana\n" + privateDescription_(request));
     if (CalendarApp.EventColor && CalendarApp.EventColor.GREEN) pendingEvent.setColor(CalendarApp.EventColor.GREEN);
@@ -208,13 +218,34 @@ function applyCalendarDecision_(token, approval) {
   }
 
   var finalStatus = approval.decision === "confirmed" ? "confirmed" : "rejected";
-  var responseStatus = approval.decision === "expired" ? "expired" : finalStatus;
   approval.status = finalStatus;
   approval.calendarUpdatedAt = Date.now();
   approval.decidedAt = Date.now();
   approval.updatedAt = Date.now();
   storeApproval_(token, approval);
+  return approval;
+}
 
+function assertPendingEventMatches_(approval) {
+  var calendar = CalendarApp.getCalendarById(approval.calendarId);
+  var pendingEvent = calendar.getEventById(approval.pendingEventId);
+  if (!pendingEvent) {
+    throw statusError_(409, "El bloqueo pendiente ya no existe en el calendario. El turno no fue confirmado.");
+  }
+  assertEventMatchesApproval_(pendingEvent, approval);
+}
+
+function assertEventMatchesApproval_(event, approval) {
+  var expectedStart = new Date(approval.start).getTime();
+  var expectedEnd = new Date(approval.end).getTime();
+  if (event.getStartTime().getTime() !== expectedStart || event.getEndTime().getTime() !== expectedEnd) {
+    throw statusError_(409, "El horario del bloqueo fue modificado en Calendar. Restauralo o rechazá la solicitud; no se confirmó ningún turno.");
+  }
+}
+
+function syncDecisionIdempotency_(approval) {
+  var request = approval.request;
+  var responseStatus = approval.decision === "expired" ? "expired" : approval.status;
   putIdempotency_(request.idempotencyKey, request, {
     bookingId: approval.pendingEventId,
     start: approval.start,
@@ -222,7 +253,6 @@ function applyCalendarDecision_(token, approval) {
     serviceCode: request.serviceCode,
     status: responseStatus
   });
-  return approval;
 }
 
 function queueClientNotification_(token, approval) {
@@ -755,8 +785,17 @@ function safeEqual_(a, b) {
   for (var i = 0; i < a.length; i += 1) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return result === 0;
 }
-function statusError_(status, message) { var error = new Error(message); error.status = status; return error; }
-function safeMessage_(error) { return error && error.message || "Servicio temporalmente no disponible."; }
+function statusError_(status, message) {
+  var error = new Error(message);
+  error.status = status;
+  error.exposeToClient = true;
+  return error;
+}
+function safeMessage_(error) {
+  return error && error.exposeToClient === true
+    ? error.message
+    : "Servicio temporalmente no disponible.";
+}
 function logTechnicalFailure_(operation, approval, error) {
   console.error("Booking workflow technical failure", {
     operation: operation,

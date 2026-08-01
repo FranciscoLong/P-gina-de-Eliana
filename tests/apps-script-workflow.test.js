@@ -35,6 +35,7 @@ function buildContext(overrides = {}) {
   let uuidCounter = 0;
   let clientMailFailures = 0;
   let calendarFailure = "";
+  const propertySetFailures = new Map();
 
   class FixedDate extends Date {
     constructor(...args) {
@@ -66,9 +67,9 @@ function buildContext(overrides = {}) {
       getId() { return this.id; },
       getStartTime() { return this.start; },
       getEndTime() { return this.end; },
-      setVisibility() { return this; },
-      setTag() { return this; },
-      setColor() { return this; },
+      setVisibility() { maybeFailCalendar("setVisibility"); return this; },
+      setTag() { maybeFailCalendar("setTag"); return this; },
+      setColor() { maybeFailCalendar("setColor"); return this; },
       setTitle(value) { maybeFailCalendar("setTitle"); this.title = value; return this; },
       setDescription(value) { maybeFailCalendar("setDescription"); this.description = value; return this; },
       deleteEvent() { maybeFailCalendar("deleteEvent"); this.deleted = true; }
@@ -89,7 +90,15 @@ function buildContext(overrides = {}) {
 
   const scriptProperties = {
     getProperty(key) { return properties.get(key) || null; },
-    setProperty(key, value) { properties.set(key, value); return this; },
+    setProperty(key, value) {
+      const failures = propertySetFailures.get(key) || 0;
+      if (failures > 0) {
+        propertySetFailures.set(key, failures - 1);
+        throw new Error(`Simulated setProperty failure for ${key}`);
+      }
+      properties.set(key, value);
+      return this;
+    },
     deleteProperty(key) { properties.delete(key); return this; },
     getProperties() { return Object.fromEntries(properties); }
   };
@@ -184,7 +193,8 @@ function buildContext(overrides = {}) {
     controls: {
       advance(milliseconds) { currentNow += milliseconds; },
       failClientMail(times = 1) { clientMailFailures = times; },
-      failCalendar(operation) { calendarFailure = operation; }
+      failCalendar(operation) { calendarFailure = operation; },
+      failPropertySet(key, times = 1) { propertySetFailures.set(key, times); }
     }
   };
 }
@@ -240,6 +250,21 @@ test("un reintento idempotente devuelve la misma solicitud sin duplicar el event
   assert.equal(emails.length, 1);
 });
 
+test("si falla la configuración privada del evento, elimina el bloqueo huérfano", () => {
+  const { context, controls, emails, events, properties } = buildContext();
+  controls.failCalendar("setTag");
+
+  assert.throws(
+    () => context.book_(request()),
+    (error) => error.status === 502 && /no fue creada/.test(error.message)
+  );
+  assert.equal(events.length, 1);
+  assert.equal(events[0].deleted, true);
+  assert.equal([...properties.keys()].some((key) => key.startsWith("approval:")), false);
+  assert.equal(properties.has("booking:abcdefghijklmnop"), false);
+  assert.equal(emails.length, 0);
+});
+
 test("dos solicitudes para el mismo horario: sólo una prospera", () => {
   const { context, events } = buildContext();
   context.book_(request());
@@ -285,6 +310,47 @@ test("aprobar actualiza Calendar antes de enviar y el reintento no duplica el co
   assert.match(emails[1].body, /Trámite: Testamentos/);
   assert.match(emails[1].body, /quedó confirmado/);
   assert.match(emails[1].body, /Lugar:/);
+});
+
+test("no confirma una hora distinta si el bloqueo fue movido manualmente en Calendar", () => {
+  const { context, emails, events, properties } = buildContext();
+  context.book_(request());
+  const token = approvalToken(properties);
+  const originalStart = events[0].start;
+  events[0].start = new Date("2026-08-28T16:30:00-03:00");
+
+  assert.throws(
+    () => context.decideApproval_(token, "approve", ""),
+    (error) => error.status === 409 && /modificado en Calendar/.test(error.message)
+  );
+  assert.equal(approvalRecord(properties, token).status, "pending");
+  assert.equal(emails.filter((email) => email.to === "francisco@example.com").length, 0);
+
+  events[0].start = originalStart;
+  assert.equal(context.decideApproval_(token, "approve", "").status, "notification_sent");
+  assert.equal(emails.filter((email) => email.to === "francisco@example.com").length, 1);
+});
+
+test("si falla la idempotencia después de Calendar, el reintento la sincroniza antes del correo", () => {
+  const { context, controls, emails, events, properties } = buildContext();
+  context.book_(request());
+  const token = approvalToken(properties);
+  controls.failPropertySet("booking:abcdefghijklmnop");
+
+  assert.throws(
+    () => context.decideApproval_(token, "approve", ""),
+    /Simulated setProperty failure/
+  );
+  assert.equal(approvalRecord(properties, token).status, "confirmed");
+  assert.doesNotMatch(events[0].title, /^PENDIENTE/);
+  assert.equal(JSON.parse(properties.get("booking:abcdefghijklmnop")).data.status, "pending");
+  assert.equal(emails.filter((email) => email.to === "francisco@example.com").length, 0);
+
+  const retry = context.decideApproval_(token, "approve", "");
+
+  assert.equal(retry.status, "notification_sent");
+  assert.equal(JSON.parse(properties.get("booking:abcdefghijklmnop")).data.status, "confirmed");
+  assert.equal(emails.filter((email) => email.to === "francisco@example.com").length, 1);
 });
 
 test("MailApp falla después de confirmar: persiste notification_pending y la página no afirma envío", () => {
@@ -436,6 +502,18 @@ test("si falta la configuración de rate limit, la creación falla cerrada", () 
   const { context, properties } = buildContext();
   properties.delete("BOOKING_RATE_LIMIT_MAX");
   assert.throws(() => context.book_(request()), (error) => error.status === 503);
+});
+
+test("los errores técnicos inesperados no exponen datos internos al navegador", () => {
+  const { context } = buildContext();
+  assert.equal(
+    context.safeMessage_(new Error("calendar@example.com: internal backend failure")),
+    "Servicio temporalmente no disponible."
+  );
+  assert.equal(
+    context.safeMessage_(context.statusError_(409, "Ese horario acaba de ocuparse.")),
+    "Ese horario acaba de ocuparse."
+  );
 });
 
 test("la disponibilidad sólo devuelve franjas y nunca revela detalles de eventos", () => {
