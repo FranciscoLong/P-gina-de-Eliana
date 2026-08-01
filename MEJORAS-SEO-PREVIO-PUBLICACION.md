@@ -107,7 +107,7 @@ Acciones:
 - [x] Mantener `www` como versión canónica en HTML, Open Graph y JSON-LD.
 - [x] Configurar una redirección permanente 308 desde el dominio sin `www` hacia
   `www`.
-- [ ] Confirmar que la redirección conserva la ruta y los parámetros.
+- [x] Confirmar que la redirección conserva la ruta y los parámetros.
 - [ ] Repetir la prueba desde distintas redes después de finalizar la propagación
   DNS.
 
@@ -372,36 +372,31 @@ Las mejoras recomendadas son incrementales:
 
 ## Prioridad 7: documentación operativa
 
-El README todavía conserva referencias a GitHub Pages, al dominio en preparación
-y a un archivo `CNAME` que ya no existe. El sitio se sirve actualmente desde
-Vercel.
+El README documenta Vercel como plataforma vigente, el host canónico y la
+redirección permanente. La guía heredada de la plataforma anterior fue retirada
+porque el dominio ya está configurado y operativo en Vercel.
 
-- [ ] Actualizar el README para documentar Vercel como plataforma vigente.
-- [ ] Documentar cuál es el host canónico y dónde se configura la redirección.
+- [x] Actualizar el README para documentar Vercel como plataforma vigente.
+- [x] Documentar cuál es el host canónico y dónde se configura la redirección.
 - [ ] Registrar la fecha de verificación de Search Console y del Perfil de
   Empresa.
-- [ ] Mantener este documento como lista vigente y retirar tareas que dejen de
+- [x] Mantener este documento como lista vigente y retirar tareas que dejen de
   ser aplicables.
 
 ## Orden recomendado de ejecución
 
-1. Esperar el cierre de la propagación DNS y configurar la redirección hacia
-   `www`.
-2. Crear `robots.txt` y `sitemap.xml`.
-3. Verificar Search Console, enviar el sitemap e inspeccionar la portada.
-4. Verificar que los demás datos del Perfil de Empresa de Google estén completos,
+1. Verificar Search Console, enviar el sitemap e inspeccionar la portada.
+2. Verificar que los demás datos del Perfil de Empresa de Google estén completos,
    configurar las zonas de servicio reales del departamento de Colonia y
    mantener Rosario como única ubicación oficial; el horario ya fue confirmado
    como correcto.
-5. Solicitar la actualización de horarios y categorías únicamente en los
+3. Solicitar la actualización de horarios y categorías únicamente en los
    directorios externos que contienen información incorrecta.
-6. Sincronizar las preguntas frecuentes visibles con el JSON-LD.
-7. Unificar los títulos profesionales y completar `LegalService` con datos
-   verificados.
-8. Ajustar el título, la introducción, la descripción, el voseo, la ortografía y
-   el texto sobre Tarariras y el departamento de Colonia.
-9. Evaluar páginas informativas de servicios con revisión profesional.
-10. Implementar mejoras responsive y de caché si las métricas lo justifican.
+4. Resolver el texto sobre Tarariras y sincronizar las preguntas frecuentes
+   visibles con el JSON-LD.
+5. Completar `LegalService` con datos verificados.
+6. Evaluar páginas informativas de servicios con revisión profesional.
+7. Implementar mejoras responsive y de caché si las métricas lo justifican.
 
 ## Referencias oficiales
 

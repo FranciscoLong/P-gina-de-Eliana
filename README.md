@@ -5,8 +5,7 @@ de Colonia (Uruguay). Landing de una sola página con información de servicios
 notariales, formulario de reserva de turnos (vía WhatsApp), ubicación y
 preguntas frecuentes.
 
-🔗 **En línea:** https://franciscolong.github.io/P-gina-de-Eliana/
-(dominio propio en preparación: `www.escribaniaisbarbo.com.uy`)
+🔗 **En línea:** https://www.escribaniaisbarbo.com.uy/
 
 ---
 
@@ -20,6 +19,10 @@ compilación** — se abre directamente en el navegador.
 ```
 .
 ├── index.html                      Página completa (contenido y datos estructurados)
+├── robots.txt                      Reglas de rastreo y ubicación del sitemap
+├── sitemap.xml                     URL canónica enviada a buscadores
+├── vercel.json                     Redirección del dominio sin www al host canónico
+├── .vercelignore                   Exclusiones del despliegue público
 ├── assets/
 │   ├── styles.css                  Todos los estilos
 │   ├── main.js                     Menú móvil, formulario de turnos, copiar dirección
@@ -27,8 +30,8 @@ compilación** — se abre directamente en el navegador.
 │   ├── eliana-isbarbo-gfeller.webp Retrato optimizado de la escribana
 │   ├── *.webp                      Fotografías optimizadas de la oficina
 │   └── favicon.png                 Ícono de la pestaña y dispositivos
-├── CNAME                           Dominio propio para GitHub Pages
-├── CONFIGURAR-DOMINIO.md           Guía para apuntar el dominio en NIC Uruguay
+├── tests/                          Pruebas de los mensajes de consulta
+├── MEJORAS-SEO-PREVIO-PUBLICACION.md Seguimiento de mejoras SEO
 └── README.md
 ```
 
@@ -48,16 +51,19 @@ Luego abrir http://localhost:8000 en el navegador.
 
 ## Publicación
 
-El sitio se publica automáticamente con **GitHub Pages** desde la rama `main`.
-Cada `git push` actualiza la versión en línea en uno o dos minutos.
+El sitio se publica automáticamente con **Vercel** desde la rama `main`. Cada
+`git push` inicia un nuevo despliegue.
 
-Para activar el dominio propio, ver **[CONFIGURAR-DOMINIO.md](CONFIGURAR-DOMINIO.md)**.
+El host canónico es `www.escribaniaisbarbo.com.uy`. La redirección permanente
+desde el dominio sin `www` se configura en `vercel.json` y conserva la ruta y
+los parámetros. Los documentos de trabajo y las pruebas quedan fuera del
+despliegue mediante `.vercelignore`.
 
 ## Pendientes de contenido
 
-- [ ] Completar el enlace real de Google Calendar en `assets/main.js`
-      (constante `CALENDAR_BOOKING_URL`).
-- [ ] Cargar las coordenadas del local en los datos estructurados (`geo`).
+- [ ] Conectar el calendario cuando se defina el proveedor y el enlace final.
+- [ ] Cargar coordenadas verificadas y el Perfil de Empresa oficial en los datos
+      estructurados.
 
 ## Contacto de la escribanía
 
