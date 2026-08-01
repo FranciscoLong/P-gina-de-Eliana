@@ -359,6 +359,33 @@ async function loadAvailability() {
   }
 }
 
+const DATE_CHIP_FORMATTER = new Intl.DateTimeFormat("es-UY", {
+  timeZone: "America/Montevideo",
+  weekday: "short",
+  day: "numeric",
+  month: "short"
+});
+
+const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("es-UY", {
+  timeZone: "America/Montevideo",
+  weekday: "long",
+  day: "numeric",
+  month: "long"
+});
+
+/*
+  Las fechas se desplazan en horizontal, así que el día elegido puede quedar
+  fuera de la vista. Se centra moviendo solo esa fila, sin scrollIntoView, para
+  no arrastrar el resto del formulario.
+*/
+function centerSelectedDate() {
+  const selected = bookingDates.querySelector(".booking-date.is-selected");
+  if (!selected) {
+    return;
+  }
+  bookingDates.scrollLeft = selected.offsetLeft - (bookingDates.clientWidth - selected.offsetWidth) / 2;
+}
+
 function renderDates() {
   const days = availability?.days || [];
   const storedDate = sessionStorage.getItem("bookingDate");
@@ -368,14 +395,16 @@ function renderDates() {
       ? storedDate
       : days[0]?.date || null;
   bookingDates.innerHTML = days.map((day) => {
-    const label = new Intl.DateTimeFormat("es-UY", {
-      timeZone: "America/Montevideo",
-      weekday: "short",
-      day: "numeric",
-      month: "short"
-    }).format(new Date(`${day.date}T12:00:00Z`));
-    return `<button type="button" class="booking-date${day.date === selectedDate ? " is-selected" : ""}" data-date="${day.date}" aria-pressed="${day.date === selectedDate}">${label}</button>`;
+    const date = new Date(`${day.date}T12:00:00Z`);
+    const parts = Object.fromEntries(
+      DATE_CHIP_FORMATTER.formatToParts(date).map((part) => [part.type, part.value])
+    );
+    // Algunos locales abrevian con punto ("lun.", "ago."): sobra dentro del chip.
+    const trimDot = (value) => String(value).replace(/\.$/, "");
+    const isSelected = day.date === selectedDate;
+    return `<button type="button" class="booking-date${isSelected ? " is-selected" : ""}" data-date="${day.date}" aria-pressed="${isSelected}" aria-label="${DATE_LABEL_FORMATTER.format(date)}"><span class="booking-date-weekday">${trimDot(parts.weekday)}</span><span class="booking-date-day">${parts.day}</span><span class="booking-date-month">${trimDot(parts.month)}</span></button>`;
   }).join("");
+  centerSelectedDate();
   bookingDates.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => {
     selectedDate = button.dataset.date;
     selectedSlot = null;
@@ -401,7 +430,7 @@ function renderSlots() {
   bookingSlots.innerHTML = day.slots.map((slot) => {
     const time = slot.start.slice(11, 16);
     const unavailable = slot.status !== "available";
-    return `<button type="button" class="booking-slot ${unavailable ? "is-unavailable" : ""}${slot.start === selectedSlot ? " is-selected" : ""}" data-slot="${slot.start}" ${unavailable ? "disabled aria-disabled=\"true\"" : ""}>${time}<span>${unavailable ? "No disponible" : "Disponible"}</span></button>`;
+    return `<button type="button" class="booking-slot ${unavailable ? "is-unavailable" : ""}${slot.start === selectedSlot ? " is-selected" : ""}" data-slot="${slot.start}" ${unavailable ? "disabled aria-disabled=\"true\" title=\"No disponible\"" : ""}>${time}<span>${unavailable ? "No disponible" : "Disponible"}</span></button>`;
   }).join("");
   bookingSlots.querySelectorAll("button:not([disabled])").forEach((button) => {
     button.addEventListener("click", () => {

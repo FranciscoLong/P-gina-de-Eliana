@@ -53,10 +53,10 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=calendario-modal-20260801">
+  <link rel="stylesheet" href="assets/styles.css?v=calendario-modal-20260801b">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script src="assets/service-messages.js?v=mensajes-servicios-20260731" defer></script>
-  <script src="assets/main.js?v=calendario-modal-20260801" defer></script>
+  <script src="assets/main.js?v=calendario-modal-20260801b" defer></script>
 
   <script type="application/ld+json">
   {
@@ -775,30 +775,39 @@
           <h2 id="bookingCalendarTitle">Elegí día y horario</h2>
           <p class="booking-calendar-intro">Elegí el trámite, una fecha y un horario. Los horarios ocupados se ven, pero no se pueden seleccionar.</p>
           <form class="booking-form" id="bookingForm">
-            <label>Trámite
-              <select id="bookingService" name="serviceCode" required aria-describedby="bookingServiceHelp"></select>
-            </label>
-            <small id="bookingServiceHelp">Podés corregir el trámite antes de reservar.</small>
-            <div class="booking-dates" id="bookingDates" aria-label="Fechas disponibles" aria-live="polite"></div>
-            <fieldset class="booking-slots"><legend>Horario</legend><div id="bookingSlots" aria-live="polite"><p>Elegí una fecha para ver sus horarios.</p></div></fieldset>
-            <div class="booking-contact-fields">
-              <label>Nombre y apellido<input name="name" autocomplete="name" maxlength="120" required></label>
-              <label>Correo electrónico<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
-              <label>Teléfono<input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
-              <label class="booking-details">Contanos brevemente qué necesitás consultar<textarea name="details" maxlength="400" required aria-describedby="bookingDetailsHelp bookingSensitiveHelp"></textarea></label>
+            <div class="booking-form-body">
+              <label>Trámite
+                <select id="bookingService" name="serviceCode" required aria-describedby="bookingServiceHelp"></select>
+              </label>
+              <small id="bookingServiceHelp">Podés corregir el trámite antes de reservar.</small>
+              <div class="booking-picker">
+                <div>
+                  <span class="booking-picker-label" id="bookingDatesLabel">Fecha</span>
+                  <div class="booking-dates" id="bookingDates" role="group" aria-labelledby="bookingDatesLabel" aria-live="polite"></div>
+                </div>
+                <fieldset class="booking-slots"><legend>Horario</legend><div id="bookingSlots" aria-live="polite"><p>Elegí una fecha para ver sus horarios.</p></div></fieldset>
+              </div>
+              <div class="booking-contact-fields">
+                <label>Nombre y apellido<input name="name" autocomplete="name" maxlength="120" required></label>
+                <label>Correo electrónico<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+                <label>Teléfono<input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+                <label class="booking-details">Contanos brevemente qué necesitás consultar<textarea name="details" maxlength="400" required aria-describedby="bookingDetailsHelp bookingSensitiveHelp"></textarea></label>
+              </div>
+              <p class="booking-details-help" id="bookingDetailsHelp">Te dejamos un texto inicial con tu nombre y el trámite. Podés editarlo o agregar contexto, hasta 400 caracteres.</p>
+              <p class="booking-sensitive" id="bookingSensitiveHelp">No incluyas documentos, información financiera, números de documento ni otros datos sensibles.</p>
+              <label class="booking-consent"><input name="consent" type="checkbox" required> Consiento que estos datos se usen únicamente para coordinar esta consulta.</label>
+              <div id="turnstileWidget" data-turnstile-site-key="0x4AAAAAAEDu4f9hBOnYHyXW" aria-live="polite"></div>
             </div>
-            <p class="booking-details-help" id="bookingDetailsHelp">Te dejamos un texto inicial con tu nombre y el trámite. Podés editarlo o agregar contexto, hasta 400 caracteres.</p>
-            <p class="booking-sensitive" id="bookingSensitiveHelp">No incluyas documentos, información financiera, números de documento ni otros datos sensibles.</p>
-            <label class="booking-consent"><input name="consent" type="checkbox" required> Consiento que estos datos se usen únicamente para coordinar esta consulta.</label>
-            <div id="turnstileWidget" data-turnstile-site-key="0x4AAAAAAEDu4f9hBOnYHyXW" aria-live="polite"></div>
-            <p class="booking-status" id="bookingStatus" role="status" aria-live="polite"></p>
-            <button
-              class="btn btn-secondary booking-fallback-whatsapp"
-              id="bookingFallbackWhatsapp"
-              type="button"
-              hidden
-            >Reservar por WhatsApp</button>
-            <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Confirmar reserva</button>
+            <div class="booking-actions">
+              <p class="booking-status" id="bookingStatus" role="status" aria-live="polite"></p>
+              <button
+                class="btn btn-secondary booking-fallback-whatsapp"
+                id="bookingFallbackWhatsapp"
+                type="button"
+                hidden
+              >Reservar por WhatsApp</button>
+              <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Confirmar reserva</button>
+            </div>
           </form>
         </div>
       </div>
