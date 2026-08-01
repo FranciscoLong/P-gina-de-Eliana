@@ -63,7 +63,11 @@ function validateSignedRequest_(envelope, payloadJson) {
   if (!timestamp || !nonce || !signature || Math.abs(Date.now() - Number(timestamp)) > 300000) throw statusError_(403, "Solicitud vencida.");
   var cache = CacheService.getScriptCache(); if (cache.get("nonce:" + nonce)) throw statusError_(403, "Solicitud repetida.");
   var body = String(envelope.action) + "." + String(timestamp) + "." + nonce + "." + payloadJson;
-  var expected = bytesToHex_(Utilities.computeHmacSha256Signature(body, requiredProperty_("APPS_SCRIPT_SHARED_SECRET")));
+  var secret = requiredProperty_("APPS_SCRIPT_SHARED_SECRET");
+  var expected = bytesToHex_(Utilities.computeHmacSha256Signature(
+    Utilities.newBlob(body).getBytes(),
+    Utilities.newBlob(secret).getBytes()
+  ));
   if (!safeEqual_(expected, signature)) throw statusError_(403, "Firma inválida."); cache.put("nonce:" + nonce, "1", 300);
 }
 
