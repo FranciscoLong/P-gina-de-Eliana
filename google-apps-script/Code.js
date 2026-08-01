@@ -18,11 +18,13 @@ function doPost(e) {
 function availability_(request) {
   validateService_(request.serviceCode); validateRange_(request.from, request.to);
   var days = [], from = dateFromYmd_(request.from), to = dateFromYmd_(request.to);
+  var rangeEnd = Utilities.formatDate(addDays_(to, 1), BOOKING_TIME_ZONE, "yyyy-MM-dd") + "T00:00:00-03:00";
+  var blockingEvents = eventsBetween_(request.from + "T00:00:00-03:00", rangeEnd);
   for (var day = from; day <= to; day = addDays_(day, 1)) {
     var date = Utilities.formatDate(day, BOOKING_TIME_ZONE, "yyyy-MM-dd");
     if (!isBookableDate_(date)) continue;
     var slots = slotsForDate_(date).map(function (slot) {
-      var unavailable = new Date(slot.start) <= new Date() || overlapsAny_(slot.start, slot.end);
+      var unavailable = new Date(slot.start) <= new Date() || overlapsEvents_(slot.start, slot.end, blockingEvents);
       return { start: slot.start, end: slot.end, status: unavailable ? "unavailable" : "available" };
     });
     days.push({ date: date, slots: slots });
@@ -63,7 +65,9 @@ function validateSignedRequest_(envelope, payload) {
   if (!safeEqual_(expected, signature)) throw statusError_(403, "Firma inválida."); cache.put("nonce:" + nonce, "1", 300);
 }
 
-function overlapsAny_(start, end) { return calendarIds_().some(function (id) { return CalendarApp.getCalendarById(id).getEvents(new Date(start), new Date(end)).some(function (event) { return event.getStartTime() < new Date(end) && event.getEndTime() > new Date(start); }); }); }
+function eventsBetween_(start, end) { return calendarIds_().reduce(function (events, id) { return events.concat(CalendarApp.getCalendarById(id).getEvents(new Date(start), new Date(end)).map(function (event) { return { start: event.getStartTime(), end: event.getEndTime() }; })); }, []); }
+function overlapsEvents_(start, end, events) { var slotStart = new Date(start), slotEnd = new Date(end); return events.some(function (event) { return event.start < slotEnd && event.end > slotStart; }); }
+function overlapsAny_(start, end) { return overlapsEvents_(start, end, eventsBetween_(start, end)); }
 function calendarIds_() { return [requiredProperty_("BOOKING_CALENDAR_ID")].concat((getProperty_("BOOKING_BLOCKING_CALENDAR_IDS") || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean)); }
 function slotsForDate_(date) { var duration = durationMinutes_(), slots = []; OPENING_WINDOWS.forEach(function (window) { var current = minutes_(window[0]), last = minutes_(window[1]); for (; current + duration <= last; current += duration) { var time = pad_(Math.floor(current / 60)) + ":" + pad_(current % 60); var end = current + duration; slots.push({ start: date + "T" + time + ":00-03:00", end: date + "T" + pad_(Math.floor(end / 60)) + ":" + pad_(end % 60) + ":00-03:00" }); } }); return slots; }
 function validateBooking_(r) { validateService_(r.serviceCode); if (!r.name || r.name.length > 120 || !r.email || r.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email) || !r.phone || r.phone.length > 40 || !r.details || r.details.length > 400 || r.consent !== true || !/^[A-Za-z0-9_-]{16,128}$/.test(r.idempotencyKey || "")) throw statusError_(400, "Datos de reserva inválidos."); if (!isBookableDate_(r.start.slice(0, 10)) || new Date(r.start) <= new Date() || !slotsForDate_(r.start.slice(0, 10)).some(function (slot) { return slot.start === r.start; })) throw statusError_(400, "Horario inválido o ya transcurrido."); }
