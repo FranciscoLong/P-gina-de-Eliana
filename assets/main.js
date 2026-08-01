@@ -22,6 +22,7 @@ const bookingDates = document.getElementById("bookingDates");
 const bookingSlots = document.getElementById("bookingSlots");
 const bookingStatus = document.getElementById("bookingStatus");
 const bookingSubmit = document.getElementById("bookingSubmit");
+const bookingDone = document.getElementById("bookingDone");
 const bookingFallbackWhatsapp = document.getElementById("bookingFallbackWhatsapp");
 const turnstileWidget = document.getElementById("turnstileWidget");
 const bookingName = bookingForm.elements.name;
@@ -317,13 +318,34 @@ function syncSuggestedDetails(force = false) {
   generatedDetails = nextSuggestion;
 }
 
+/*
+  Con la reserva ya confirmada el formulario queda vacío y el botón de confirmar
+  no tiene nada que hacer: se reemplaza por uno de cerrar, así no parece que
+  falta un paso. Vuelve atrás en cuanto el usuario empieza otra reserva.
+*/
+function setBookingCompleted(completed) {
+  bookingSubmit.hidden = completed;
+  bookingDone.hidden = !completed;
+}
+
 function resetBookingAttempt() {
   sessionStorage.removeItem("bookingAttemptId");
+  setBookingCompleted(false);
+}
+
+/*
+  El botón solo se habilita con la reserva entera lista: fecha, horario, los
+  datos de contacto, el consentimiento y la verificación. checkValidity() cubre
+  los campos required del formulario y no muestra mensajes, así que puede
+  llamarse en cada tecla.
+*/
+function updateSubmitState() {
+  bookingSubmit.disabled = !selectedSlot || !turnstileToken || !bookingForm.checkValidity();
 }
 
 function resetTurnstile() {
   turnstileToken = "";
-  bookingSubmit.disabled = true;
+  updateSubmitState();
   if (window.turnstile && turnstileWidgetId !== null) {
     window.turnstile.reset(turnstileWidgetId);
   }
@@ -331,7 +353,8 @@ function resetTurnstile() {
 
 async function loadAvailability() {
   selectedSlot = null;
-  bookingSubmit.disabled = true;
+  setBookingCompleted(false);
+  updateSubmitState();
   setBookingStatus("Cargando disponibilidad…");
   const from = ymd(new Date());
   const to = addDaysToYmd(from, 45);
@@ -345,7 +368,7 @@ async function loadAvailability() {
       throw new Error(data?.error || "La agenda no respondió correctamente.");
     }
     availability = data;
-    renderDates();
+    renderDates(true);
     setBookingStatus("Elegí una fecha y un horario disponibles.");
   } catch (error) {
     availability = null;
@@ -374,9 +397,11 @@ const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("es-UY", {
 });
 
 /*
-  Las fechas se desplazan en horizontal, así que el día elegido puede quedar
-  fuera de la vista. Se centra moviendo solo esa fila, sin scrollIntoView, para
-  no arrastrar el resto del formulario.
+  Las fechas se desplazan en horizontal, así que la que viene elegida de entrada
+  puede quedar fuera de la vista. Se centra moviendo solo esa fila, sin
+  scrollIntoView, para no arrastrar el resto del formulario. Nunca se centra
+  después de un toque: mover la fila bajo el dedo hace que el usuario crea que
+  se seleccionó el día de al lado.
 */
 function centerSelectedDate() {
   const selected = bookingDates.querySelector(".booking-date.is-selected");
@@ -386,7 +411,7 @@ function centerSelectedDate() {
   bookingDates.scrollLeft = selected.offsetLeft - (bookingDates.clientWidth - selected.offsetWidth) / 2;
 }
 
-function renderDates() {
+function renderDates(centerSelection = false) {
   const days = availability?.days || [];
   const storedDate = sessionStorage.getItem("bookingDate");
   selectedDate = days.some((day) => day.date === selectedDate)
@@ -404,15 +429,19 @@ function renderDates() {
     const isSelected = day.date === selectedDate;
     return `<button type="button" class="booking-date${isSelected ? " is-selected" : ""}" data-date="${day.date}" aria-pressed="${isSelected}" aria-label="${DATE_LABEL_FORMATTER.format(date)}"><span class="booking-date-weekday">${trimDot(parts.weekday)}</span><span class="booking-date-day">${parts.day}</span><span class="booking-date-month">${trimDot(parts.month)}</span></button>`;
   }).join("");
-  centerSelectedDate();
+  if (centerSelection) {
+    centerSelectedDate();
+  }
   bookingDates.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => {
+    const keepScroll = bookingDates.scrollLeft;
     selectedDate = button.dataset.date;
     selectedSlot = null;
     sessionStorage.setItem("bookingDate", selectedDate);
     sessionStorage.removeItem("bookingStart");
     resetBookingAttempt();
-    bookingSubmit.disabled = true;
+    updateSubmitState();
     renderDates();
+    bookingDates.scrollLeft = keepScroll;
   }));
   renderSlots();
 }
@@ -440,7 +469,7 @@ function renderSlots() {
       selectedSlot = button.dataset.slot;
       sessionStorage.setItem("bookingDate", selectedDate);
       sessionStorage.setItem("bookingStart", selectedSlot);
-      bookingSubmit.disabled = !turnstileToken;
+      updateSubmitState();
       renderSlots();
       if (turnstileWidgetId === null) {
         setBookingStatus(
@@ -449,11 +478,16 @@ function renderSlots() {
           true
         );
       } else {
-        setBookingStatus(`Horario seleccionado: ${selectedSlot.slice(0, 10)} a las ${selectedSlot.slice(11, 16)}.`);
+        // Si todavía faltan datos conviene decirlo: el botón queda gris y no se ve por qué.
+        const faltanDatos = !bookingForm.checkValidity();
+        setBookingStatus(
+          `Horario seleccionado: ${selectedSlot.slice(0, 10)} a las ${selectedSlot.slice(11, 16)}.` +
+            (faltanDatos ? " Completá tus datos para confirmar." : "")
+        );
       }
     });
   });
-  bookingSubmit.disabled = !selectedSlot || !turnstileToken;
+  updateSubmitState();
 }
 
 function setupTurnstile() {
@@ -474,18 +508,21 @@ function setupTurnstile() {
     action: "booking",
     callback: (token) => {
       turnstileToken = token;
-      bookingSubmit.disabled = !selectedSlot;
+      updateSubmitState();
     },
     "expired-callback": () => {
       turnstileToken = "";
-      bookingSubmit.disabled = true;
+      updateSubmitState();
       setBookingStatus("La verificación venció. Completala nuevamente.", true);
     }
   });
 }
 
 bookingName.addEventListener("input", () => syncSuggestedDetails());
-bookingForm.addEventListener("input", resetBookingAttempt);
+bookingForm.addEventListener("input", () => {
+  resetBookingAttempt();
+  updateSubmitState();
+});
 
 bookingService.addEventListener("change", () => {
   const nextService = Object.entries(SERVICE_CODES)
@@ -554,6 +591,9 @@ bookingForm.addEventListener("submit", async (event) => {
     selectedSlot = null;
     resetTurnstile();
     setBookingStatus("Tu reserva quedó confirmada. Recibirás la invitación por correo.");
+    renderSlots(); // El horario reservado ya no debe quedar marcado como elegido.
+    setBookingCompleted(true);
+    bookingDone.focus();
   } catch (error) {
     resetTurnstile();
     setBookingStatus(
@@ -586,6 +626,8 @@ function openBookingWhatsApp() {
     showToast("No se pudo abrir WhatsApp. Escribinos al +598 91 048 471.");
   }
 }
+
+bookingDone.addEventListener("click", closeBookingDialog);
 
 whatsappChoice.addEventListener("click", openBookingWhatsApp);
 bookingFallbackWhatsapp.addEventListener("click", openBookingWhatsApp);

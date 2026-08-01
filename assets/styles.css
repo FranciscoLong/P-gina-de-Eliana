@@ -797,7 +797,6 @@ p {
   padding-bottom: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  scroll-snap-type: x proximity;
   scrollbar-width: thin;
   overscroll-behavior-x: contain;
 }
@@ -814,7 +813,8 @@ p {
   background: var(--white);
   color: var(--green-950);
   font: inherit;
-  scroll-snap-align: center;
+  /* Evita el retardo de 300ms del doble toque al elegir un día en el teléfono. */
+  touch-action: manipulation;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
@@ -928,7 +928,20 @@ p {
 }
 
 .booking-fallback-whatsapp { width: 100%; justify-content: center; }
-.booking-fallback-whatsapp[hidden] { display: none; }
+
+/*
+  Mientras falte algo (fecha, horario, datos, consentimiento o verificación) el
+  botón no debe verse como una acción disponible: en verde parecía habilitado.
+*/
+.booking-actions .btn:disabled {
+  border-color: var(--gray-200);
+  background: var(--gray-100);
+  color: var(--gray-500);
+  cursor: not-allowed;
+}
+
+/* .btn es inline-flex, así que el atributo hidden por sí solo no lo oculta. */
+.booking-actions .btn[hidden] { display: none; }
 
 body.modal-open {
   overflow: hidden;
