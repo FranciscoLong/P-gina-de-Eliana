@@ -9,6 +9,12 @@
   root.ServiceMessages = serviceMessages;
 })(typeof globalThis !== "undefined" ? globalThis : this, () => {
   const DEFAULT_SERVICE = "Consulta notarial";
+  const SERVICE_CONSULTATION_PHRASES = {
+    "Carta Poder": "consultar por una carta poder de un automotor",
+    "Compromiso de compraventa": "consultar por un compromiso de compraventa de un automotor",
+    Prenda: "consultar por una prenda de automotor",
+    "Título automotor": "consultar por un título automotor"
+  };
 
   function normalizeService(service) {
     if (typeof service !== "string" || !service.trim()) {
@@ -23,6 +29,10 @@
 
     if (normalizedService === DEFAULT_SERVICE) {
       return "hacer una consulta notarial";
+    }
+
+    if (SERVICE_CONSULTATION_PHRASES[normalizedService]) {
+      return SERVICE_CONSULTATION_PHRASES[normalizedService];
     }
 
     return `consultar por ${normalizedService}`;

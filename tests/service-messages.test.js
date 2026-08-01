@@ -14,8 +14,29 @@ test("redacta naturalmente una consulta notarial general", () => {
   );
 });
 
-test("conserva exactamente un servicio singular", () => {
-  assert.equal(buildConsultationPhrase("Carta Poder"), "consultar por Carta Poder");
+test("agrega el contexto de automotor a una carta poder", () => {
+  assert.equal(
+    buildConsultationPhrase("Carta Poder"),
+    "consultar por una carta poder de un automotor"
+  );
+});
+
+test("agrega el contexto de automotor a un compromiso de compraventa", () => {
+  assert.equal(
+    buildConsultationPhrase("Compromiso de compraventa"),
+    "consultar por un compromiso de compraventa de un automotor"
+  );
+});
+
+test("agrega el contexto de automotor a una prenda", () => {
+  assert.equal(buildConsultationPhrase("Prenda"), "consultar por una prenda de automotor");
+});
+
+test("agrega el artículo a un título automotor", () => {
+  assert.equal(
+    buildConsultationPhrase("Título automotor"),
+    "consultar por un título automotor"
+  );
 });
 
 test("conserva exactamente un servicio plural", () => {
