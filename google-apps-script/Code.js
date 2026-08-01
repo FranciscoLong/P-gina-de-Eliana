@@ -6,9 +6,11 @@ var HORIZON_DAYS = 45;
 
 function doPost(e) {
   try {
-    var envelope = JSON.parse(e.postData.contents || "{}"), request = envelope.payload || {};
+    var envelope = JSON.parse(e.postData.contents || "{}");
+    var payloadJson = typeof envelope.payloadJson === "string" ? envelope.payloadJson : JSON.stringify(envelope.payload || {});
+    var request = JSON.parse(payloadJson);
     var action = envelope.action;
-    validateSignedRequest_(envelope, request);
+    validateSignedRequest_(envelope, payloadJson);
     if (action === "availability") return json_({ ok: true, data: availability_(request) });
     if (action === "booking") return json_(book_(request));
     return json_({ ok: false, status: 400, message: "Acción inválida." });
@@ -56,11 +58,11 @@ function book_(request) {
   } finally { lock.releaseLock(); }
 }
 
-function validateSignedRequest_(envelope, payload) {
+function validateSignedRequest_(envelope, payloadJson) {
   var timestamp = envelope.timestamp, nonce = envelope.nonce, signature = envelope.signature;
   if (!timestamp || !nonce || !signature || Math.abs(Date.now() - Number(timestamp)) > 300000) throw statusError_(403, "Solicitud vencida.");
   var cache = CacheService.getScriptCache(); if (cache.get("nonce:" + nonce)) throw statusError_(403, "Solicitud repetida.");
-  var body = String(envelope.action) + "." + String(timestamp) + "." + nonce + "." + JSON.stringify(payload);
+  var body = String(envelope.action) + "." + String(timestamp) + "." + nonce + "." + payloadJson;
   var expected = bytesToHex_(Utilities.computeHmacSha256Signature(body, requiredProperty_("APPS_SCRIPT_SHARED_SECRET")));
   if (!safeEqual_(expected, signature)) throw statusError_(403, "Firma inválida."); cache.put("nonce:" + nonce, "1", 300);
 }

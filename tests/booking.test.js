@@ -75,3 +75,14 @@ test("la firma HMAC cubre acción, timestamp, nonce y payload", () => {
   assert.notEqual(signature, signEnvelope("booking", payload, "secret", "1", "nonce"));
   assert.notEqual(signature, signEnvelope("availability", payload, "secret", "2", "nonce"));
 });
+
+test("firma los mismos bytes cuando el payload contiene acentos", () => {
+  const payload = {
+    name: "Prueba técnica",
+    details: "Consulta por una cesión y documentación societaria."
+  };
+  assert.equal(
+    signEnvelope("booking", payload, "secret", "1", "nonce"),
+    signEnvelope("booking", JSON.stringify(payload), "secret", "1", "nonce")
+  );
+});
