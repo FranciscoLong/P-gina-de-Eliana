@@ -36,6 +36,11 @@ module.exports = async (req, res) => {
     const result = await callAppsScript("booking", checked.value);
     return send(res, result.created ? 201 : 200, result.data);
   } catch (error) {
+    console.error("Apps Script booking failed", {
+      status: error.status,
+      code: error.code,
+      message: error.message
+    });
     const status = error.status === 409
       ? 409
       : error.code === "NOT_CONFIGURED"
