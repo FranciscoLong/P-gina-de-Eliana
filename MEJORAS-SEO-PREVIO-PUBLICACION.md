@@ -1,260 +1,416 @@
-# Mejoras SEO previas a la publicación
+# Estado SEO y sugerencias de mejora posteriores a la publicación
 
 ## Objetivo
 
-Dejar lista la web de la escribana Eliana Isbarbo Gfeller para publicarla en:
+Este documento reúne el estado SEO verificado del sitio oficial de la escribana
+Eliana Isbarbo Gfeller y ordena las mejoras recomendadas después de su
+publicación.
+
+Sitio oficial y URL canónica elegida:
 
 `https://www.escribaniaisbarbo.com.uy/`
 
-Este documento registra los hallazgos y las tareas recomendadas para no depender
-del historial de conversaciones.
+Fecha de la revisión: 31 de julio de 2026.
 
-## Estado actual
+## Alcance y decisiones confirmadas
 
-La página ya cuenta con una base SEO correcta:
+Estas decisiones son parte del criterio del proyecto y no deben reinterpretarse
+como errores SEO:
+
+1. **El sitio oficial es la fuente correcta para horarios y datos de contacto.**
+   El horario oficial es de lunes a viernes, de 9:30 a 12:30 y de 15:00 a
+   19:00. Si un directorio externo informa otra cosa, debe actualizarse el
+   directorio; no debe cambiarse el sitio para coincidir con información
+   incorrecta.
+2. **El Perfil de Empresa de Google ya muestra el horario oficial correcto.**
+   Coincide con el sitio: lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00.
+   No corresponde modificar ese horario en Google; deben corregirse los otros
+   directorios que publican información diferente.
+3. **Las preguntas frecuentes se mantienen.** Representan dudas reales de las
+   personas antes de una consulta. La mejora consiste en hacer coincidir el
+   contenido visible con los datos estructurados, no en eliminar preguntas
+   útiles.
+4. **El asesoramiento es personal.** Cualquier contenido futuro sobre servicios
+   o trámites debe ser informativo y general. No debe diagnosticar situaciones
+   particulares ni sustituir el análisis directo de la escribana.
+5. **El calendario todavía no está conectado.** Es una funcionalidad pendiente
+   conocida y queda fuera de esta auditoría SEO.
+6. **Rosario se mantiene como la única ubicación oficial publicada.** En
+   Tarariras existe una oficina de apoyo con dirección fija y secretaria, pero
+   no es la sede central y su cartel corresponde a la inmobiliaria. Por el
+   momento no debe presentarse como una segunda escribanía ni crearse otra ficha
+   de Google. Tarariras y las demás localidades donde exista una prestación real
+   se comunicarán como zona de atención coordinada dentro del departamento de
+   Colonia.
+
+## Estado actual verificado
+
+La página cuenta con una base SEO correcta:
 
 - Idioma `es-UY`.
-- Un único `h1`.
-- Título y descripción.
-- URL canónica configurada para el dominio definitivo.
+- Un único `h1` con el nombre y la profesión.
+- Título relevante y descripción presentes.
+- Contenido principal disponible en HTML sin depender de JavaScript.
+- URL canónica absoluta.
+- `meta robots` permite indexar y seguir enlaces.
 - Estructura semántica con encabezados, secciones y artículos.
-- Datos estructurados `LegalService`.
-- Preguntas frecuentes visibles y marcadas con `FAQPage`.
-- Dirección, teléfono, correo, horarios y mapa.
-- Diseño responsive sin desbordamiento horizontal en un ancho móvil de 390 px.
+- Datos estructurados `LegalService` sintácticamente válidos.
+- Preguntas frecuentes visibles.
+- Nombre, dirección, teléfono, correo y horario coherentes dentro del sitio.
+- Imágenes con texto alternativo, ancho y alto declarados.
+- Imagen social Open Graph de 1200 por 630 px accesible en producción.
+- Imagen principal precargada, JavaScript con `defer`, retrato y mapa con carga
+  diferida.
+- HTTPS activo y recursos principales accesibles.
+- La versión publicada coincide con los archivos revisados del repositorio.
 
-## Prioridad 1: contenido e imágenes definitivas
+## Prioridad 1: descubrimiento e indexación
 
-### Reemplazar recursos provisorios
+### Crear `robots.txt` y `sitemap.xml`
 
-- [x] Reemplazar el logo placeholder por el logo definitivo optimizado en
-      `assets/logo-isbarbo-gfeller.webp`.
-- [x] Actualizar el favicon y el icono para dispositivos Apple para que sean
-      coherentes con el logo definitivo.
-- [x] Reemplazar la fotografía provisoria de Eliana por la imagen cuyo nombre
-      identifica a `Eliana`.
-- [x] Reemplazar todas las fotografías externas de Unsplash por fotografías
-      reales de la oficina.
-- [x] Eliminar del contenido y de los textos alternativos todas las menciones a
-      “imagen provisoria”, “fotografía provisoria” o similares.
+En la revisión, ambos archivos respondían con código 404.
 
-### Criterio de optimización de imágenes
+La ausencia de `robots.txt` no bloquea el rastreo, porque Google interpreta ese
+404 como ausencia de restricciones. Aun así, conviene crearlo para declarar el
+sitemap.
 
-Los archivos originales deben conservarse sin modificaciones fuera de
-`assets/`. La web debe utilizar copias optimizadas.
+El sitemap debe contener únicamente la URL canónica:
 
-Objetivo por imagen:
+`https://www.escribaniaisbarbo.com.uy/`
 
-- Formato recomendado: WebP.
-- Peso ideal: entre 150 KB y 300 KB.
-- Lado mayor recomendado: entre 1.400 y 1.800 px para fotografías generales.
-- Calidad inicial WebP: 78–82, ajustándola hasta alcanzar el peso objetivo.
-- Mantener la relación de aspecto original; no deformar las imágenes.
-- Eliminar metadatos EXIF de las copias web.
-- Declarar `width` y `height` en el HTML.
-- Mantener `loading="lazy"` en las imágenes que no aparecen en la primera
-  pantalla.
-- No aplicar `loading="lazy"` a la imagen principal de portada.
+Acciones:
 
-Archivos seleccionados:
+- [ ] Crear `robots.txt` permitiendo el rastreo y declarando el sitemap.
+- [ ] Crear `sitemap.xml` con la URL canónica.
+- [ ] Verificar el dominio en Google Search Console.
+- [ ] Enviar el sitemap desde Search Console.
+- [ ] Inspeccionar la portada y solicitar su indexación.
+- [ ] Revisar posteriormente qué URL eligió Google como canónica.
 
-| Contenido | Archivo web |
-| --- | --- |
-| Retrato de Eliana | `assets/eliana-isbarbo-gfeller.webp` |
-| Frente de la oficina | `assets/oficina-frente.webp` |
-| Oficina principal | `assets/oficina-eliana.webp` |
-| Espacio de consultas | `assets/oficina-consultas.webp` |
-| Recepción | `assets/recepcion.webp` |
-| Esquina usada en la portada | `assets/esquina-escribania.webp` |
+Una búsqueda `site:escribaniaisbarbo.com.uy` no mostró todavía el sitio durante
+la auditoría. Esto es solo un indicio y puede ser normal para un dominio recién
+publicado; Search Console será la fuente confiable para confirmar el estado.
 
-### Implementación de imágenes completada
+### Consolidar las variantes del dominio
 
-Las fotografías reales fueron inspeccionadas, convertidas desde sus originales
-HEIF y publicadas como WebP. Los originales permanecen sin modificaciones.
+Durante la revisión, estas direcciones servían la misma página:
 
-| Archivo utilizado por la web | Dimensiones | Peso |
-| --- | ---: | ---: |
-| `assets/eliana-isbarbo-gfeller.webp` | 1350 × 1800 px | 251 KB |
-| `assets/oficina-eliana.webp` | 1800 × 1350 px | 281 KB |
-| `assets/oficina-consultas.webp` | 1800 × 1350 px | 294 KB |
-| `assets/recepcion.webp` | 1350 × 1800 px | 204 KB |
-| `assets/esquina-escribania.webp` | 1800 × 1350 px | 230 KB |
-| `assets/oficina-frente.webp` | 1600 × 1200 px | 232 KB |
+- `https://escribaniaisbarbo.com.uy/`
+- `https://www.escribaniaisbarbo.com.uy/`
+- La dirección pública del proyecto en Vercel.
 
-La página ya no depende de imágenes externas de Unsplash. La portada y la
-galería también utilizan las versiones WebP optimizadas de las fotografías que
-ya estaban en el proyecto.
+El HTML declara `www` como canónica, pero el dominio sin `www` también respondía
+con código 200.
 
-El logo definitivo también fue recortado para retirar el margen blanco
-innecesario y generar recursos adecuados para cada uso:
+Acciones:
 
-| Archivo | Dimensiones | Peso | Uso |
-| --- | ---: | ---: | --- |
-| `assets/logo-isbarbo-gfeller.webp` | 800 × 800 px | 13 KB | Encabezado, portada y datos estructurados |
-| `assets/favicon.png` | 192 × 192 px | 29 KB | Favicon y dispositivos Apple |
+- [ ] Mantener `www` como versión canónica en HTML, Open Graph y JSON-LD.
+- [ ] Configurar una redirección permanente 308 desde el dominio sin `www` hacia
+  `www`.
+- [ ] Confirmar que la redirección conserva la ruta y los parámetros.
+- [ ] Repetir la prueba desde distintas redes después de finalizar la propagación
+  DNS.
 
-### Imagen para WhatsApp y redes sociales
+Los DNS públicos de Google y Cloudflare ya respondían con la configuración de
+Vercel. Durante la revisión, un resolvedor local todavía conservaba una IP
+anterior para `www`, por lo que conviene verificar nuevamente después de que
+expiren las cachés. No se recomienda cambiar la configuración basándose
+solamente en ese caché local.
 
-La imagen `assets/og-isbarbo-gfeller.jpg` utiliza la identidad visual real de la
-escribanía. Está preparada en formato JPG de 1200 × 630 px y se utiliza tanto
-en `og:image` como en los datos estructurados del negocio.
+## Prioridad 2: SEO local y fuentes externas
 
-- [ ] Comprobar que la URL declarada en `og:image` responda correctamente
-      después de publicar.
+### Mantener los datos oficiales
 
-## Prioridad 2: SEO local
-
-### Perfil de Empresa en Google
-
-- [ ] Reclamar o verificar el Perfil de Empresa.
-- [ ] Elegir la categoría principal más específica disponible para escribanía o
-      servicio notarial.
-- [ ] Cargar el dominio definitivo.
-- [ ] Añadir fotografías reales del frente, interior y profesional.
-- [ ] Mantener dirección, teléfono y horario actualizados.
-- [ ] Solicitar reseñas legítimas a clientes y responderlas.
-
-### Consistencia de datos
-
-El nombre, dirección, teléfono y horario deben coincidir exactamente en:
-
-- La página web.
-- Google Maps y Perfil de Empresa.
-- Directorios locales.
-- Redes sociales profesionales.
-
-Datos declarados actualmente en la web:
+Datos que deben utilizar Google y los directorios:
 
 - Nombre: Eliana Isbarbo Gfeller.
-- Profesión: Escribana Pública.
+- Profesión principal: Escribana Pública.
 - Dirección: Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay.
-- Teléfono: +598 91 048 471.
+- Teléfono y WhatsApp: +598 91 048 471.
 - Correo: esc.isbarbo@gmail.com.
 - Horario: lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00.
 
-Antes de publicar se debe confirmar que estos datos sean los definitivos. Hay
-directorios externos que muestran horarios distintos; si están desactualizados,
-conviene solicitar su corrección.
+Acciones:
 
-## Prioridad 3: metadatos y contenido
+- [x] Confirmar que el horario del Perfil de Empresa de Google coincide con el
+  sitio oficial.
+- [ ] Verificar que los demás datos de Google —categoría, dirección, teléfono,
+  sitio web y fotografías— también estén completos y actualizados.
+- [ ] Usar la categoría principal más específica disponible para escribanía o
+  servicio notarial.
+- [ ] Mantener un único Perfil de Empresa, correspondiente a la sede oficial de
+  Rosario; no crear una segunda ficha ni publicar una segunda dirección para
+  Tarariras mientras funcione como oficina de apoyo.
+- [ ] Configurar en el perfil las zonas de servicio reales del departamento de
+  Colonia, incluyendo Tarariras y otras localidades donde efectivamente se
+  trabaje, sin modificar el nombre comercial con palabras clave.
+- [ ] Completar en Google la lista de servicios notariales reales para reforzar
+  la relevancia del perfil ante búsquedas relacionadas.
+- [ ] Sustituir el enlace genérico de Maps por el Perfil de Empresa oficial
+  cuando esté verificado.
+- [ ] Solicitar en Guía 1122 la actualización del horario.
+- [ ] Solicitar la corrección o eliminación de directorios que clasifiquen la
+  escribanía como agencia inmobiliaria si esa clasificación es incorrecta.
+- [ ] Mantener los mismos datos en todos los perfiles profesionales legítimos.
+- [ ] Solicitar reseñas reales a clientes, sin incentivos ni textos preparados,
+  y responderlas profesionalmente.
 
-### Encabezado principal
+Google y el sitio oficial ya coinciden en el horario. Las discrepancias de los
+otros directorios no justifican modificar los datos correctos del sitio ni del
+Perfil de Empresa de Google.
 
-El `h1` actual contiene solamente el nombre. Se recomienda cambiarlo por:
+### Posicionar la atención en el departamento de Colonia sin declarar otra sede
 
-> Eliana Isbarbo Gfeller, escribana pública en Rosario
+El objetivo es que Google pueda considerar a la escribanía para búsquedas como
+`escribanos en Colonia`, `escribanos en el departamento de Colonia` o
+`escribanos en la zona`, manteniendo Rosario como única ubicación oficial.
 
-Puede mantenerse el diseño visual actual, distribuyendo el nombre y la
-profesión en elementos internos si fuera necesario.
+Tarariras es una zona de trabajo real: existe una oficina de apoyo con secretaria
+y allí se coordinan actuaciones con frecuencia. Sin embargo, no debe comunicarse
+como una segunda sede de la escribanía porque no es la oficina central y el
+cartel exterior pertenece a la inmobiliaria.
 
-### Meta description
+Sugerencias:
 
-La descripción actual tiene 178 caracteres y puede truncarse. Texto sugerido:
+- [ ] Sustituir la frase `contamos con escritorio en la ciudad de Tarariras` por
+  una redacción que describa el servicio sin afirmar que existe otra sede.
+- [ ] Utilizar en la página un texto como:
 
-> Escribana pública en Rosario, Colonia. Asesoramiento en compraventas, automotores, sucesiones, arrendamientos y certificaciones. Coordiná tu consulta.
+  > Atención notarial en Rosario y actuaciones coordinadas en Tarariras y otras
+  > localidades del departamento de Colonia, según el trámite y la
+  > disponibilidad.
 
-Este texto tiene aproximadamente 150 caracteres.
+- [ ] Mantener en el pie, contacto, mapa y datos estructurados únicamente la
+  dirección oficial de Rosario.
+- [ ] No publicar para Tarariras una dirección, horario, mapa, datos
+  estructurados `LocalBusiness` ni un segundo Perfil de Empresa de Google.
+- [ ] Mencionar el departamento de Colonia de forma natural en el título, la
+  introducción, la sección de contacto y el texto sobre zonas de atención.
+- [ ] Incluir en `areaServed` el departamento de Colonia y solo las localidades
+  donde exista una prestación real, dando prioridad a Rosario y Tarariras.
+- [ ] Revisar periódicamente en Search Console las consultas e impresiones para
+  Rosario, Tarariras y Colonia antes de crear contenido adicional.
 
-### Título
+No se evalúa en este documento si la oficina de apoyo debe declararse ante BPS.
+Esa situación administrativa debe confirmarse por la vía profesional
+correspondiente antes de presentarla públicamente como una sede o sucursal.
 
-El título actual es correcto y puede mantenerse:
+Esta estrategia mejora la relevancia geográfica, pero no garantiza una posición
+determinada. Google combina relevancia, distancia y notoriedad, por lo que una
+persona físicamente alejada de Rosario puede recibir antes otros resultados.
 
-> Escribana Eliana Isbarbo Gfeller | Rosario, Colonia
+## Prioridad 3: datos estructurados
 
-### Contenido de servicios
+### Conservar y sincronizar las preguntas frecuentes
 
-La landing es suficiente para el lanzamiento. En una segunda etapa, si existe
-demanda real, se pueden crear páginas individuales para los servicios
-principales:
+El bloque JSON-LD declara ocho preguntas, mientras que la sección visible
+muestra seis. Algunas respuestas también tienen diferencias de redacción.
+
+Las preguntas frecuentes deben mantenerse porque reflejan dudas reales. Para
+que el marcado represente fielmente la página:
+
+- [ ] Mostrar en la sección visible todas las preguntas reales incluidas en el
+  JSON-LD, incluidas las de confirmación del turno y atención en el mismo día, si
+  siguen vigentes.
+- [ ] Usar exactamente la misma pregunta y respuesta en el HTML y en el JSON-LD.
+- [ ] Revisar ambos bloques juntos cada vez que se modifique una respuesta.
+- [ ] Mantener respuestas generales y derivar los casos particulares a una
+  consulta personal.
+
+Google dejó de mostrar resultados enriquecidos de tipo FAQ en mayo de 2026. Por
+eso, este marcado ya no debe considerarse una mejora visual en Google. Puede
+mantenerse por consistencia semántica y compatibilidad con otros sistemas,
+siempre que coincida con el contenido visible.
+
+### Unificar la descripción profesional
+
+Actualmente el JSON-LD utiliza `Escribana pública y procuradora`, mientras que
+la biografía visible destaca `Escribana y Rematadora`.
+
+Acciones:
+
+- [ ] Confirmar cuáles son los títulos profesionales que deben comunicarse.
+- [ ] Utilizar la misma descripción profesional en el contenido visible y en el
+  JSON-LD.
+- [ ] No incluir títulos o afiliaciones que no puedan verificarse.
+
+### Completar `LegalService` con información verificada
+
+Campos recomendados:
+
+- [ ] `@id` estable, por ejemplo
+  `https://www.escribaniaisbarbo.com.uy/#escribania`.
+- [ ] `postalCode`.
+- [ ] `geo.latitude` y `geo.longitude`.
+- [ ] `hasMap` con el Perfil de Empresa oficial.
+- [ ] `sameAs` con perfiles oficiales y verificables.
+- [ ] Revisar `areaServed`: priorizar `Departamento de Colonia`, Rosario,
+  Tarariras y las demás localidades donde exista una prestación real; retirar
+  zonas lejanas que no formen parte de la atención habitual.
+
+No se deben completar propiedades con datos aproximados o no confirmados.
+
+## Prioridad 4: contenido de la portada
+
+### Reforzar Rosario y el departamento de Colonia en la portada
+
+El `h1` puede conservar el nombre y la profesión, dejando claro en el texto
+inmediato que la sede está en Rosario y que se coordinan actuaciones en el resto
+del departamento.
+
+Título recomendado para buscadores:
+
+> Escribana en Rosario y departamento de Colonia | Eliana Isbarbo Gfeller
+
+Texto introductorio sugerido:
+
+> Escribana pública con oficina en Rosario. Atención notarial y actuaciones
+> coordinadas en Tarariras y otras localidades del departamento de Colonia.
+
+La ubicación oficial debe seguir siendo Rosario. El departamento y Tarariras se
+mencionan para explicar la cobertura real del servicio, no para simular sedes
+adicionales.
+
+### Acortar la descripción para buscadores
+
+La descripción actual tiene aproximadamente 178 caracteres y puede truncarse.
+
+Texto sugerido:
+
+> Escribana pública en Rosario, Colonia. Asesoramiento en automotores, inmuebles, sucesiones, arrendamientos y certificaciones. Coordiná tu consulta.
+
+No existe una penalización por una descripción larga; el objetivo es controlar
+mejor qué mensaje puede ver la persona en los resultados.
+
+### Unificar el tono editorial
+
+La mayor parte del sitio utiliza voseo rioplatense, pero la introducción de
+servicios contiene expresiones como `Explora`, `si tienes` y `puedes`.
+
+Acciones:
+
+- [ ] Usar voseo de manera consistente: `Explorá`, `si tenés` y `podés`.
+- [ ] Cambiar `asesoría` por `asesoramiento` para mantener el vocabulario del
+  resto del sitio.
+- [ ] Corregir `Ademas` por `Además`.
+- [ ] Uniformar mayúsculas en los nombres de servicios.
+- [ ] Revisar ortografía y tono antes de cada publicación.
+
+### Evitar textos que envejezcan
+
+La tarjeta de experiencia muestra `7 años`, por lo que requerirá actualización
+manual.
+
+Conviene utilizar una formulación estable y verificable, por ejemplo `En
+ejercicio desde 2019`, si ese es el año oficial que se desea comunicar.
+
+## Prioridad 5: crecimiento de contenido sin sustituir la consulta personal
+
+La landing permite posicionar la marca y una búsqueda general de escribana en
+Rosario. Sin embargo, todos los servicios comparten una sola URL, lo que limita
+la posibilidad de responder búsquedas específicas.
+
+En una segunda etapa se pueden crear páginas informativas para:
 
 1. Títulos y transferencias de automotores.
 2. Compraventas de inmuebles.
 3. Sucesiones.
 4. Certificaciones, poderes y autorizaciones.
 
-Cada página deberá responder preguntas concretas, explicar el proceso y listar
-la documentación habitual. No crear páginas repetidas cuyo único cambio sea una
-palabra clave.
+Cada página puede incluir:
 
-## Prioridad 4: datos estructurados
+- Para qué tipo general de trámite sirve.
+- Etapas habituales, aclarando que pueden variar según el caso.
+- Documentación que suele solicitarse, sujeta a confirmación personal.
+- Preguntas generales frecuentes.
+- Situaciones que requieren estudiar antecedentes antes de responder.
+- Una llamada clara para coordinar una consulta.
+- El aviso de que la información es general y no sustituye asesoramiento
+  profesional individual.
 
-Mantener el tipo `LegalService` y completar, después de confirmar los datos:
+No se deben publicar diagnósticos, conclusiones legales o listas definitivas de
+requisitos aplicables a todos los casos. Tampoco deben crearse páginas casi
+idénticas cambiando únicamente el nombre de una ciudad.
 
-- [ ] `@id` estable, por ejemplo:
-      `https://www.escribaniaisbarbo.com.uy/#escribania`.
-- [ ] `postalCode`.
-- [ ] `geo.latitude`.
-- [ ] `geo.longitude`.
-- [ ] `hasMap`.
-- [x] `logo` con una URL absoluta al logo definitivo.
-- [ ] `image` con una URL absoluta a una fotografía o imagen social existente.
-- [ ] `sameAs` con el Perfil de Empresa u otros perfiles oficiales.
+Si posteriormente existe suficiente contenido útil, puede crearse una página
+sobre la cobertura en el departamento de Colonia. Debe explicar de forma real
+cómo se coordinan las actuaciones y qué servicios se prestan; no debe ser una
+colección de páginas duplicadas para cada localidad.
 
-Después de publicar, validar el JSON-LD con:
+Tradeoff:
 
-- Rich Results Test de Google.
-- Schema Markup Validator.
+- Mantener solo la landing requiere menos mantenimiento y es suficiente para la
+  presencia inicial.
+- Crear páginas sustantivas exige revisión profesional periódica, pero permite
+  responder mejor búsquedas concretas y construir autoridad temática.
 
-El bloque `FAQPage` puede permanecer porque representa contenido visible. Sin
-embargo, no se debe esperar un resultado enriquecido de FAQ: Google normalmente
-lo reserva para sitios gubernamentales y sanitarios reconocidos.
+## Prioridad 6: rendimiento y experiencia móvil
 
-## Prioridad 5: rastreo e indexación
+Las imágenes actuales están optimizadas y no existe un problema grave de peso.
+Las mejoras recomendadas son incrementales:
 
-Crear al publicar:
+- [ ] Crear variantes responsive de la imagen principal y del retrato para
+  evitar que un teléfono descargue siempre las versiones completas.
+- [ ] Utilizar `srcset` y `sizes`, `<picture>` o `image-set()` según corresponda.
+- [ ] Mantener la precarga de la imagen principal.
+- [ ] Mantener carga diferida en el retrato y el mapa.
+- [ ] Usar nombres de archivo versionados y caché larga `immutable` para CSS,
+  JavaScript e imágenes.
+- [ ] Evaluar si conviene reducir o alojar localmente las tres familias
+  tipográficas solo si las métricas muestran un beneficio real.
+- [ ] Revisar Core Web Vitals en Search Console cuando exista suficiente tráfico
+  y datos de campo.
 
-- [ ] `robots.txt`.
-- [ ] `sitemap.xml`.
+## Prioridad 7: documentación operativa
 
-Contenido esperado de `robots.txt`:
+El README todavía conserva referencias a GitHub Pages, al dominio en preparación
+y a un archivo `CNAME` que ya no existe. El sitio se sirve actualmente desde
+Vercel.
 
-```text
-User-agent: *
-Allow: /
-
-Sitemap: https://www.escribaniaisbarbo.com.uy/sitemap.xml
-```
-
-El sitemap debe incluir únicamente la URL canónica:
-
-`https://www.escribaniaisbarbo.com.uy/`
-
-La URL canónica actual es correcta siempre que el dominio definitivo utilice
-`www`. Configurar una redirección permanente desde la versión sin `www` hacia la
-versión canónica.
-
-## Prioridad 6: publicación y medición
-
-Después de que el dominio esté activo:
-
-- [ ] Confirmar que la portada responde con HTTPS y código 200.
-- [ ] Confirmar que no existen recursos con error 404.
-- [ ] Verificar que `og:image`, logo, fotos, CSS y JavaScript sean accesibles.
-- [ ] Registrar el dominio en Google Search Console.
-- [ ] Enviar `sitemap.xml`.
-- [ ] Inspeccionar la URL principal y solicitar indexación.
-- [ ] Revisar Core Web Vitals y rendimiento móvil.
-- [ ] Comprobar la vista previa al compartir por WhatsApp.
-- [ ] Confirmar la indexación con una búsqueda `site:escribaniaisbarbo.com.uy`.
+- [ ] Actualizar el README para documentar Vercel como plataforma vigente.
+- [ ] Documentar cuál es el host canónico y dónde se configura la redirección.
+- [ ] Registrar la fecha de verificación de Search Console y del Perfil de
+  Empresa.
+- [ ] Mantener este documento como lista vigente y retirar tareas que dejen de
+  ser aplicables.
 
 ## Orden recomendado de ejecución
 
-1. Crear la imagen social.
-2. Confirmar los datos locales y horarios definitivos.
-3. Ajustar `h1`, descripción y los datos estructurados restantes.
-4. Agregar `robots.txt` y `sitemap.xml`.
-5. Publicar el dominio definitivo.
-6. Validar Search Console, datos estructurados y rendimiento.
+1. Esperar el cierre de la propagación DNS y configurar la redirección hacia
+   `www`.
+2. Crear `robots.txt` y `sitemap.xml`.
+3. Verificar Search Console, enviar el sitemap e inspeccionar la portada.
+4. Verificar que los demás datos del Perfil de Empresa de Google estén completos,
+   configurar las zonas de servicio reales del departamento de Colonia y
+   mantener Rosario como única ubicación oficial; el horario ya fue confirmado
+   como correcto.
+5. Solicitar la actualización de horarios y categorías únicamente en los
+   directorios externos que contienen información incorrecta.
+6. Sincronizar las preguntas frecuentes visibles con el JSON-LD.
+7. Unificar los títulos profesionales y completar `LegalService` con datos
+   verificados.
+8. Ajustar el título, la introducción, la descripción, el voseo, la ortografía y
+   el texto sobre Tarariras y el departamento de Colonia.
+9. Evaluar páginas informativas de servicios con revisión profesional.
+10. Implementar mejoras responsive y de caché si las métricas lo justifican.
 
 ## Referencias oficiales
 
-- SEO local y Perfil de Empresa:
-  <https://support.google.com/business/answer/7091?hl=es>
-- Datos estructurados de negocios locales:
-  <https://developers.google.com/search/docs/appearance/structured-data/local-business?hl=es>
-- Títulos en los resultados:
-  <https://developers.google.com/search/docs/appearance/title-link>
-- Sitemaps:
-  <https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview>
-- Cambios en resultados FAQ:
-  <https://developers.google.com/search/blog/2023/08/howto-faq-changes?hl=es>
+- Posicionamiento local y Perfil de Empresa:
+  <https://support.google.com/business/answer/7091?hl=es-ES>
+- Directrices para representar una empresa en Google:
+  <https://support.google.com/business/answer/3038177?hl=es>
+- Configuración de zonas de servicio:
+  <https://support.google.com/business/answer/9157481?hl=es>
+- Servicios del Perfil de Empresa:
+  <https://support.google.com/business/answer/9455399?hl=es>
+- Creación y envío de sitemaps:
+  <https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap>
+- Tratamiento de errores en `robots.txt`:
+  <https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec>
+- Redirecciones y canonicalización:
+  <https://developers.google.com/search/docs/crawling-indexing/301-redirects>
+- Políticas de datos estructurados:
+  <https://developers.google.com/search/docs/appearance/structured-data/sd-policies?hl=es>
+- Actualizaciones de Google Search:
+  <https://developers.google.com/search/updates>
