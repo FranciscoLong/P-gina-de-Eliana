@@ -227,10 +227,10 @@ p {
 }
 
 /*
-  El rojo de hover es para los enlaces de texto del menu, que van sobre blanco.
-  "Reservar turno" es un boton con fondo verde oscuro: ahi el rojo queda en
-  1.37:1 y el texto desaparece. Por eso se excluyen los .btn y se les da abajo
-  su propia inversion.
+  El rojo marca el enlace de la seccion visible, y solo aplica a los enlaces de
+  texto del menu, que van sobre blanco. "Reservar turno" es un boton con fondo
+  verde oscuro: ahi el rojo queda en 1.37:1 y el texto desaparece. Por eso se
+  excluyen los .btn y se les da abajo su propia inversion.
 */
 .nav-links a:not(.btn) {
   position: relative;
@@ -256,19 +256,31 @@ p {
   transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.nav-links a:not(.btn):hover,
-.nav-links a:not(.btn):focus-visible {
+/*
+  El trazo lo dispara el scroll, no el mouse: marca la seccion que el usuario
+  esta mirando, tanto en el menu horizontal como en el desplegable de movil.
+  Bajando entra desde la izquierda y el anterior se repliega hacia la derecha.
+*/
+.nav-links a:not(.btn).is-current {
   color: var(--red-700);
 }
 
-/*
-  Entra desde la izquierda y sale hacia la derecha: el origen cambia solo en
-  el estado hover, asi el trazo acompaña al mouse en vez de replegarse.
-*/
-.nav-links a:not(.btn):hover::after,
-.nav-links a:not(.btn):focus-visible::after {
+.nav-links a:not(.btn).is-current::after {
   transform: scaleX(1);
   transform-origin: left center;
+}
+
+/*
+  Scrolleando hacia arriba el recorrido se invierte: el trazo entra por la
+  derecha y el que se apaga se repliega hacia la izquierda, asi el movimiento
+  acompaña siempre el sentido del scroll.
+*/
+.nav-links[data-scroll-direction="up"] a:not(.btn)::after {
+  transform-origin: left center;
+}
+
+.nav-links[data-scroll-direction="up"] a:not(.btn).is-current::after {
+  transform-origin: right center;
 }
 
 .nav-links .btn-dark:hover,

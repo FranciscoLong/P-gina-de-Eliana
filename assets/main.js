@@ -65,6 +65,99 @@ document.addEventListener("click", (event) => {
   }
 });
 
+/*
+  Indicador de sección visible: el mismo trazo rojo del hover marca en qué
+  parte de la página está el usuario. En móvil el menú desplegable no tiene
+  hover, así que sin esto al abrirlo no hay ninguna referencia de posición.
+*/
+const HEADER_OFFSET = 96; // scroll-padding-top (88px) + un margen de holgura
+
+const sectionLinks = Array.from(navLinks.querySelectorAll('a[href^="#"]'))
+  .map((link) => ({ link, section: document.getElementById(link.hash.slice(1)) }))
+  .filter((entry) => entry.section);
+
+let currentSectionLink = null;
+let lastScrollY = window.scrollY;
+let scrollFrame = 0;
+
+function setCurrentSectionLink(link) {
+  if (link === currentSectionLink) {
+    return;
+  }
+
+  if (currentSectionLink) {
+    currentSectionLink.classList.remove("is-current");
+    currentSectionLink.removeAttribute("aria-current");
+  }
+
+  if (link) {
+    link.classList.add("is-current");
+    link.setAttribute("aria-current", "location");
+  }
+
+  currentSectionLink = link;
+}
+
+// La sección activa es la última que ya cruzó el borde inferior del header.
+function findCurrentSectionLink() {
+  const documentHeight = document.documentElement.scrollHeight;
+  const reachedBottom = window.innerHeight + window.scrollY >= documentHeight - 2;
+
+  if (reachedBottom) {
+    return sectionLinks[sectionLinks.length - 1].link;
+  }
+
+  let current = null;
+
+  sectionLinks.forEach((entry) => {
+    if (entry.section.getBoundingClientRect().top <= HEADER_OFFSET) {
+      current = entry.link;
+    }
+  });
+
+  return current;
+}
+
+function updateScrollIndicator() {
+  const scrollY = window.scrollY;
+
+  /*
+    El sentido del scroll define el origen de la animación en el CSS. Se ignoran
+    los desplazamientos mínimos para que un rebote no invierta el trazo.
+  */
+  if (Math.abs(scrollY - lastScrollY) > 2) {
+    navLinks.dataset.scrollDirection = scrollY > lastScrollY ? "down" : "up";
+    lastScrollY = scrollY;
+  }
+
+  setCurrentSectionLink(findCurrentSectionLink());
+}
+
+if (sectionLinks.length > 0) {
+  navLinks.dataset.scrollDirection = "down";
+  updateScrollIndicator();
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (scrollFrame) {
+        return;
+      }
+
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        updateScrollIndicator();
+      });
+    },
+    { passive: true }
+  );
+
+  // Al cambiar el ancho o girar el teléfono las secciones cambian de altura.
+  window.addEventListener("resize", () => {
+    setCurrentSectionLink(findCurrentSectionLink());
+  });
+}
+
 // Fecha mínima en horario local: toISOString() usa UTC y adelantaría un día
 // durante la tarde/noche uruguaya (UTC-3).
 function getMinimumBookingDate() {
