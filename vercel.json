@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "escribaniaisbarbo.com.uy"
+        }
+      ],
+      "destination": "https://www.escribaniaisbarbo.com.uy/$1",
+      "permanent": true
+    }
+  ]
+}
