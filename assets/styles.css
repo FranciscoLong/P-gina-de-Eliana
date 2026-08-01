@@ -131,7 +131,7 @@ p {
   margin-bottom: 42px;
 }
 
-/* Mismo criterio que el hero y Sobre mi: justificado y sin cortar palabras. */
+/* En anchos suficientes se justifica sin cortar palabras. */
 .section-heading p {
   font-size: 1.05rem;
   text-align: justify;
@@ -345,10 +345,7 @@ p {
   text-transform: uppercase;
 }
 
-/*
-  El texto va justificado en movil y escritorio. Sin guionado: las palabras
-  nunca se cortan, el navegador reparte el sobrante en los espacios.
-*/
+/* En anchos suficientes se justifica sin guionado ni palabras cortadas. */
 .hero p {
   max-width: 670px;
   margin: 24px 0 32px;
@@ -1250,6 +1247,19 @@ details p {
 }
 
 @media (max-width: 680px) {
+  /*
+    En pantallas angostas el justificado fuerza espacios irregulares. Se usa
+    margen derecho libre y se mantienen siempre las palabras completas.
+  */
+  .hero p,
+  .intro-copy p,
+  .section-heading p {
+    text-align: left;
+    hyphens: none;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
   .topbar-content,
   .footer-bottom {
     flex-direction: column;

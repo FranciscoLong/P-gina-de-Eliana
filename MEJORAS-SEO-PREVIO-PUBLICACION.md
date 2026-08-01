@@ -255,8 +255,10 @@ No se deben completar propiedades con datos aproximados o no confirmados.
 
 ### Reforzar Rosario y el departamento de Colonia en la portada
 
-El `h1` conserva el nombre y la profesión, y el texto inmediato deja claro que
-la oficina está en Rosario, departamento de Colonia.
+El `h1` conserva el nombre y la profesión. Por decisión de contenido, el texto
+inmediato mantiene el mensaje personal solicitado por la escribana; la ubicación
+se refuerza en el título, la descripción, los datos estructurados y la sección de
+contacto.
 
 Implementación:
 
@@ -264,16 +266,17 @@ Implementación:
 
   > Escribana en Rosario, Colonia | Eliana Isbarbo Gfeller
 
-- [x] Presentar inmediatamente la ubicación oficial con este texto:
+- [x] Conservar la esencia del texto personal solicitado por la escribana:
 
-  > Soy Escribana Pública con oficina en Rosario, departamento de Colonia.
-  > Brindo servicios notariales y acompaño a las personas con cercanía,
-  > responsabilidad y confianza, ofreciendo seguridad jurídica y un
-  > asesoramiento claro en cada decisión.
+  > El verdadero valor de mi profesión está en acompañar a las personas con
+  > cercanía, responsabilidad y confianza. Como Escribana, trabajo para ofrecer
+  > seguridad jurídica y un asesoramiento claro, haciendo que cada cliente se
+  > sienta respaldado en cada decisión que tome.
 
-Esta redacción también responde de forma natural a búsquedas como `escribano en
-Rosario` o `escribano en Colonia`, sin cambiar incorrectamente la profesión
-visible de `Escribana Pública` ni repetir palabras clave de forma artificial.
+Las búsquedas como `escribano en Rosario` o `escribano en Colonia` se trabajan
+con los elementos SEO y las secciones informativas, sin forzar palabras clave en
+este mensaje personal ni cambiar incorrectamente la profesión visible de
+`Escribana Pública`.
 
 La ubicación oficial sigue siendo Rosario. La forma de comunicar Tarariras y
 otras zonas de atención queda pendiente de definición para no presentarlas como
@@ -358,6 +361,8 @@ Tradeoff:
 Las imágenes actuales están optimizadas y no existe un problema grave de peso.
 Las mejoras recomendadas son incrementales:
 
+- [x] Evitar el texto justificado en pantallas angostas para no forzar espacios
+  irregulares, manteniendo las palabras completas y sin guionado.
 - [ ] Crear variantes responsive de la imagen principal y del retrato para
   evitar que un teléfono descargue siempre las versiones completas.
 - [ ] Utilizar `srcset` y `sizes`, `<picture>` o `image-set()` según corresponda.
