@@ -131,8 +131,11 @@ p {
   margin-bottom: 42px;
 }
 
+/* Mismo criterio que el hero y Sobre mi: justificado y sin cortar palabras. */
 .section-heading p {
   font-size: 1.05rem;
+  text-align: justify;
+  hyphens: none;
 }
 
 /* Links que cruzan de una sección a otra: se leen como link, sin negrita. */
@@ -342,10 +345,16 @@ p {
   text-transform: uppercase;
 }
 
+/*
+  El texto va justificado en movil y escritorio. Sin guionado: las palabras
+  nunca se cortan, el navegador reparte el sobrante en los espacios.
+*/
 .hero p {
   max-width: 670px;
   margin: 24px 0 32px;
   font-size: clamp(1rem, 2vw, 1.25rem);
+  text-align: justify;
+  hyphens: none;
 }
 
 .hero-actions,
@@ -479,6 +488,8 @@ p {
 
 .intro-copy p {
   line-height: 1.75;
+  text-align: justify;
+  hyphens: none;
 }
 
 .intro-copy p + p {
