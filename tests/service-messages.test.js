@@ -39,11 +39,22 @@ test("agrega el artículo a un título automotor", () => {
   );
 });
 
-test("conserva exactamente un servicio plural", () => {
-  assert.equal(
-    buildWhatsAppMessage("Tasaciones"),
-    "Hola Eliana, quisiera consultar por Tasaciones. ¿Qué disponibilidad tenés?"
-  );
+test("aplica las frases aprobadas a los servicios específicos", () => {
+  const approvedPhrases = {
+    "Certificación de firmas": "consultar por una certificación de firmas",
+    "Constitución de sociedades": "consultar por la constitución de una sociedad",
+    "Declaraciones juradas": "consultar por una declaración jurada",
+    "Minuta notarial BPS": "consultar por una minuta notarial para BPS",
+    Particiones: "consultar por una partición de bienes",
+    Poderes: "consultar por un poder",
+    Sucesiones: "consultar por una sucesión",
+    Tasaciones: "consultar por una tasación",
+    Testamentos: "consultar por un testamento"
+  };
+
+  Object.entries(approvedPhrases).forEach(([service, expectedPhrase]) => {
+    assert.equal(buildConsultationPhrase(service), expectedPhrase, service);
+  });
 });
 
 test("adapta el correo a un servicio compuesto e incluye los detalles", () => {

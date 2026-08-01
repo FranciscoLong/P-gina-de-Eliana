@@ -114,31 +114,31 @@ helper agrega el contexto necesario al mensaje.
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Sucesiones. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una sucesión. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Sucesiones.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una sucesión.
 
 ### Testamentos
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Testamentos. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por un testamento. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Testamentos.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por un testamento.
 
 ### Particiones
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Particiones. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una partición de bienes. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Particiones.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una partición de bienes.
 
 ### Cesión de Derechos Hereditarios
 
@@ -156,11 +156,11 @@ helper agrega el contexto necesario al mensaje.
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Certificación de firmas. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una certificación de firmas. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Certificación de firmas.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una certificación de firmas.
 
 ### Certificación de situaciones jurídicas
 
@@ -176,31 +176,31 @@ helper agrega el contexto necesario al mensaje.
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Poderes. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por un poder. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Poderes.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por un poder.
 
 ### Declaraciones juradas
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Declaraciones juradas. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una declaración jurada. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Declaraciones juradas.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una declaración jurada.
 
 ### Minuta notarial BPS
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Minuta notarial BPS. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una minuta notarial para BPS. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Minuta notarial BPS.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una minuta notarial para BPS.
 
 ## Empresas y sociedades
 
@@ -208,11 +208,11 @@ helper agrega el contexto necesario al mensaje.
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Constitución de sociedades. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por la constitución de una sociedad. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Constitución de sociedades.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por la constitución de una sociedad.
 
 ### Contratos civiles y comerciales
 
@@ -250,11 +250,11 @@ helper agrega el contexto necesario al mensaje.
 
 **WhatsApp**
 
-> Hola Eliana, quisiera consultar por Tasaciones. ¿Qué disponibilidad tenés?
+> Hola Eliana, quisiera consultar por una tasación. ¿Qué disponibilidad tenés?
 
 **Inicio del correo**
 
-> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por Tasaciones.
+> Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una tasación.
 
 ## Resto del correo
 

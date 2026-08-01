@@ -9,10 +9,23 @@
   root.ServiceMessages = serviceMessages;
 })(typeof globalThis !== "undefined" ? globalThis : this, () => {
   const DEFAULT_SERVICE = "Consulta notarial";
+
+  // Guía de redacción y ejemplos completos:
+  // ../REVISION-MENSAJES-SERVICIOS.md
+  // Si se modifica una frase, actualizar también ese documento y sus pruebas.
   const SERVICE_CONSULTATION_PHRASES = {
     "Carta Poder": "consultar por una carta poder de un automotor",
     "Compromiso de compraventa": "consultar por un compromiso de compraventa de un automotor",
+    "Constitución de sociedades": "consultar por la constitución de una sociedad",
+    "Certificación de firmas": "consultar por una certificación de firmas",
+    "Declaraciones juradas": "consultar por una declaración jurada",
+    "Minuta notarial BPS": "consultar por una minuta notarial para BPS",
+    Particiones: "consultar por una partición de bienes",
+    Poderes: "consultar por un poder",
     Prenda: "consultar por una prenda de automotor",
+    Sucesiones: "consultar por una sucesión",
+    Tasaciones: "consultar por una tasación",
+    Testamentos: "consultar por un testamento",
     "Título automotor": "consultar por un título automotor"
   };
 
