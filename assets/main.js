@@ -24,6 +24,11 @@ const bookingStatus = document.getElementById("bookingStatus");
 const bookingSubmit = document.getElementById("bookingSubmit");
 const bookingDone = document.getElementById("bookingDone");
 const bookingFallbackWhatsapp = document.getElementById("bookingFallbackWhatsapp");
+const bookingCalendarStatus = document.getElementById("bookingCalendarStatus");
+const bookingCalendarDescription = document.getElementById("bookingCalendarDescription");
+const bookingCalendarUnavailable = document.getElementById("bookingCalendarUnavailable");
+const bookingSectionIntro = document.getElementById("bookingSectionIntro");
+const bookingOverviewIntro = document.getElementById("bookingOverviewIntro");
 const turnstileWidget = document.getElementById("turnstileWidget");
 const bookingName = bookingForm.elements.name;
 const bookingDetails = bookingForm.elements.details;
@@ -306,6 +311,30 @@ async function readApiResponse(response) {
     return await response.json();
   } catch (_error) {
     return null;
+  }
+}
+
+async function configurePreviewBooking() {
+  try {
+    const response = await fetch("/api/booking-config", {
+      headers: { accept: "application/json" },
+      cache: "no-store"
+    });
+    const config = await readApiResponse(response);
+    const siteKey = String(config?.turnstileSiteKey || "");
+    if (!response.ok || config?.enabled !== true || !/^[A-Za-z0-9_-]{20,100}$/.test(siteKey)) {
+      return;
+    }
+
+    turnstileWidget.dataset.turnstileSiteKey = siteKey;
+    calendarChoice.disabled = false;
+    bookingCalendarStatus.textContent = "Disponible para prueba";
+    bookingCalendarDescription.textContent = "Probá el flujo completo con Calendar y respuesta por correo.";
+    bookingCalendarUnavailable.textContent = "Entorno Preview de prueba. Los horarios y correos generados son reales.";
+    bookingSectionIntro.textContent = "Entorno Preview: la agenda está habilitada para probar Calendar y el flujo de correos.";
+    bookingOverviewIntro.textContent = "Elegí Agenda en línea para realizar una solicitud de prueba o continuá por WhatsApp.";
+  } catch (_error) {
+    // Fail closed: el HTML mantiene la agenda deshabilitada.
   }
 }
 
@@ -645,3 +674,5 @@ copyAddressButton.addEventListener("click", async () => {
 });
 
 document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+configurePreviewBooking();

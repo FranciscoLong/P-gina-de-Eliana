@@ -12,6 +12,17 @@ test("la agenda está visiblemente desactivada con disabled real y explicación 
   assert.match(calendarChoice, /aria-describedby="bookingCalendarUnavailable"/);
   assert.match(calendarChoice, /Temporalmente no disponible/);
   assert.match(html, /id="bookingCalendarUnavailable"/);
+  assert.match(html, /data-turnstile-site-key=""/);
+});
+
+test("el navegador sólo habilita la agenda con configuración positiva de Preview", () => {
+  assert.match(main, /fetch\("\/api\/booking-config"/);
+  assert.match(main, /config\?\.enabled !== true/);
+  assert.match(main, /calendarChoice\.disabled = false/);
+  assert.match(main, /turnstileWidget\.dataset\.turnstileSiteKey = siteKey/);
+  assert.match(main, /bookingSectionIntro\.textContent = "Entorno Preview:/);
+  assert.match(main, /bookingOverviewIntro\.textContent = "Elegí Agenda en línea/);
+  assert.match(main, /Fail closed/);
 });
 
 test("Elegir cómo reservar y WhatsApp siguen activos y preservan el trámite", () => {

@@ -3,11 +3,14 @@ const assert = require("node:assert/strict");
 
 const availabilityHandler = require("../api/availability");
 const bookingHandler = require("../api/bookings");
+const bookingConfigHandler = require("../api/booking-config");
 
 function responseRecorder() {
   return {
     statusCode: 0,
     body: null,
+    headers: {},
+    setHeader(name, value) { this.headers[name.toLowerCase()] = value; return this; },
     status(code) { this.statusCode = code; return this; },
     json(body) { this.body = body; return this; }
   };
@@ -42,16 +45,43 @@ test("ambas APIs desactivan la agenda por defecto sin llamar servicios externos"
 
 test("el kill switch sólo habilita con el valor exacto true", async () => {
   const previousEnabled = process.env.BOOKING_ENABLED;
+  const previousEnvironment = process.env.VERCEL_ENV;
+  process.env.VERCEL_ENV = "preview";
   process.env.BOOKING_ENABLED = "TRUE";
   const response = responseRecorder();
   await availabilityHandler({ method: "GET", headers: {}, query: {} }, response);
   assert.equal(response.statusCode, 503);
   restoreEnv("BOOKING_ENABLED", previousEnabled);
+  restoreEnv("VERCEL_ENV", previousEnvironment);
+});
+
+test("la configuración pública sólo habilita una Preview con site key válida", async () => {
+  const names = ["BOOKING_ENABLED", "VERCEL_ENV", "TURNSTILE_SITE_KEY"];
+  const previous = Object.fromEntries(names.map((name) => [name, process.env[name]]));
+  process.env.BOOKING_ENABLED = "true";
+  process.env.TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+
+  process.env.VERCEL_ENV = "production";
+  const production = responseRecorder();
+  await bookingConfigHandler({ method: "GET" }, production);
+  assert.deepEqual(production.body, { enabled: false, turnstileSiteKey: "" });
+
+  process.env.VERCEL_ENV = "preview";
+  const preview = responseRecorder();
+  await bookingConfigHandler({ method: "GET" }, preview);
+  assert.deepEqual(preview.body, {
+    enabled: true,
+    turnstileSiteKey: "1x00000000000000000000AA"
+  });
+  assert.equal(preview.headers["cache-control"], "private, no-store, max-age=0");
+
+  names.forEach((name) => restoreEnv(name, previous[name]));
 });
 
 test("/api/bookings propaga el 429 de Apps Script", async () => {
   const names = [
     "BOOKING_ENABLED",
+    "VERCEL_ENV",
     "BOOKING_ALLOWED_ORIGINS",
     "TURNSTILE_SECRET_KEY",
     "APPS_SCRIPT_WEB_APP_URL",
@@ -61,6 +91,7 @@ test("/api/bookings propaga el 429 de Apps Script", async () => {
   const previousFetch = global.fetch;
   const previousConsoleError = console.error;
   process.env.BOOKING_ENABLED = "true";
+  process.env.VERCEL_ENV = "preview";
   process.env.BOOKING_ALLOWED_ORIGINS = "https://www.escribaniaisbarbo.com.uy";
   process.env.TURNSTILE_SECRET_KEY = "turnstile-secret";
   process.env.APPS_SCRIPT_WEB_APP_URL = "https://script.example/exec";

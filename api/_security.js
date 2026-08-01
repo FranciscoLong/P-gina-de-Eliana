@@ -4,7 +4,8 @@ const TURNSTILE_ACTION = "booking";
 const BOOKING_UNAVAILABLE_MESSAGE = "La agenda en línea está temporalmente no disponible.";
 
 function bookingEnabled() {
-  return process.env.BOOKING_ENABLED === "true";
+  return process.env.VERCEL_ENV === "preview"
+    && process.env.BOOKING_ENABLED === "true";
 }
 
 function allowedOrigins() {
@@ -16,24 +17,39 @@ function allowedOrigins() {
 
 function originAllowed(req) {
   const allowed = allowedOrigins();
-  if (!allowed.length) {
-    return false;
-  }
+  const previewHosts = previewHostnames();
 
   const origin = req.headers.origin;
   if (origin) {
-    return allowed.includes(origin);
+    if (allowed.includes(origin)) {
+      return true;
+    }
+    try {
+      const parsed = new URL(origin);
+      return parsed.protocol === "https:" && previewHosts.includes(parsed.host);
+    } catch (_error) {
+      return false;
+    }
   }
 
   const forwardedHost = String(req.headers["x-forwarded-host"] || "").split(",")[0].trim();
-  const host = forwardedHost || req.headers.host;
-  return allowed.some((value) => {
+  const host = String(forwardedHost || req.headers.host || "").toLowerCase();
+  return previewHosts.includes(host) || allowed.some((value) => {
     try {
       return new URL(value).host === host;
     } catch (_error) {
       return false;
     }
   });
+}
+
+function previewHostnames() {
+  if (process.env.VERCEL_ENV !== "preview") {
+    return [];
+  }
+  return [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]
+    .map((value) => String(value || "").trim().toLowerCase())
+    .filter(Boolean);
 }
 
 function send(res, status, body) {
@@ -57,13 +73,18 @@ async function verifyTurnstile(token, ip) {
     signal: AbortSignal.timeout(8000)
   });
   const result = await response.json();
+  if (process.env.VERCEL_ENV === "preview" && process.env.TURNSTILE_TEST_MODE === "true") {
+    return result.success === true
+      && result.metadata?.result_with_testing_key === true;
+  }
+
   const allowedHosts = allowedOrigins().flatMap((value) => {
     try {
       return [new URL(value).hostname];
     } catch (_error) {
       return [];
     }
-  });
+  }).concat(previewHostnames());
 
   return result.success === true
     && result.action === TURNSTILE_ACTION
@@ -75,6 +96,7 @@ module.exports = {
   TURNSTILE_ACTION,
   bookingEnabled,
   originAllowed,
+  previewHostnames,
   send,
   verifyTurnstile
 };

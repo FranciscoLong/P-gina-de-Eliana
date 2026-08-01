@@ -64,7 +64,7 @@ despliegue mediante `.vercelignore`.
 
 ## Reservas en línea
 
-> **Estado temporal:** la agenda en línea está desactivada. El botón general sigue
+> **Estado temporal:** la agenda en línea está desactivada en producción. El botón general sigue
 > abriendo el modal para que WhatsApp permanezca disponible, pero la opción de
 > agenda tiene `disabled` real. No se debe habilitar el frontend ni producción
 > hasta completar la prueba controlada de Calendar, correo, aprobación, rechazo
@@ -85,14 +85,21 @@ Calendar ni se le pide aceptar el evento.
 Además de la desactivación visible, ambas APIs tienen un kill switch autoritativo
 y fail-closed. `BOOKING_ENABLED` debe existir del lado servidor y valer exactamente
 `true`; ausente, `false` o cualquier otro valor responde `503` con el mismo mensaje
-público, antes de contactar Turnstile o Apps Script. Al finalizar esta entrega debe
-quedar en `false` o sin configurar.
+público, antes de contactar Turnstile o Apps Script. Esta rama agrega una segunda
+condición obligatoria: `VERCEL_ENV` debe ser exactamente `preview`, por lo que la
+implementación no puede habilitarse en Production aunque allí se cargue el switch.
 
 Cuando se realice la prueba controlada posterior, cargá en Vercel (sin subir
 secretos): `BOOKING_ENABLED`, `APPS_SCRIPT_WEB_APP_URL`,
 `APPS_SCRIPT_SHARED_SECRET`, `TURNSTILE_SECRET_KEY` y
-`BOOKING_ALLOWED_ORIGINS`. Configurá también la site key pública de Turnstile en
-`data-turnstile-site-key` de `index.html` (no es un secreto).
+`BOOKING_ALLOWED_ORIGINS`. La site key pública se entrega al navegador mediante
+`GET /api/booking-config`; el HTML permanece deshabilitado y sin key por defecto.
+
+Para una prueba controlada en Preview, configurá sólo para la rama de prueba:
+`BOOKING_ENABLED=true`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` y
+`TURNSTILE_TEST_MODE=true`. Las claves oficiales de prueba de Cloudflare deben
+usarse únicamente en Preview. El servidor admite como origen sólo `VERCEL_URL` o
+`VERCEL_BRANCH_URL` exactos, además de los orígenes configurados explícitamente.
 
 Para Apps Script, creá un proyecto con `google-apps-script/Code.js` y configurá
 estas *Script properties* obligatorias:
