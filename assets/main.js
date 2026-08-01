@@ -1,7 +1,6 @@
 const WHATSAPP_NUMBER = "59891048471";
-const OFFICE_EMAIL = "esc.isbarbo@gmail.com";
 const OFFICE_ADDRESS = "Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay";
-const { buildEmailMessage, buildWhatsAppMessage } = window.ServiceMessages;
+const { buildBookingDetails, buildWhatsAppMessage } = window.ServiceMessages;
 
 const menuButton = document.getElementById("menuButton");
 const navLinks = document.getElementById("navLinks");
@@ -9,24 +8,38 @@ const bookingDialog = document.getElementById("bookingDialog");
 const openBookingDialogButtons = document.querySelectorAll("[data-booking-open]");
 const closeBookingDialogButton = document.getElementById("closeBookingDialog");
 const bookingChannelStep = document.getElementById("bookingChannelStep");
-const bookingEmailStep = document.getElementById("bookingEmailStep");
+const bookingCalendarStep = document.getElementById("bookingCalendarStep");
+const calendarChoice = document.getElementById("calendarChoice");
+const backToBookingChannels = document.getElementById("backToBookingChannels");
 const whatsappChoice = document.getElementById("whatsappChoice");
-const emailChoice = document.getElementById("emailChoice");
-const bookingForm = document.getElementById("bookingForm");
-const preferredDate = document.getElementById("preferredDate");
-const serviceInput = document.getElementById("service");
 const selectedServiceLabels = document.querySelectorAll("[data-selected-service]");
 const serviceLinks = document.querySelectorAll("[data-service]");
 const copyAddressButton = document.getElementById("copyAddress");
 const toast = document.getElementById("toast");
+const bookingForm = document.getElementById("bookingForm");
+const bookingService = document.getElementById("bookingService");
+const bookingDates = document.getElementById("bookingDates");
+const bookingSlots = document.getElementById("bookingSlots");
+const bookingStatus = document.getElementById("bookingStatus");
+const bookingSubmit = document.getElementById("bookingSubmit");
+const bookingFallbackWhatsapp = document.getElementById("bookingFallbackWhatsapp");
+const turnstileWidget = document.getElementById("turnstileWidget");
+const bookingName = bookingForm.elements.name;
+const bookingDetails = bookingForm.elements.details;
 
-const AVAILABLE_SERVICES = new Set([
-  "Consulta notarial",
-  ...Array.from(serviceLinks, (link) => link.dataset.service)
-]);
+const SERVICE_CODES = Object.freeze({"Consulta notarial":"consulta-notarial","Compromiso de compraventa":"compromiso-compraventa","Título automotor":"titulo-automotor","Carta Poder":"carta-poder","Prenda":"prenda","Leasing":"leasing","Promesas y cesiones":"promesas-cesiones","Compraventas y estudio de antecedentes":"compraventas-antecedentes","Hipotecas y/o Cancelación":"hipotecas-cancelacion","Arrendamientos y garantías":"arrendamientos-garantias","Sucesiones":"sucesiones","Testamentos":"testamentos","Particiones":"particiones","Cesión de Derechos Hereditarios":"cesion-derechos-hereditarios","Certificación de firmas":"certificacion-firmas","Certificación de situaciones jurídicas":"certificacion-situaciones-juridicas","Poderes":"poderes","Declaraciones juradas":"declaraciones-juradas","Minuta notarial BPS":"minuta-notarial-bps","Constitución de sociedades":"constitucion-sociedades","Contratos civiles y comerciales":"contratos-civiles-comerciales","Certificados y documentación societaria":"certificados-societarios","Trámites ante organismos públicos y/o privados":"tramites-organismos","Tasaciones":"tasaciones"});
+const AVAILABLE_SERVICES = new Set(Object.keys(SERVICE_CODES));
 
 let selectedService = "Consulta notarial";
 let toastTimer;
+let availability = null;
+let selectedDate = null;
+let selectedSlot = null;
+let turnstileToken = "";
+let generatedDetails = "";
+let turnstileWidgetId = null;
+
+bookingService.innerHTML = Object.entries(SERVICE_CODES).map(([label, code]) => `<option value="${code}">${label}</option>`).join("");
 
 function showToast(message) {
   toast.textContent = message;
@@ -158,55 +171,53 @@ if (sectionLinks.length > 0) {
   });
 }
 
-// Fecha mínima en horario local: toISOString() usa UTC y adelantaría un día
-// durante la tarde/noche uruguaya (UTC-3).
-function getMinimumBookingDate() {
-  const minimumDate = new Date();
-  minimumDate.setDate(minimumDate.getDate() + 1);
+function setSelectedService(service) {
+  const nextService = AVAILABLE_SERVICES.has(service) ? service : "Consulta notarial";
+  const serviceChanged = nextService !== selectedService;
+  selectedService = nextService;
 
-  const month = String(minimumDate.getMonth() + 1).padStart(2, "0");
-  const day = String(minimumDate.getDate()).padStart(2, "0");
-
-  return `${minimumDate.getFullYear()}-${month}-${day}`;
-}
-
-preferredDate.min = getMinimumBookingDate();
-
-function validateWeekday() {
-  if (!preferredDate.value) {
-    preferredDate.setCustomValidity("");
-    return;
+  if (serviceChanged) {
+    selectedDate = null;
+    selectedSlot = null;
+    sessionStorage.removeItem("bookingDate");
+    sessionStorage.removeItem("bookingStart");
+    resetBookingAttempt();
   }
 
-  const weekday = new Date(`${preferredDate.value}T12:00:00`).getDay();
-  const isWeekend = weekday === 0 || weekday === 6;
+  sessionStorage.setItem("bookingServiceCode", SERVICE_CODES[selectedService]);
+  bookingService.value = SERVICE_CODES[selectedService];
 
-  preferredDate.setCustomValidity(
-    isWeekend ? "El estudio notarial atiende de lunes a viernes. Seleccioná otra fecha." : ""
-  );
+  selectedServiceLabels.forEach((label) => {
+    label.textContent = selectedService;
+  });
+
+  syncSuggestedDetails(serviceChanged);
 }
 
-preferredDate.addEventListener("input", validateWeekday);
-
-function showChannelStep() {
+function showBookingChannels() {
   bookingChannelStep.hidden = false;
-  bookingEmailStep.hidden = true;
+  bookingCalendarStep.hidden = true;
+  bookingDialog.classList.remove("is-calendar");
   bookingDialog.setAttribute("aria-labelledby", "bookingDialogTitle");
   bookingDialog.scrollTop = 0;
 }
 
-function setSelectedService(service) {
-  selectedService = AVAILABLE_SERVICES.has(service) ? service : "Consulta notarial";
-
-  serviceInput.value = selectedService;
-  selectedServiceLabels.forEach((label) => {
-    label.textContent = selectedService;
-  });
+async function showBookingCalendar() {
+  bookingChannelStep.hidden = true;
+  bookingCalendarStep.hidden = false;
+  bookingDialog.classList.add("is-calendar");
+  bookingDialog.setAttribute("aria-labelledby", "bookingCalendarTitle");
+  bookingDialog.scrollTop = 0;
+  backToBookingChannels.focus();
+  await loadAvailability();
+  setupTurnstile();
 }
 
 function openBookingDialog(service = "Consulta notarial") {
-  setSelectedService(service);
-  showChannelStep();
+  const storedCode = sessionStorage.getItem("bookingServiceCode");
+  const storedService = Object.entries(SERVICE_CODES).find(([, code]) => code === storedCode)?.[0];
+  setSelectedService(service === "Consulta notarial" && storedService ? storedService : service);
+  showBookingChannels();
 
   if (!bookingDialog.open) {
     bookingDialog.showModal();
@@ -237,12 +248,11 @@ openBookingDialogButtons.forEach((button) => {
 
 closeBookingDialogButton.addEventListener("click", closeBookingDialog);
 
-emailChoice.addEventListener("click", () => {
-  bookingChannelStep.hidden = true;
-  bookingEmailStep.hidden = false;
-  bookingDialog.setAttribute("aria-labelledby", "bookingEmailTitle");
-  bookingDialog.scrollTop = 0;
-  document.getElementById("name").focus();
+calendarChoice.addEventListener("click", showBookingCalendar);
+
+backToBookingChannels.addEventListener("click", () => {
+  showBookingChannels();
+  calendarChoice.focus();
 });
 
 bookingDialog.addEventListener("click", (event) => {
@@ -253,19 +263,289 @@ bookingDialog.addEventListener("click", (event) => {
 
 bookingDialog.addEventListener("close", () => {
   document.body.classList.remove("modal-open");
-  showChannelStep();
+  showBookingChannels();
 });
 
+function ymd(date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Montevideo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(date);
+}
+
+function addDaysToYmd(value, days) {
+  const date = new Date(`${value}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function randomKey() {
+  return crypto.getRandomValues(new Uint8Array(18))
+    .reduce((text, value) => text + value.toString(16).padStart(2, "0"), "");
+}
+
+function setBookingStatus(message, error = false, showWhatsApp = false) {
+  bookingStatus.textContent = message;
+  bookingStatus.classList.toggle("is-error", error);
+  bookingFallbackWhatsapp.hidden = !showWhatsApp;
+}
+
+async function readApiResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return null;
+  }
+
+  try {
+    return await response.json();
+  } catch (_error) {
+    return null;
+  }
+}
+
+function suggestedDetails() {
+  return buildBookingDetails(bookingName.value, selectedService);
+}
+
+function syncSuggestedDetails(force = false) {
+  const nextSuggestion = suggestedDetails();
+  if (force || !bookingDetails.value.trim() || bookingDetails.value === generatedDetails) {
+    bookingDetails.value = nextSuggestion;
+  }
+  generatedDetails = nextSuggestion;
+}
+
+function resetBookingAttempt() {
+  sessionStorage.removeItem("bookingAttemptId");
+}
+
+function resetTurnstile() {
+  turnstileToken = "";
+  bookingSubmit.disabled = true;
+  if (window.turnstile && turnstileWidgetId !== null) {
+    window.turnstile.reset(turnstileWidgetId);
+  }
+}
+
+async function loadAvailability() {
+  selectedSlot = null;
+  bookingSubmit.disabled = true;
+  setBookingStatus("Cargando disponibilidad…");
+  const from = ymd(new Date());
+  const to = addDaysToYmd(from, 45);
+  try {
+    const response = await fetch(
+      `/api/availability?serviceCode=${encodeURIComponent(bookingService.value)}&from=${from}&to=${to}`,
+      { headers: { accept: "application/json" } }
+    );
+    const data = await readApiResponse(response);
+    if (!response.ok || !data) {
+      throw new Error(data?.error || "La agenda no respondió correctamente.");
+    }
+    availability = data;
+    renderDates();
+    setBookingStatus("Elegí una fecha y un horario disponibles.");
+  } catch (error) {
+    availability = null;
+    bookingDates.innerHTML = "";
+    bookingSlots.innerHTML = "";
+    setBookingStatus(
+      "No pudimos cargar la agenda en línea en este momento. Podés reservar por WhatsApp sin perder el trámite seleccionado.",
+      true,
+      true
+    );
+  }
+}
+
+function renderDates() {
+  const days = availability?.days || [];
+  const storedDate = sessionStorage.getItem("bookingDate");
+  selectedDate = days.some((day) => day.date === selectedDate)
+    ? selectedDate
+    : days.some((day) => day.date === storedDate)
+      ? storedDate
+      : days[0]?.date || null;
+  bookingDates.innerHTML = days.map((day) => {
+    const label = new Intl.DateTimeFormat("es-UY", {
+      timeZone: "America/Montevideo",
+      weekday: "short",
+      day: "numeric",
+      month: "short"
+    }).format(new Date(`${day.date}T12:00:00Z`));
+    return `<button type="button" class="booking-date${day.date === selectedDate ? " is-selected" : ""}" data-date="${day.date}" aria-pressed="${day.date === selectedDate}">${label}</button>`;
+  }).join("");
+  bookingDates.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => {
+    selectedDate = button.dataset.date;
+    selectedSlot = null;
+    sessionStorage.setItem("bookingDate", selectedDate);
+    sessionStorage.removeItem("bookingStart");
+    resetBookingAttempt();
+    bookingSubmit.disabled = true;
+    renderDates();
+  }));
+  renderSlots();
+}
+
+function renderSlots() {
+  const day = availability?.days?.find((entry) => entry.date === selectedDate);
+  if (!day) {
+    bookingSlots.innerHTML = "<p>No hay fechas disponibles en el período de 45 días.</p>";
+    return;
+  }
+  const storedStart = sessionStorage.getItem("bookingStart");
+  if (!selectedSlot && day.slots.some((slot) => slot.start === storedStart && slot.status === "available")) {
+    selectedSlot = storedStart;
+  }
+  bookingSlots.innerHTML = day.slots.map((slot) => {
+    const time = slot.start.slice(11, 16);
+    const unavailable = slot.status !== "available";
+    return `<button type="button" class="booking-slot ${unavailable ? "is-unavailable" : ""}${slot.start === selectedSlot ? " is-selected" : ""}" data-slot="${slot.start}" ${unavailable ? "disabled aria-disabled=\"true\"" : ""}>${time}<span>${unavailable ? "No disponible" : "Disponible"}</span></button>`;
+  }).join("");
+  bookingSlots.querySelectorAll("button:not([disabled])").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (selectedSlot !== button.dataset.slot) {
+        resetBookingAttempt();
+      }
+      selectedSlot = button.dataset.slot;
+      sessionStorage.setItem("bookingDate", selectedDate);
+      sessionStorage.setItem("bookingStart", selectedSlot);
+      bookingSubmit.disabled = !turnstileToken;
+      renderSlots();
+      if (turnstileWidgetId === null) {
+        setBookingStatus(
+          "La agenda en línea no está disponible en este momento. Podés reservar por WhatsApp sin perder el trámite seleccionado.",
+          true,
+          true
+        );
+      } else {
+        setBookingStatus(`Horario seleccionado: ${selectedSlot.slice(0, 10)} a las ${selectedSlot.slice(11, 16)}.`);
+      }
+    });
+  });
+  bookingSubmit.disabled = !selectedSlot || !turnstileToken;
+}
+
+function setupTurnstile() {
+  const siteKey = turnstileWidget.dataset.turnstileSiteKey;
+  if (turnstileWidgetId !== null) {
+    return;
+  }
+  if (!siteKey || !window.turnstile) {
+    setBookingStatus(
+      "La agenda en línea no está disponible en este momento. Podés reservar por WhatsApp sin perder el trámite seleccionado.",
+      true,
+      true
+    );
+    return;
+  }
+  turnstileWidgetId = window.turnstile.render(turnstileWidget, {
+    sitekey: siteKey,
+    action: "booking",
+    callback: (token) => {
+      turnstileToken = token;
+      bookingSubmit.disabled = !selectedSlot;
+    },
+    "expired-callback": () => {
+      turnstileToken = "";
+      bookingSubmit.disabled = true;
+      setBookingStatus("La verificación venció. Completala nuevamente.", true);
+    }
+  });
+}
+
+bookingName.addEventListener("input", () => syncSuggestedDetails());
+bookingForm.addEventListener("input", resetBookingAttempt);
+
+bookingService.addEventListener("change", () => {
+  const nextService = Object.entries(SERVICE_CODES)
+    .find(([, code]) => code === bookingService.value)?.[0] || "Consulta notarial";
+  const serviceChanged = nextService !== selectedService;
+  selectedService = nextService;
+  selectedDate = null;
+  selectedSlot = null;
+  sessionStorage.setItem("bookingServiceCode", bookingService.value);
+  sessionStorage.removeItem("bookingDate");
+  sessionStorage.removeItem("bookingStart");
+  resetBookingAttempt();
+  selectedServiceLabels.forEach((label) => {
+    label.textContent = selectedService;
+  });
+  syncSuggestedDetails(serviceChanged);
+  loadAvailability();
+});
+
+bookingForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!bookingForm.checkValidity()) {
+    bookingForm.reportValidity();
+    return;
+  }
+  if (!selectedSlot || !turnstileToken) {
+    setBookingStatus("Elegí un horario y completá la verificación de seguridad.", true);
+    return;
+  }
+
+  const fields = new FormData(bookingForm);
+  const payload = {
+    serviceCode: bookingService.value,
+    start: selectedSlot,
+    name: fields.get("name"),
+    email: fields.get("email"),
+    phone: fields.get("phone"),
+    details: fields.get("details"),
+    consent: fields.get("consent") === "on",
+    turnstileToken,
+    idempotencyKey: sessionStorage.getItem("bookingAttemptId") || randomKey()
+  };
+  sessionStorage.setItem("bookingAttemptId", payload.idempotencyKey);
+  bookingSubmit.disabled = true;
+  setBookingStatus("Confirmando la reserva…");
+
+  try {
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await readApiResponse(response);
+    if (!response.ok || !data) {
+      throw Object.assign(new Error(data?.error || "No se pudo confirmar la reserva."), {
+        status: response.status
+      });
+    }
+    sessionStorage.removeItem("bookingAttemptId");
+    sessionStorage.removeItem("bookingDate");
+    sessionStorage.removeItem("bookingStart");
+    bookingForm.reset();
+    bookingService.value = SERVICE_CODES[selectedService];
+    generatedDetails = "";
+    syncSuggestedDetails();
+    selectedSlot = null;
+    resetTurnstile();
+    setBookingStatus("Tu reserva quedó confirmada. Recibirás la invitación por correo.");
+  } catch (error) {
+    resetTurnstile();
+    setBookingStatus(
+      error.status === 409
+        ? "Ese horario acaba de ocuparse. Elegí otro."
+        : "No pudimos confirmar la reserva en este momento. Tus datos siguen en el formulario; podés reintentar o reservar por WhatsApp.",
+      true,
+      error.status !== 409
+    );
+    if (error.status === 409) {
+      resetBookingAttempt();
+      sessionStorage.removeItem("bookingStart");
+      loadAvailability();
+    }
+  }
+});
 function buildWhatsAppUrl(message) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-function buildEmailUrl(message, service) {
-  const subject = `Solicitud de turno: ${service}`;
-  return `mailto:${OFFICE_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-}
-
-whatsappChoice.addEventListener("click", () => {
+function openBookingWhatsApp() {
   const message = buildWhatsAppMessage(selectedService);
   const bookingWindow = window.open(buildWhatsAppUrl(message), "_blank");
 
@@ -276,32 +556,10 @@ whatsappChoice.addEventListener("click", () => {
   } else {
     showToast("No se pudo abrir WhatsApp. Escribinos al +598 91 048 471.");
   }
-});
+}
 
-bookingForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  validateWeekday();
-
-  if (!bookingForm.checkValidity()) {
-    bookingForm.reportValidity();
-    return;
-  }
-
-  const formData = new FormData(bookingForm);
-  const service = formData.get("service");
-  const draftMessage = buildEmailMessage({
-    name: formData.get("name"),
-    service,
-    preferredDate: formData.get("preferredDate"),
-    preferredTime: formData.get("preferredTime"),
-    email: formData.get("email"),
-    details: formData.get("details")
-  });
-
-  closeBookingDialog();
-  window.location.href = buildEmailUrl(draftMessage, service);
-  showToast("Se abrió tu correo. Revisá y enviá la solicitud para completar el proceso.");
-});
+whatsappChoice.addEventListener("click", openBookingWhatsApp);
+bookingFallbackWhatsapp.addEventListener("click", openBookingWhatsApp);
 
 copyAddressButton.addEventListener("click", async () => {
   try {

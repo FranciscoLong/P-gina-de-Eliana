@@ -55,6 +55,11 @@
     return `Hola Eliana, quisiera ${buildConsultationPhrase(service)}. ¿Qué disponibilidad tenés?`;
   }
 
+  function buildBookingDetails(name, service) {
+    const normalizedName = typeof name === "string" && name.trim() ? name.trim() : "[Nombre]";
+    return `Hola Eliana, soy ${normalizedName} y quisiera solicitar un turno para ${buildConsultationPhrase(service)}.`;
+  }
+
   function formatBookingDate(dateValue) {
     const [year, month, day] = String(dateValue).split("-");
     return `${day}/${month}/${year}`;
@@ -75,6 +80,7 @@
   }
 
   return {
+    buildBookingDetails,
     buildConsultationPhrase,
     buildEmailMessage,
     buildWhatsAppMessage

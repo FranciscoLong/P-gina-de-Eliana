@@ -53,9 +53,10 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=menu-activo-20260801">
+  <link rel="stylesheet" href="assets/styles.css?v=calendario-modal-20260801">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script src="assets/service-messages.js?v=mensajes-servicios-20260731" defer></script>
-  <script src="assets/main.js?v=menu-activo-20260801" defer></script>
+  <script src="assets/main.js?v=calendario-modal-20260801" defer></script>
 
   <script type="application/ld+json">
   {
@@ -125,10 +126,10 @@
       },
       {
         "@type": "Question",
-        "name": "¿La solicitud de turno queda confirmada automáticamente?",
+        "name": "¿La reserva de turno queda confirmada automáticamente?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. La solicitud queda sujeta a confirmación manual."
+          "text": "Sí. Al completar la reserva en la agenda en línea, recibís la confirmación por correo electrónico. Las consultas realizadas por WhatsApp se coordinan manualmente."
         }
       },
       {
@@ -194,16 +195,6 @@
   <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true">
     <symbol id="icon-whatsapp" viewBox="0 0 24 24">
       <path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-    </symbol>
-    <symbol id="icon-email" viewBox="0 0 24 24">
-      <path
-        d="M3 5.5h18v13H3zM4 7l8 6 8-6"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-      />
     </symbol>
     <symbol id="icon-clock" viewBox="0 0 24 24">
       <path
@@ -611,7 +602,17 @@
           <details>
             <summary>¿Es necesario reservar turno?</summary>
             <p>
-              No es obligatorio.
+              No es obligatorio, pero reservar permite elegir un horario disponible
+              y reducir el tiempo de espera.
+            </p>
+          </details>
+
+          <details>
+            <summary>¿La reserva queda confirmada automáticamente?</summary>
+            <p>
+              Sí. Al completar la reserva en la agenda en línea, recibís la
+              confirmación por correo electrónico. Las consultas realizadas por
+              WhatsApp se coordinan manualmente.
             </p>
           </details>
 
@@ -664,10 +665,9 @@
           <span class="eyebrow">Agenda</span>
           <h2>Reservar turno</h2>
           <p>
-            Podés elegir un trámite en
-            <a href="#servicios">Servicios notariales</a> o pedir el turno
-            directamente desde este formulario. Elegí el canal que te resulte
-            más cómodo.
+            Elegí un día y un horario disponible en la agenda en línea. Para
+            consultas urgentes o atención en otra localidad, también podés
+            comunicarte por WhatsApp.
           </p>
         </div>
 
@@ -685,11 +685,12 @@
           <div class="booking-overview-copy">
             <h3>Coordiná tu consulta</h3>
             <p>
-              Consultá disponibilidad por WhatsApp, sin completar formularios.
-              La solicitud por correo estará disponible próximamente.
+              Reservá directamente en la agenda y recibí la confirmación por
+              correo electrónico, o escribinos por WhatsApp si necesitás una
+              coordinación especial.
             </p>
             <button class="btn btn-dark" type="button" data-booking-open>
-              Solicitar turno
+              Elegir cómo reservar
             </button>
          
           </div>
@@ -709,8 +710,8 @@
                 <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
               </span>
               <span>
-                <strong>Sujeto a confirmación</strong>
-                <small>La escribana confirma la fecha y el horario</small>
+                <strong>Confirmación por correo</strong>
+                <small>Al completar la reserva en la agenda</small>
               </span>
             </li>
           </ul>
@@ -725,14 +726,28 @@
         </button>
 
         <div class="booking-dialog-step" id="bookingChannelStep">
-          <span class="booking-dialog-eyebrow">Solicitud de turno</span>
-          <h2 id="bookingDialogTitle">¿Cómo preferís contactarte?</h2>
+          <span class="booking-dialog-eyebrow">Reservar turno</span>
+          <h2 id="bookingDialogTitle">¿Cómo preferís coordinar?</h2>
           <p class="booking-dialog-service">
             Trámite seleccionado:
             <strong data-selected-service>Consulta notarial</strong>
           </p>
 
           <div class="booking-channel-options">
+            <button
+              class="booking-channel booking-channel-calendar"
+              id="calendarChoice"
+              type="button"
+            >
+              <span class="booking-channel-icon">
+                <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+              </span>
+              <span>
+                <strong>Agenda en línea</strong>
+                <small>Elegí un horario disponible y recibí la confirmación por correo.</small>
+              </span>
+            </button>
+
             <button class="booking-channel booking-channel-whatsapp" id="whatsappChoice" type="button">
               <span class="booking-channel-icon">
                 <svg aria-hidden="true" focusable="false"><use href="#icon-whatsapp"></use></svg>
@@ -743,98 +758,47 @@
               </span>
             </button>
 
-            <button class="booking-channel booking-channel-email" id="emailChoice" type="button" disabled>
-              <span class="booking-channel-icon">
-                <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
-              </span>
-              <span>
-                <strong>
-                  Correo electrónico
-                  <span class="booking-channel-badge">Próximamente</span>
-                </strong>
-                <small>Por ahora coordiná tu turno por WhatsApp.</small>
-              </span>
-            </button>
           </div>
 
           <p class="booking-dialog-note">
-            La consulta dura aproximadamente 45 minutos y queda sujeta a
-            confirmación de la escribana.
+            La consulta dura aproximadamente 45 minutos. Para reservar en línea,
+            completá los datos de contacto y confirmá el horario elegido.
           </p>
         </div>
 
-        <div class="booking-dialog-step" id="bookingEmailStep" hidden>
-          <span class="booking-dialog-eyebrow">Solicitud por correo</span>
-          <h2 id="bookingEmailTitle">Completá tus datos</h2>
-          <p class="booking-dialog-service">
-            Trámite seleccionado:
-            <strong data-selected-service>Consulta notarial</strong>
-          </p>
-
-          <form class="booking-form" id="bookingForm" autocomplete="on">
-            <input id="service" name="service" type="hidden" value="Consulta notarial">
-
-            <div class="field">
-              <label for="name">Nombre y apellido</label>
-              <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" required>
+        <div class="booking-dialog-step booking-calendar-step" id="bookingCalendarStep" hidden>
+          <button class="booking-dialog-back" id="backToBookingChannels" type="button">
+            <span aria-hidden="true">←</span>
+            Volver a las opciones
+          </button>
+          <span class="booking-dialog-eyebrow">Agenda en línea</span>
+          <h2 id="bookingCalendarTitle">Elegí día y horario</h2>
+          <p class="booking-calendar-intro">Elegí el trámite, una fecha y un horario. Los horarios ocupados se ven, pero no se pueden seleccionar.</p>
+          <form class="booking-form" id="bookingForm">
+            <label>Trámite
+              <select id="bookingService" name="serviceCode" required aria-describedby="bookingServiceHelp"></select>
+            </label>
+            <small id="bookingServiceHelp">Podés corregir el trámite antes de reservar.</small>
+            <div class="booking-dates" id="bookingDates" aria-label="Fechas disponibles" aria-live="polite"></div>
+            <fieldset class="booking-slots"><legend>Horario</legend><div id="bookingSlots" aria-live="polite"><p>Elegí una fecha para ver sus horarios.</p></div></fieldset>
+            <div class="booking-contact-fields">
+              <label>Nombre y apellido<input name="name" autocomplete="name" maxlength="120" required></label>
+              <label>Correo electrónico<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+              <label>Teléfono<input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+              <label class="booking-details">Contanos brevemente qué necesitás consultar<textarea name="details" maxlength="400" required aria-describedby="bookingDetailsHelp bookingSensitiveHelp"></textarea></label>
             </div>
-
-            <div class="field">
-              <label for="email">Correo electrónico</label>
-              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required>
-            </div>
-
-            <div class="field">
-              <label for="preferredDate">Fecha preferida</label>
-              <input id="preferredDate" name="preferredDate" type="date" required>
-            </div>
-
-            <div class="field">
-              <label for="preferredTime">Horario preferido</label>
-              <select id="preferredTime" name="preferredTime" required>
-                <option value="">Seleccionar</option>
-                <option>09:30</option>
-                <option>10:15</option>
-                <option>11:00</option>
-                <option>11:45</option>
-                <option>15:00</option>
-                <option>15:45</option>
-                <option>16:30</option>
-                <option>17:15</option>
-                <option>18:00</option>
-              </select>
-            </div>
-
-            <div class="field field-full">
-              <label for="details">Descripción breve de la consulta</label>
-              <textarea
-                id="details"
-                name="details"
-                placeholder="Contanos brevemente el motivo, sin incluir documentos ni información sensible."
-              ></textarea>
-            </div>
-
-            <div class="field field-full">
-              <div class="form-notice">
-                No envíes documentación, información financiera, números de
-                documentos ni otros datos sensibles.
-              </div>
-            </div>
-
-            <div class="field field-full checkbox-row">
-              <input id="privacy" name="privacy" type="checkbox" required>
-              <label for="privacy">
-                Acepto que mis datos sean utilizados para responder esta solicitud
-                y comprendo que el turno queda sujeto a confirmación.
-              </label>
-            </div>
-
-            <div class="field field-full form-actions">
-              <button class="btn btn-dark" type="submit">
-                <svg class="icon-email" aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
-                Preparar correo
-              </button>
-            </div>
+            <p class="booking-details-help" id="bookingDetailsHelp">Te dejamos un texto inicial con tu nombre y el trámite. Podés editarlo o agregar contexto, hasta 400 caracteres.</p>
+            <p class="booking-sensitive" id="bookingSensitiveHelp">No incluyas documentos, información financiera, números de documento ni otros datos sensibles.</p>
+            <label class="booking-consent"><input name="consent" type="checkbox" required> Consiento que estos datos se usen únicamente para coordinar esta consulta.</label>
+            <div id="turnstileWidget" data-turnstile-site-key="0x4AAAAAAEDu4f9hBOnYHyXW" aria-live="polite"></div>
+            <p class="booking-status" id="bookingStatus" role="status" aria-live="polite"></p>
+            <button
+              class="btn btn-secondary booking-fallback-whatsapp"
+              id="bookingFallbackWhatsapp"
+              type="button"
+              hidden
+            >Reservar por WhatsApp</button>
+            <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Confirmar reserva</button>
           </form>
         </div>
       </div>

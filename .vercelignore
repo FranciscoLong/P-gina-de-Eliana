@@ -1,5 +1,7 @@
 # Archivos de trabajo que no forman parte del sitio público.
 *.md
 tests/
+google-apps-script/
+.env.example
 .playwright-mcp/
 **/.DS_Store
