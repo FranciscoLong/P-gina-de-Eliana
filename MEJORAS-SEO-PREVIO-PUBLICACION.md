@@ -33,8 +33,9 @@ como errores SEO:
 4. **El asesoramiento es personal.** Cualquier contenido futuro sobre servicios
    o trámites debe ser informativo y general. No debe diagnosticar situaciones
    particulares ni sustituir el análisis directo de la escribana.
-5. **El calendario todavía no está conectado.** Es una funcionalidad pendiente
-   conocida y queda fuera de esta auditoría SEO.
+5. **El contacto se realiza por WhatsApp o correo electrónico.** El sitio no
+   gestiona horarios ni datos personales; prepara un mensaje editable según el
+   servicio seleccionado.
 6. **Rosario se mantiene como la única ubicación oficial publicada.** En
    Tarariras existe una oficina de apoyo con dirección fija y secretaria, pero
    no es la sede central y su cartel corresponde a la inmobiliaria. Por el
@@ -203,17 +204,16 @@ persona físicamente alejada de Rosario puede recibir antes otros resultados.
 
 ### Conservar y sincronizar las preguntas frecuentes
 
-El bloque JSON-LD declara ocho preguntas, mientras que la sección visible
-muestra seis. Algunas respuestas también tienen diferencias de redacción.
+El bloque JSON-LD y la sección visible incluyen las mismas seis preguntas y
+respuestas.
 
 Las preguntas frecuentes deben mantenerse porque reflejan dudas reales. Para
 que el marcado represente fielmente la página:
 
-- [ ] Mostrar en la sección visible todas las preguntas reales incluidas en el
-  JSON-LD, incluidas las de confirmación del turno y atención en el mismo día, si
-  siguen vigentes.
-- [ ] Usar exactamente la misma pregunta y respuesta en el HTML y en el JSON-LD.
-- [ ] Revisar ambos bloques juntos cada vez que se modifique una respuesta.
+- [x] Mostrar en la sección visible todas las preguntas reales incluidas en el
+  JSON-LD, incluida la vía de contacto para urgencias.
+- [x] Usar exactamente la misma pregunta y respuesta en el HTML y en el JSON-LD.
+- [x] Revisar ambos bloques juntos cada vez que se modifique una respuesta.
 - [x] Mantener respuestas generales y derivar los casos particulares a una
   consulta personal.
 
