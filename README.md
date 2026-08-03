@@ -39,6 +39,20 @@ python3 -m http.server 8000
 
 Luego abrir http://localhost:8000 en el navegador.
 
+## Convenciones visuales
+
+**Filos de color.** El filo lateral de 4px se reserva para elementos que
+aparecen repetidos en lista: las tarjetas de **Servicios** (verde) y las
+**preguntas frecuentes** (rojo). Ahí funciona como pauta vertical y se lee como
+sistema.
+
+No se usa en bloques únicos, como las tarjetas de **Contacto** y **Ubicación**:
+en móvil las columnas se apilan y cada tarjeta queda sola en pantalla, donde un
+filo sin hermanos al lado parece un borde a medio pintar en vez de una marca de
+familia. Esas tarjetas se distinguen por su título y su contenido.
+
+La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
+
 ## Contacto desde la página
 
 La sección **Contacto** ofrece dos vías:

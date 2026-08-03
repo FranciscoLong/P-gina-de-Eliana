@@ -18,6 +18,18 @@
   --header-height: 78px;
 }
 
+/*
+  FILOS DE COLOR
+  El filo lateral de 4px se reserva para los elementos que aparecen repetidos
+  en lista y que el usuario recorre de arriba abajo: las tarjetas de Servicios
+  (verde) y las preguntas frecuentes (rojo). Ahi el filo se lee como pauta
+  vertical y se entiende como sistema, no como adorno suelto.
+  No se usa en bloques unicos, como las tarjetas de Contacto y Ubicacion. En
+  movil las columnas se apilan y cada tarjeta queda sola en pantalla: un filo
+  sin hermanos al lado no se lee como marca de familia sino como un borde a
+  medio pintar. Esas tarjetas se distinguen por su contenido y su titulo.
+*/
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -397,6 +409,7 @@ p {
   background: var(--red-600);
 }
 
+/* Variante para fondos oscuros: hoy solo la usa el hero, con su propia capa. */
 .btn-secondary {
   border-color: rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.1);
@@ -408,21 +421,20 @@ p {
   color: var(--white);
 }
 
-.btn-light {
-  background: var(--white);
-  color: var(--green-950);
-}
-
 .btn-outline {
   border-color: var(--green-900);
   color: var(--green-900);
   background: transparent;
 }
 
+.btn-outline:hover,
+.btn-outline:focus-visible {
+  background: var(--green-100);
+}
+
 /*
   Sobre el hero claro (capa crema) los botones secundarios blancos no se ven;
-  se les da contorno verde. El otro .btn-secondary (tarjeta verde de
-  contacto) sigue en blanco.
+  se les da contorno verde.
 */
 .hero .btn-secondary {
   border-color: var(--green-900);
@@ -633,15 +645,34 @@ p {
   }
 }
 
-.contact-panel {
-  max-width: 920px;
-  margin-inline: auto;
-  padding: 38px 40px;
+/*
+  Escribir (izquierda) y visitar (derecha) son dos lecturas distintas, asi que
+  van en columnas separadas. La de contacto lleva mas peso porque contiene las
+  dos tarjetas de canal; la de ubicacion es una lista corta.
+*/
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+/*
+  Las dos tarjetas comparten superficie y sombra para leerse como un par, y
+  ninguna lleva filo de color: ver FILOS DE COLOR al inicio de la hoja.
+*/
+.contact-panel,
+.location-card {
+  padding: 34px 32px;
   border: 1px solid rgba(16, 44, 32, 0.1);
-  border-left: 5px solid var(--green-900);
   border-radius: var(--radius);
   background: var(--white);
   box-shadow: 0 18px 45px rgba(16, 44, 32, 0.09);
+}
+
+.contact-panel > h3,
+.location-card > h3 {
+  margin-bottom: 16px;
 }
 
 .contact-selected-service {
@@ -818,45 +849,36 @@ body.modal-open {
   color: var(--green-900);
 }
 
-.location-grid {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 40px;
-  align-items: stretch;
-}
-
 .location-card {
-  padding: 34px;
-  border-left: 5px solid var(--red-700);
-  border-radius: var(--radius);
-  background: var(--green-950);
-  color: var(--white);
+  display: flex;
+  flex-direction: column;
 }
 
-.location-card h2,
-.location-card p,
-.location-card .eyebrow {
-  color: var(--white);
-}
-
-.contact-list {
+/* El flex-grow empuja los botones al pie de la tarjeta aunque la lista sea corta. */
+.location-list {
+  flex: 1 0 auto;
   display: grid;
+  align-content: start;
   gap: 18px;
-  margin: 28px 0;
+  margin-bottom: 28px;
   list-style: none;
+  color: var(--gray-700);
 }
 
-.contact-list strong {
+.location-list span {
   display: block;
   margin-bottom: 3px;
-  color: #f2c6c7;
-  font-size: 0.82rem;
-  letter-spacing: 0.07em;
+  color: var(--red-700);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+/* El mapa cierra la seccion a lo ancho, debajo de las dos tarjetas. */
 .map-frame {
-  min-height: 500px;
+  margin-top: 28px;
+  min-height: 420px;
   overflow: hidden;
   border: 0;
   border-radius: var(--radius);
@@ -866,7 +888,7 @@ body.modal-open {
 .map-frame iframe {
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: 420px;
   border: 0;
 }
 
@@ -876,9 +898,11 @@ body.modal-open {
   max-width: 900px;
 }
 
+/* Mismo filo y misma curva que las tarjetas de servicios, en rojo. */
 details {
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
+  border: 1px solid rgba(16, 44, 32, 0.1);
+  border-left: 4px solid var(--red-700);
+  border-radius: 14px;
   background: var(--white);
   padding: 18px 20px;
 }
@@ -901,7 +925,7 @@ details p {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 1.15fr) minmax(180px, 0.65fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(280px, 1.5fr) minmax(180px, 0.5fr);
   gap: 42px;
   align-items: start;
   padding-bottom: 26px;
@@ -933,23 +957,20 @@ details p {
   line-height: 1.6;
 }
 
-.footer-detail-list {
+.footer-nav ul {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   list-style: none;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 0.88rem;
-  line-height: 1.45;
+  font-size: 0.9rem;
 }
 
-.footer-detail-list span {
-  display: block;
-  margin-bottom: 2px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.footer-nav a {
+  transition: color 0.2s ease;
+}
+
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+  color: var(--white);
 }
 
 .footer-bottom {
@@ -1018,20 +1039,12 @@ details p {
 
 @media (max-width: 960px) {
   .intro-grid,
-  .location-grid {
+  .contact-layout {
     grid-template-columns: 1fr;
   }
 
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .footer-brand {
-    grid-column: 1 / -1;
   }
 }
 
@@ -1109,7 +1122,8 @@ details p {
     padding: 30px 26px 32px;
   }
 
-  .contact-panel {
+  .contact-panel,
+  .location-card {
     padding: 28px 24px;
   }
 
@@ -1135,16 +1149,13 @@ details p {
     grid-template-columns: 1fr;
   }
 
-  .footer-brand {
-    grid-column: auto;
-  }
-
   .experience-card {
     right: 12px;
   }
 
-  .location-card {
-    padding: 28px;
+  .map-frame,
+  .map-frame iframe {
+    min-height: 320px;
   }
 
   .btn {
