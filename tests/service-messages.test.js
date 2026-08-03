@@ -2,27 +2,15 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
-  buildBookingDetails,
   buildConsultationPhrase,
   buildEmailMessage,
   buildWhatsAppMessage
 } = require("../assets/service-messages.js");
 
-test("prepara el texto editable de la reserva con nombre y trámite", () => {
-  assert.equal(
-    buildBookingDetails("", "Minuta notarial BPS"),
-    "Hola Eliana, soy [Nombre] y quisiera solicitar un turno para consultar por una minuta notarial para BPS."
-  );
-  assert.equal(
-    buildBookingDetails(" Ana Pérez ", "Minuta notarial BPS"),
-    "Hola Eliana, soy Ana Pérez y quisiera solicitar un turno para consultar por una minuta notarial para BPS."
-  );
-});
-
 test("redacta naturalmente una consulta notarial general", () => {
   assert.equal(
     buildWhatsAppMessage("Consulta notarial"),
-    "Hola Eliana, quisiera hacer una consulta notarial. ¿Qué disponibilidad tenés?"
+    "Hola Eliana, quisiera hacer una consulta notarial."
   );
 });
 
@@ -69,24 +57,15 @@ test("aplica las frases aprobadas a los servicios específicos", () => {
   });
 });
 
-test("adapta el correo a un servicio compuesto e incluye los detalles", () => {
+test("prepara un correo editable para el trámite seleccionado", () => {
   assert.equal(
-    buildEmailMessage({
-      name: "Ana Pérez",
-      service: "Cesión de Derechos Hereditarios",
-      preferredDate: "2026-08-10",
-      preferredTime: "10:15",
-      email: "ana@example.com",
-      details: "Necesito conocer la documentación requerida."
-    }),
+    buildEmailMessage("Cesión de Derechos Hereditarios"),
     [
-      "Hola Eliana, soy Ana Pérez y quisiera solicitar un turno para consultar por Cesión de Derechos Hereditarios.",
+      "Hola Eliana,",
       "",
-      "Me gustaría ir el 10/08/2026 a las 10:15.",
-      "Mi correo electrónico es ana@example.com.",
-      "Quería comentarte lo siguiente: Necesito conocer la documentación requerida.",
+      "Quisiera consultar por Cesión de Derechos Hereditarios.",
       "",
-      "Entiendo que la fecha y el horario quedan sujetos a confirmación. Muchas gracias."
+      "Muchas gracias."
     ].join("\n")
   );
 });
