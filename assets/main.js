@@ -60,6 +60,21 @@ document.addEventListener("click", (event) => {
   }
 });
 
+/*
+  El hero arranca por debajo de la topbar, asi que el salto por ancla lo deja
+  cortado a la mitad y encima ensucia la URL con #inicio. Los enlaces al inicio
+  (el del menu, el de la marca y el del pie) vuelven al tope real. No se pasa
+  "behavior" a proposito: asi manda el scroll-behavior del CSS, que ya contempla
+  prefers-reduced-motion.
+*/
+document.querySelectorAll('a[href="#inicio"]').forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0 });
+    history.replaceState(null, "", location.pathname + location.search);
+  });
+});
+
 const HEADER_OFFSET = 96;
 const sectionLinks = Array.from(navLinks.querySelectorAll('a[href^="#"]'))
   .map((link) => ({ link, section: document.getElementById(link.hash.slice(1)) }))
@@ -95,7 +110,14 @@ function findCurrentSectionLink() {
   sectionLinks.forEach((entry) => {
     if (entry.section.getBoundingClientRect().top <= HEADER_OFFSET) current = entry.link;
   });
-  return current;
+
+  /*
+    Arriba del todo la topbar (horarios y contacto) va por fuera del header y
+    empuja el hero unos 118px, o sea por debajo de HEADER_OFFSET, asi que ninguna
+    seccion califica. En esa franja la actual es la primera del menu, igual que
+    al final del documento la actual es la ultima.
+  */
+  return current || sectionLinks[0].link;
 }
 
 function updateScrollIndicator() {
