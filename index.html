@@ -53,9 +53,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=contacto-20260803-2">
-  <script src="assets/service-messages.js?v=contacto-20260803-2" defer></script>
-  <script src="assets/main.js?v=contacto-20260803-2" defer></script>
+  <link rel="stylesheet" href="assets/styles.css?v=inicio-20260804-2">
+  <script src="assets/service-messages.js?v=inicio-20260804-2" defer></script>
+  <script src="assets/main.js?v=inicio-20260804-2" defer></script>
 
   <script type="application/ld+json">
   {
@@ -298,6 +298,7 @@
       </button>
 
       <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio">Inicio</a></li>
         <li><a href="#eliana">Sobre mí</a></li>
         <li><a href="#servicios">Servicios</a></li>
         <li><a href="#preguntas">Preguntas</a></li>
@@ -801,19 +802,31 @@
       </div>
 
       <!--
-        El pie no repite teléfono, correo, dirección ni horario: la sección de
-        contacto queda inmediatamente arriba y el botón flotante de WhatsApp
-        está siempre visible. Los datos para buscadores viajan en el JSON-LD.
+        El horario se repite a proposito: la barra superior queda lejos una vez
+        que bajaste y el pie sin esa columna se veia vacio. Teléfono, correo y
+        dirección siguen sin repetirse porque la sección de contacto queda
+        inmediatamente arriba y el botón flotante de WhatsApp está siempre
+        visible. Los datos para buscadores viajan en el JSON-LD.
       -->
       <nav class="footer-nav" aria-label="Secciones del sitio">
         <h3>Secciones</h3>
         <ul>
+          <li><a href="#inicio">Inicio</a></li>
           <li><a href="#eliana">Sobre mí</a></li>
           <li><a href="#servicios">Servicios</a></li>
           <li><a href="#preguntas">Preguntas</a></li>
           <li><a href="#contactar">Contacto</a></li>
         </ul>
       </nav>
+
+      <div class="footer-hours">
+        <h3>Horarios</h3>
+        <p class="footer-hours-days">Lunes a viernes</p>
+        <ul>
+          <li>9:30 a 12:30</li>
+          <li>15:00 a 19:00</li>
+        </ul>
+      </div>
     </div>
 
     <div class="container footer-bottom">
