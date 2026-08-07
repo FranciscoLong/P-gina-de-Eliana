@@ -83,7 +83,10 @@ Acciones:
 
 - [x] Crear `robots.txt` permitiendo el rastreo y declarando el sitemap.
 - [x] Crear `sitemap.xml` con la URL canónica.
-- [ ] Verificar el dominio en Google Search Console.
+- [ ] Verificar el dominio en Google Search Console. Ya están en el sitio el
+  archivo de verificación `google7f42aa354ab58335.html` y la etiqueta
+  `google-site-verification` en el `<head>`; falta publicar en producción y
+  pulsar «Verificar» en Search Console.
 - [ ] Enviar el sitemap desde Search Console.
 - [ ] Inspeccionar la portada y solicitar su indexación.
 - [ ] Revisar posteriormente qué URL eligió Google como canónica.
@@ -173,9 +176,9 @@ cartel exterior pertenece a la inmobiliaria.
 
 Sugerencias:
 
-- [ ] Sustituir la frase `contamos con escritorio en la ciudad de Tarariras` por
+- [x] Sustituir la frase `contamos con escritorio en la ciudad de Tarariras` por
   una redacción que describa el servicio sin afirmar que existe otra sede.
-- [ ] Utilizar en la página un texto como:
+- [x] Utilizar en la página un texto como:
 
   > Atención notarial en Rosario y actuaciones coordinadas en Tarariras y otras
   > localidades del departamento de Colonia, según el trámite y la
@@ -185,9 +188,9 @@ Sugerencias:
   dirección oficial de Rosario.
 - [x] No publicar para Tarariras una dirección, horario, mapa, datos
   estructurados `LocalBusiness` ni un segundo Perfil de Empresa de Google.
-- [ ] Mencionar el departamento de Colonia de forma natural en el título, la
+- [x] Mencionar el departamento de Colonia de forma natural en el título, la
   introducción, la sección de contacto y el texto sobre zonas de atención.
-- [ ] Incluir en `areaServed` el departamento de Colonia y solo las localidades
+- [x] Incluir en `areaServed` el departamento de Colonia y solo las localidades
   donde exista una prestación real, dando prioridad a Rosario y Tarariras.
 - [ ] Revisar periódicamente en Search Console las consultas e impresiones para
   Rosario, Tarariras y Colonia antes de crear contenido adicional.
@@ -239,15 +242,17 @@ Acciones:
 
 Campos recomendados:
 
-- [ ] `@id` estable, por ejemplo
+- [x] `@id` estable:
   `https://www.escribaniaisbarbo.com.uy/#escribania`.
 - [ ] `postalCode`.
 - [ ] `geo.latitude` y `geo.longitude`.
 - [ ] `hasMap` con el Perfil de Empresa oficial.
 - [ ] `sameAs` con perfiles oficiales y verificables.
-- [ ] Revisar `areaServed`: priorizar `Departamento de Colonia`, Rosario,
-  Tarariras y las demás localidades donde exista una prestación real; retirar
-  zonas lejanas que no formen parte de la atención habitual.
+- [x] Revisar `areaServed`: priorizar `Departamento de Colonia`, Rosario,
+  Tarariras y las demás localidades donde exista una prestación real. Se
+  confirmó que también se trabaja fuera del departamento, por lo que se
+  mantienen Montevideo, Punta del Este, Durazno y Paysandú; se retiraron San
+  José de Mayo y Mercedes por no confirmarse una prestación real.
 
 No se deben completar propiedades con datos aproximados o no confirmados.
 
