@@ -145,7 +145,7 @@ Acciones:
 - [x] Mantener un único Perfil de Empresa, correspondiente a la sede oficial de
   Rosario; no crear una segunda ficha ni publicar una segunda dirección para
   Tarariras mientras funcione como oficina de apoyo.
-- [ ] Configurar en el perfil las zonas de servicio reales del departamento de
+- [x] Configurar en el perfil las zonas de servicio reales del departamento de
   Colonia, incluyendo Tarariras y otras localidades donde efectivamente se
   trabaje, sin modificar el nombre comercial con palabras clave.
 - [ ] Completar en Google la lista de servicios notariales reales para reforzar
@@ -156,8 +156,9 @@ Acciones:
 - [ ] Solicitar la corrección o eliminación de directorios que clasifiquen la
   escribanía como agencia inmobiliaria si esa clasificación es incorrecta.
 - [ ] Mantener los mismos datos en todos los perfiles profesionales legítimos.
-- [ ] Solicitar reseñas reales a clientes, sin incentivos ni textos preparados,
-  y responderlas profesionalmente.
+- [x] Solicitar reseñas reales a clientes, sin incentivos ni textos preparados,
+  y responderlas profesionalmente. El perfil ya cuenta con reseñas; mantener la
+  práctica de responderlas.
 
 Google y el sitio oficial ya coinciden en el horario. Las discrepancias de los
 otros directorios no justifican modificar los datos correctos del sitio ni del
