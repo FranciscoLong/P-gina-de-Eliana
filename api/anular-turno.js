@@ -11,9 +11,9 @@
   (styles.css) y la misma carga de fuentes que index.html.
 */
 
-const { WHATSAPP_NUMBER, cancellationNotice, formatSlot, sendEmail } = require("../lib/booking-emails");
-const { bookingService, findCancellableBooking } = require("../lib/reservations");
-const { createCalendarClient } = require("../lib/google-calendar");
+const { WHATSAPP_NUMBER, cancellationNotice, formatSlot, sendEmail } = require("./_lib/booking-emails");
+const { bookingService, findCancellableBooking } = require("./_lib/reservations");
+const { createCalendarClient } = require("./_lib/google-calendar");
 const { NO_STORE, bookingEnabled, calendarIds, originAllowed } = require("./_security");
 
 const calendar = createCalendarClient();

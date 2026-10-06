@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const crypto = require("node:crypto");
 
-const { createCalendarClient, signJwt } = require("../lib/google-calendar");
+const { createCalendarClient, signJwt } = require("../api/_lib/google-calendar");
 
 const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const PRIVATE_PEM = privateKey.export({ type: "pkcs8", format: "pem" });

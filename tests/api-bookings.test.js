@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const crypto = require("node:crypto");
 
-const { bookableDays, readRules } = require("../lib/booking");
+const { bookableDays, readRules } = require("../api/_lib/booking");
 
 const { privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const BASE_ENV = {

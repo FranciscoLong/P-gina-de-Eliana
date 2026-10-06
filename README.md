@@ -30,13 +30,16 @@ sin dependencias).
 │   ├── booking-config.js            Si la agenda está prendida y la clave de Turnstile
 │   ├── availability.js              Horarios libres y ocupados
 │   ├── bookings.js                  Confirmación del turno
-│   └── _security.js                 Interruptor, origen y verificación de Turnstile
-├── lib/
-│   ├── booking.js                   Reglas: horario, duración, anticipación, trámites
-│   ├── google-calendar.js           Cliente de Calendar con cuenta de servicio
-│   ├── reservations.js              Creación del turno sin duplicados
-│   └── booking-emails.js            Correos de confirmación y aviso
+│   ├── anular-turno.js              Página para anular un turno desde el correo
+│   ├── _security.js                 Interruptor, origen y verificación de Turnstile
+│   └── _lib/                        Código compartido; el guion bajo evita que se publique
+│       ├── booking.js               Reglas: horario, duración, anticipación, trámites
+│       ├── google-calendar.js       Cliente de Calendar con cuenta de servicio
+│       ├── reservations.js          Creación y anulación del turno sin duplicados
+│       ├── booking-emails.js        Correos de confirmación y aviso
+│       └── client-calendar.js       Enlace de Google Calendar y archivo .ics
 ├── tests/                           Pruebas unitarias (Google y correo simulados)
+├── CLAUDE.md                        Instrucciones para agentes (reseñas, reglas)
 └── README.md
 ```
 
@@ -98,7 +101,7 @@ turno y un botón, porque algunos programas de correo abren los enlaces solos
 para revisarlos. Al confirmar se borra el evento, el horario queda libre y
 Eliana recibe un aviso.
 
-Reglas, centralizadas en `lib/booking.js`:
+Reglas, centralizadas en `api/_lib/booking.js`:
 
 - Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00, en turnos de 45 minutos.
 - Hasta 45 días hacia adelante.
@@ -169,7 +172,7 @@ despliegue mediante `.vercelignore`.
 
 ```bash
 node --test tests/*.test.js
-for f in assets/*.js api/*.js lib/*.js; do node --check "$f"; done
+for f in assets/*.js api/*.js api/_lib/*.js; do node --check "$f"; done
 ```
 
 Las pruebas no llaman a Google, Turnstile ni Resend: simulan sus respuestas.
@@ -179,10 +182,10 @@ Las pruebas no llaman a Google, Turnstile ni Resend: simulan sus respuestas.
 La sección **Opiniones**, antes del pie, muestra reseñas del Perfil de Empresa
 de Google copiadas a mano, tal cual las escribió cada persona, con el nombre y
 la inicial del apellido. Tiene un botón para dejar una reseña
-(`g.page/r/…/review`) y otro para ver todas en Google Maps. Para actualizarlas
-se comparan con el perfil y se edita el bloque `OPINIONES` de `index.html`
-(puntaje, cantidad y tarjetas). No llevan datos estructurados: Google no admite
-reseñas propias publicadas en el sitio para mostrar estrellas.
+(`g.page/r/…/review`) y otro para ver todas en Google Maps. Los pasos para
+actualizarlas están en `CLAUDE.md`, sección "Actualizar las reseñas". No llevan
+datos estructurados: Google no admite reseñas propias publicadas en el sitio
+para mostrar estrellas.
 
 ## Pendientes de contenido
 
