@@ -677,11 +677,16 @@ async function setupTurnstile(siteKey) {
     if (turnstileWidgetId !== null) {
       return;
     }
+    // "flexible" no baja de 300px: en teléfonos angostos se usa el compacto.
+    // Se mide el formulario porque el contenedor vacío está oculto y mide 0.
+    const formBody = turnstileWidget.parentElement;
+    const formStyle = getComputedStyle(formBody);
+    const available = formBody.clientWidth - parseFloat(formStyle.paddingLeft) - parseFloat(formStyle.paddingRight);
     turnstileWidgetId = turnstile.render(turnstileWidget, {
       sitekey: siteKey,
       action: "booking",
       language: "es",
-      size: "flexible",
+      size: available >= 300 ? "flexible" : "compact",
       callback: (token) => {
         turnstileToken = token;
         refreshBookingForm();

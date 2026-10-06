@@ -926,9 +926,15 @@ body.modal-open {
   flex-direction: column;
 }
 
+/*
+  minmax(0, 1fr): la columna no crece al ancho mínimo de su contenido. Sin
+  esto, en el teléfono la verificación de Cloudflare (300px de mínimo) o un
+  select con opciones largas ensanchaban todos los campos y quedaban cortados.
+*/
 .booking-form-body {
   min-height: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 14px;
   padding-right: 6px;
@@ -1608,7 +1614,7 @@ details p {
   }
 
   .booking-contact-fields {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .booking-picker {
