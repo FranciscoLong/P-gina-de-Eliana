@@ -317,13 +317,11 @@ const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("es-UY", {
   month: "long"
 });
 
-const AVAILABILITY_MAX_AGE_MS = 60000;
 const UNAVAILABLE_MESSAGE =
   "No pudimos cargar la agenda en este momento. Podés reservar por WhatsApp con el trámite ya cargado.";
 
 let bookingConfigRequest = null;
 let availability = null;
-let availabilityLoadedAt = 0;
 let selectedDate = null;
 let selectedSlot = null;
 let attemptKey = null;
@@ -534,9 +532,8 @@ async function showBookingStep() {
   }
 
   setupTurnstile(config.turnstileSiteKey);
-  if (!availability || Date.now() - availabilityLoadedAt > AVAILABILITY_MAX_AGE_MS) {
-    await loadAvailability();
-  }
+  // Siempre se piden de nuevo: si Eliana bloqueó un día, que se vea al abrir.
+  await loadAvailability();
 }
 
 async function loadAvailability() {
@@ -551,7 +548,6 @@ async function loadAvailability() {
     }
 
     availability = data;
-    availabilityLoadedAt = Date.now();
     if (!availability.days.some((day) => day.date === selectedDate)) {
       selectedDate = availability.days.find((day) => day.slots.some((slot) => slot.status === "available"))?.date
         || availability.days[0]?.date

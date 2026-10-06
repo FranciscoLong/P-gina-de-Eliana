@@ -4,10 +4,11 @@
   Horarios de los próximos 45 días. Cada horario va como "available" o
   "unavailable"; nunca se devuelve qué evento lo ocupa.
 
-  La respuesta correcta se guarda 30 segundos en la CDN de Vercel: así una
-  ráfaga de visitas no agota la cuota de Google. Que un horario figure libre
-  unos segundos de más no confirma nada, porque /api/bookings vuelve a
-  consultar Google antes de crear el turno.
+  La respuesta correcta se guarda 10 segundos en la CDN de Vercel: así una
+  ráfaga de visitas no agota la cuota de Google, y un día que Eliana bloquea
+  se ve enseguida. Que un horario figure libre unos segundos de más no
+  confirma nada, porque /api/bookings vuelve a consultar Google antes de
+  crear el turno.
 */
 
 const { TIME_ZONE, bookableDays, overlaps, readRules } = require("../lib/booking");
@@ -16,7 +17,7 @@ const { blockedIntervals } = require("../lib/reservations");
 const { UNAVAILABLE_MESSAGE, bookingEnabled, calendarIds, originAllowed, send } = require("./_security");
 
 const calendar = createCalendarClient();
-const SHARED_CACHE = "public, max-age=0, s-maxage=30, stale-while-revalidate=30";
+const SHARED_CACHE = "public, max-age=0, s-maxage=10";
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") {

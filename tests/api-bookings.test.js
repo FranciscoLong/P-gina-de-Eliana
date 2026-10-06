@@ -130,7 +130,7 @@ test("la disponibilidad marca ocupados sin revelar qué los ocupa", async () => 
   network.busy = [{ start: slot.start, end: slot.end }];
   const response = await call(availability);
   assert.equal(response.status, 200);
-  assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=30, stale-while-revalidate=30");
+  assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=10");
   const first = response.body.days[0].slots[0];
   assert.deepEqual(Object.keys(first).sort(), ["end", "start", "status"]);
   assert.equal(first.status, "unavailable");
