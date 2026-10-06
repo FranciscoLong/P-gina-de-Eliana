@@ -1338,6 +1338,24 @@ body.modal-open {
   border-radius: var(--radius);
   background: var(--white);
   box-shadow: 0 18px 45px rgba(16, 44, 32, 0.09);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/*
+  Al pasar el mouse, o al tocarla en una pantalla táctil (main.js le pone
+  is-touched), el borde se remarca en verde. El trazo extra es una sombra
+  de 1px: engrosar el borde correría el contenido.
+*/
+.review-card.is-touched {
+  border-color: var(--green-800);
+  box-shadow: 0 0 0 1px var(--green-800), 0 18px 45px rgba(16, 44, 32, 0.14);
+}
+
+@media (hover: hover) {
+  .review-card:hover {
+    border-color: var(--green-800);
+    box-shadow: 0 0 0 1px var(--green-800), 0 18px 45px rgba(16, 44, 32, 0.14);
+  }
 }
 
 /* El texto ocupa el alto sobrante para que el autor quede al pie de cada tarjeta. */

@@ -868,6 +868,27 @@ loadBookingConfig().then((config) => {
 });
 
 
+/*
+  En pantallas táctiles no hay hover: tocar una reseña la deja marcada hasta
+  tocar otra o cualquier otro lugar de la página.
+*/
+document.addEventListener(
+  "pointerdown",
+  (event) => {
+    if (event.pointerType === "mouse") {
+      return;
+    }
+    const touched = event.target.closest?.(".review-card");
+    document.querySelectorAll(".review-card.is-touched").forEach((card) => {
+      if (card !== touched) {
+        card.classList.remove("is-touched");
+      }
+    });
+    touched?.classList.add("is-touched");
+  },
+  { passive: true }
+);
+
 copyAddressButton.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(OFFICE_ADDRESS);
