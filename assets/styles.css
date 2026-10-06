@@ -1094,9 +1094,26 @@ body.modal-open {
   line-height: 1.15;
 }
 
-.booking-date:hover {
+.booking-date:hover:not(:disabled):not(.is-selected) {
   border-color: var(--green-800);
   background: var(--green-100);
+}
+
+/* Día completo: el mismo tratamiento que un horario ocupado, para no depender solo del color. */
+.booking-date:disabled {
+  border-style: dashed;
+  background: transparent;
+  color: var(--gray-500);
+  cursor: not-allowed;
+}
+
+.booking-date:disabled .booking-date-weekday,
+.booking-date:disabled .booking-date-month {
+  color: var(--gray-500);
+}
+
+.booking-date:disabled .booking-date-day {
+  text-decoration: line-through;
 }
 
 .booking-date.is-selected {

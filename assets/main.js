@@ -334,6 +334,11 @@ let markMissing = false;
 // Correo y teléfono mal escritos se avisan recién al salir del campo.
 const leftFields = new Set();
 
+// Un día sin ningún horario libre, por turnos tomados o por un evento de todo el día.
+function isFullDay(day) {
+  return !day.slots.some((slot) => slot.status === "available");
+}
+
 function formatSlot(start) {
   const parts = Object.fromEntries(
     SLOT_FORMATTER.formatToParts(new Date(start)).map((part) => [part.type, part.value])
@@ -401,7 +406,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BOOKING_FIELDS = {
   slot: {
     error: "bookingSlotError",
-    control: () => bookingSlots.querySelector("button:not([disabled])") || bookingDates.querySelector("button")
+    control: () => bookingSlots.querySelector("button:not([disabled])") || bookingDates.querySelector("button:not([disabled])")
   },
   service: { error: "bookingServiceError", control: () => bookingService },
   name: { error: "bookingNameError", control: () => bookingForm.elements.name },
@@ -548,8 +553,10 @@ async function loadAvailability() {
     }
 
     availability = data;
-    if (!availability.days.some((day) => day.date === selectedDate)) {
-      selectedDate = availability.days.find((day) => day.slots.some((slot) => slot.status === "available"))?.date
+    // Se mantiene el día elegido mientras tenga horarios; si se llenó, se pasa al primero libre.
+    const current = availability.days.find((day) => day.date === selectedDate);
+    if (!current || isFullDay(current)) {
+      selectedDate = availability.days.find((day) => !isFullDay(day))?.date
         || availability.days[0]?.date
         || null;
     }
@@ -558,8 +565,9 @@ async function loadAvailability() {
     }
 
     renderDates(true);
-    setBookingStatus(availability.days.length ? "" : "No quedan horarios en las próximas semanas.", {
-      offerWhatsApp: !availability.days.length
+    const noneLeft = !availability.days.some((day) => !isFullDay(day));
+    setBookingStatus(noneLeft ? "No quedan horarios libres en las próximas semanas." : "", {
+      offerWhatsApp: noneLeft
     });
   } catch (_error) {
     availability = null;
@@ -590,12 +598,18 @@ function renderDates(center = false) {
     const date = new Date(`${day.date}T12:00:00Z`);
     const parts = Object.fromEntries(DATE_CHIP_FORMATTER.formatToParts(date).map((part) => [part.type, part.value]));
     const button = document.createElement("button");
-    const isSelected = day.date === selectedDate;
+    const full = isFullDay(day);
+    const isSelected = day.date === selectedDate && !full;
     button.type = "button";
     button.className = `booking-date${isSelected ? " is-selected" : ""}`;
     button.dataset.date = day.date;
+    // Completo: tachado como los horarios ocupados y sin poder elegirse.
+    button.disabled = full;
     button.setAttribute("aria-pressed", String(isSelected));
-    button.setAttribute("aria-label", DATE_LABEL_FORMATTER.format(date));
+    button.setAttribute(
+      "aria-label",
+      `${DATE_LABEL_FORMATTER.format(date)}${full ? ", sin horarios disponibles" : ""}`
+    );
     button.innerHTML = `<span class="booking-date-weekday">${trimDot(parts.weekday)}</span>`
       + `<span class="booking-date-day">${parts.day}</span>`
       + `<span class="booking-date-month">${trimDot(parts.month)}</span>`;
