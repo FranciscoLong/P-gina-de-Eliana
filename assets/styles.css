@@ -1576,11 +1576,12 @@ details p {
 }
 
 /*
-  El menu horizontal necesita 680px (marca + enlaces + separacion) y entra
-  holgado hasta los 760px de viewport. Recien por debajo se colapsa en el
-  desplegable, asi las pantallas medianas conservan los enlaces a la vista.
+  Con seis enlaces (desde que se sumo Opiniones) el menu horizontal entra en
+  una sola linea recien desde los 782px de viewport. Por debajo de 840px se
+  colapsa en el desplegable: el margen cubre la carga de la tipografia, que
+  antes de llegar se dibuja con una fuente mas ancha.
 */
-@media (max-width: 760px) {
+@media (max-width: 840px) {
   .nav-links {
     position: absolute;
     top: calc(100% + 8px);
@@ -1603,7 +1604,9 @@ details p {
   .menu-button {
     display: block;
   }
+}
 
+@media (max-width: 760px) {
   /*
     Las tres columnas no entran a lo ancho, pero apilarlas dejaba dos listas
     cortas ocupando una pantalla entera. La presentacion pasa a lo ancho y
