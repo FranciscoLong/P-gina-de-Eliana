@@ -85,6 +85,19 @@ Resend: la confirmación al cliente (con dirección y enlace de WhatsApp para
 cancelar) y un aviso a Eliana. Al cliente no se lo agrega como invitado del
 evento.
 
+La confirmación también trae un enlace para agregar el turno a Google Calendar
+y un archivo `turno.ics` adjunto para iPhone, Outlook y otros calendarios. Es
+una copia: si Eliana mueve o anula el turno, la del cliente no cambia.
+
+Como cualquiera puede escribir un correo ajeno al reservar, la confirmación
+dice que, si no reservaste ningún turno, ignores el mensaje, y trae un enlace
+para anularlo (`/api/anular-turno`). El enlace lleva el id del evento y una
+clave aleatoria que se guarda en el propio evento al crearlo: solo sirve para
+ese turno y vence cuando el turno empieza. Abrirlo no anula nada; muestra el
+turno y un botón, porque algunos programas de correo abren los enlaces solos
+para revisarlos. Al confirmar se borra el evento, el horario queda libre y
+Eliana recibe un aviso.
+
 Reglas, centralizadas en `lib/booking.js`:
 
 - Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00, en turnos de 45 minutos.

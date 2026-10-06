@@ -19,6 +19,7 @@ const REQUIRED_SETTINGS = [
   "RESEND_API_KEY",
   "BOOKING_EMAIL_FROM"
 ];
+const NO_STORE = "private, no-store, max-age=0";
 
 function bookingEnabled(env = process.env) {
   return env.BOOKING_ENABLED === "true" && REQUIRED_SETTINGS.every((key) => Boolean(env[key]));
@@ -58,6 +59,16 @@ function hostOf(value) {
   }
 }
 
+// Host al que llegó el pedido; detrás del proxy de Vercel viene en x-forwarded-host.
+function requestHost(req) {
+  return String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim().toLowerCase();
+}
+
+// Sitio desde el que se hizo el pedido: el encabezado Origin o, si no viene, el host.
+function requestOrigin(req) {
+  return req.headers.origin || `https://${requestHost(req)}`;
+}
+
 function originAllowed(req, env = process.env) {
   const allowedHosts = allowedOrigins(env).map(hostOf).filter(Boolean).concat(previewHosts(env));
   const origin = req.headers.origin;
@@ -68,11 +79,10 @@ function originAllowed(req, env = process.env) {
   }
 
   // Los GET del mismo origen pueden llegar sin Origin: se usa el host pedido.
-  const forwardedHost = String(req.headers["x-forwarded-host"] || "").split(",")[0].trim();
-  return allowedHosts.includes(String(forwardedHost || req.headers.host || "").toLowerCase());
+  return allowedHosts.includes(requestHost(req));
 }
 
-function send(res, status, body, cacheControl = "private, no-store, max-age=0") {
+function send(res, status, body, cacheControl = NO_STORE) {
   res.setHeader("Cache-Control", cacheControl);
   res.status(status).json(body);
 }
@@ -114,6 +124,7 @@ async function verifyTurnstile(token, ip, { env = process.env, fetchImpl = fetch
 }
 
 module.exports = {
+  NO_STORE,
   REQUIRED_SETTINGS,
   TURNSTILE_ACTION,
   UNAVAILABLE_MESSAGE,
@@ -121,6 +132,7 @@ module.exports = {
   calendarIds,
   clientIp,
   originAllowed,
+  requestOrigin,
   send,
   verifyTurnstile
 };
