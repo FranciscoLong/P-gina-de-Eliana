@@ -213,7 +213,8 @@ function showDialogStep(step) {
   contactDialog.scrollTop = 0;
 }
 
-function openContactDialog(service = selectedService, { booking = false, fromService = false } = {}) {
+// Los botones generales abren sin trámite: el de una consulta anterior no se arrastra.
+function openContactDialog(service = null, { booking = false, fromService = false } = {}) {
   setSelectedService(service);
   serviceIsFixed = fromService && Boolean(selectedService);
 
@@ -255,7 +256,7 @@ bookingStartButtons.forEach((button) => {
     if (contactDialog.contains(button)) {
       showBookingStep();
     } else {
-      openContactDialog(selectedService, { booking: true });
+      openContactDialog(null, { booking: true });
     }
   });
 });
@@ -400,11 +401,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Dónde se avisa cada problema y a qué control se lleva el foco.
 const BOOKING_FIELDS = {
-  service: { error: "bookingServiceError", control: () => bookingService },
   slot: {
     error: "bookingSlotError",
     control: () => bookingSlots.querySelector("button:not([disabled])") || bookingDates.querySelector("button")
   },
+  service: { error: "bookingServiceError", control: () => bookingService },
   name: { error: "bookingNameError", control: () => bookingForm.elements.name },
   phone: { error: "bookingPhoneError", control: () => bookingForm.elements.phone },
   email: { error: "bookingEmailError", control: () => bookingForm.elements.email },
@@ -423,11 +424,11 @@ function bookingProblems() {
   const problems = [];
   const add = (key, summary, message, malformed = false) => problems.push({ key, summary, message, malformed });
 
-  if (!bookingService.disabled && !bookingService.value) {
-    add("service", "el motivo", "Elegí el motivo de la consulta.");
-  }
   if (!selectedSlot) {
     add("slot", "el horario", "Elegí un día y un horario.");
+  }
+  if (!bookingService.disabled && !bookingService.value) {
+    add("service", "el motivo", "Elegí el motivo de la consulta.");
   }
   if (fields.name.value.trim().length < 2) {
     add("name", "tu nombre", "Escribí tu nombre y apellido.");

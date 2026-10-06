@@ -54,9 +54,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=reservas-20261006">
-  <script src="assets/service-messages.js?v=reservas-20261006" defer></script>
-  <script src="assets/main.js?v=reservas-20261006" defer></script>
+  <link rel="stylesheet" href="assets/styles.css?v=reservas-20261006-2">
+  <script src="assets/service-messages.js?v=reservas-20261006-2" defer></script>
+  <script src="assets/main.js?v=reservas-20261006-2" defer></script>
 
   <script type="application/ld+json">
   {
@@ -811,20 +811,10 @@
 
           <form class="booking-form" id="bookingForm" novalidate>
             <div class="booking-form-body">
-              <!--
-                Si el trámite vino elegido desde Servicios se muestra fijo; si
-                no, se pide con un select armado desde las tarjetas de Servicios.
-              -->
+              <!-- Si el trámite vino elegido desde Servicios se muestra fijo acá. -->
               <p class="booking-service" id="bookingServiceFixed">
                 Trámite: <strong data-selected-service>Consulta notarial</strong>
               </p>
-              <div class="booking-field" id="bookingServiceField" hidden>
-                <label for="bookingService">Motivo de la consulta</label>
-                <select id="bookingService" name="service" required disabled aria-describedby="bookingServiceError">
-                  <option value="">Elegí el motivo</option>
-                </select>
-                <p class="booking-field-error" id="bookingServiceError" hidden></p>
-              </div>
 
               <div class="booking-picker" id="bookingPicker">
                 <div>
@@ -839,6 +829,18 @@
               </div>
 
               <div class="booking-contact-fields">
+                <!--
+                  Si no vino de Servicios, el motivo se pide acá, junto a los
+                  datos: arriba de todo quedaba perdido en pantallas grandes.
+                  Las opciones se arman desde las tarjetas de Servicios.
+                -->
+                <div class="booking-field booking-wide" id="bookingServiceField" hidden>
+                  <label for="bookingService">Motivo de la consulta</label>
+                  <select id="bookingService" name="service" required disabled aria-describedby="bookingServiceError">
+                    <option value="">Seleccioná uno</option>
+                  </select>
+                  <p class="booking-field-error" id="bookingServiceError" hidden></p>
+                </div>
                 <div class="booking-field">
                   <label for="bookingName">Nombre y apellido</label>
                   <input id="bookingName" name="name" autocomplete="name" autocapitalize="words" maxlength="120" required aria-describedby="bookingNameError">
