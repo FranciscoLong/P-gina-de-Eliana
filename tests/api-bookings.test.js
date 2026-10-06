@@ -25,7 +25,7 @@ const ORIGIN = "https://www.escribaniaisbarbo.com.uy";
   Todas las salidas a la red pasan por este fetch falso. Cada prueba arma su
   escenario en `network` y después revisa qué se pidió.
 */
-const network = { requests: [], busy: [], events: new Map(), turnstile: true, resendStatus: 200, googleDown: false };
+const network = { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false };
 
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -59,6 +59,9 @@ globalThis.fetch = async (url, init = {}) => {
     const created = { ...event, status: "confirmed", htmlLink: "https://calendar.google.com/event?eid=x" };
     network.events.set(event.id, created);
     return jsonResponse(200, created);
+  }
+  if (/\/events\?/.test(String(url))) {
+    return jsonResponse(200, { items: [...network.events.values()].concat(network.allDay) });
   }
   const id = decodeURIComponent(String(url).split("/").pop());
   return network.events.has(id) ? jsonResponse(200, network.events.get(id)) : jsonResponse(404, {});
@@ -105,7 +108,7 @@ test.beforeEach(() => {
     if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key === "VERCEL_ENV") delete process.env[key];
   }
   Object.assign(process.env, BASE_ENV);
-  Object.assign(network, { requests: [], busy: [], events: new Map(), turnstile: true, resendStatus: 200, googleDown: false });
+  Object.assign(network, { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false });
 });
 
 test("con el interruptor apagado no se toca Google y la configuración dice que no hay agenda", async () => {
@@ -127,7 +130,7 @@ test("la disponibilidad marca ocupados sin revelar qué los ocupa", async () => 
   network.busy = [{ start: slot.start, end: slot.end }];
   const response = await call(availability);
   assert.equal(response.status, 200);
-  assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=30, stale-while-revalidate=30");
+  assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=10");
   const first = response.body.days[0].slots[0];
   assert.deepEqual(Object.keys(first).sort(), ["end", "start", "status"]);
   assert.equal(first.status, "unavailable");
@@ -209,4 +212,21 @@ test("una anticipación mal configurada apaga las reservas", async () => {
   process.env.BOOKING_MIN_NOTICE_HOURS = "dos días";
   assert.equal((await call(bookings, { method: "POST", body: bookingBody() })).status, 503);
   assert.equal((await call(availability)).status, 503);
+});
+
+test("un día marcado con un evento de todo el día aparece entero como no disponible", async () => {
+  const date = firstSlot().start.slice(0, 10);
+  const next = new Date(`${date}T12:00:00Z`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  network.allDay = [{
+    id: "ausencia",
+    status: "confirmed",
+    transparency: "transparent",
+    start: { date },
+    end: { date: next.toISOString().slice(0, 10) }
+  }];
+  const response = await call(availability);
+  const day = response.body.days.find((entry) => entry.date === date);
+  assert.ok(day.slots.every((slot) => slot.status === "unavailable"));
+  assert.equal((await call(bookings, { method: "POST", body: bookingBody() })).status, 409);
 });
