@@ -15,7 +15,6 @@ const BASE_ENV = {
     private_key: privateKey.export({ type: "pkcs8", format: "pem" })
   }),
   RESEND_API_KEY: "re_test",
-  BOOKING_LINK_SECRET: "s".repeat(40),
   TURNSTILE_SECRET_KEY: "secreto",
   TURNSTILE_SITE_KEY: "0x4AAAAAAAAAAAAAAAAAAAAA",
   VERCEL_ENV: "production"
@@ -27,6 +26,14 @@ const ORIGIN = "https://www.escribaniaisbarbo.com.uy";
   escenario en `network` y después revisa qué se pidió.
 */
 const network = { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false };
+
+function idFrom(url) {
+  return decodeURIComponent(String(url).split("?")[0].split("/").pop());
+}
+
+function sentEmails() {
+  return network.requests.filter((request) => request.url === "https://api.resend.com/emails");
+}
 
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -55,10 +62,9 @@ globalThis.fetch = async (url, init = {}) => {
     });
   }
   if (init.method === "DELETE") {
-    const id = decodeURIComponent(String(url).split("?")[0].split("/").pop());
-    const existing = network.events.get(id);
+    const existing = network.events.get(idFrom(url));
     if (!existing) return jsonResponse(404, {});
-    network.events.set(id, { ...existing, status: "cancelled" });
+    network.events.set(existing.id, { ...existing, status: "cancelled" });
     return new Response(null, { status: 204 });
   }
   if (init.method === "POST") {
@@ -72,7 +78,7 @@ globalThis.fetch = async (url, init = {}) => {
     const active = [...network.events.values()].filter((event) => event.status !== "cancelled");
     return jsonResponse(200, { items: active.concat(network.allDay) });
   }
-  const id = decodeURIComponent(String(url).split("/").pop());
+  const id = idFrom(url);
   return network.events.has(id) ? jsonResponse(200, network.events.get(id)) : jsonResponse(404, {});
 };
 
@@ -88,9 +94,10 @@ function call(handler, { method = "GET", body, origin = ORIGIN, query = {} } = {
       statusCode: 200,
       setHeader(name, value) { this.headers[name.toLowerCase()] = value; },
       status(code) { this.statusCode = code; return this; },
-      json(payload) { resolve({ status: this.statusCode, body: payload, headers: this.headers }); },
-      send(payload) { resolve({ status: this.statusCode, body: payload, headers: this.headers }); },
-      end() { resolve({ status: this.statusCode, body: "", headers: this.headers }); }
+      done(payload = "") { resolve({ status: this.statusCode, body: payload, headers: this.headers }); },
+      json(payload) { this.done(payload); },
+      send(payload) { this.done(payload); },
+      end() { this.done(); }
     };
     Promise.resolve(handler({ method, headers: origin ? { origin } : {}, body, query }, res));
   });
@@ -169,7 +176,7 @@ test("confirma el turno, crea el evento y manda los dos correos una sola vez", a
   assert.equal(response.body.emailSent, true);
   assert.equal(network.events.size, 1);
 
-  const emails = network.requests.filter((request) => request.url === "https://api.resend.com/emails");
+  const emails = sentEmails();
   assert.equal(emails.length, 2);
   const [client, office] = emails.map((request) => JSON.parse(request.init.body));
   assert.deepEqual(client.to, ["ana@example.com"]);
@@ -181,7 +188,7 @@ test("confirma el turno, crea el evento y manda los dos correos una sola vez", a
   const retry = await call(bookings, { method: "POST", body });
   assert.equal(retry.status, 200);
   assert.equal(network.events.size, 1);
-  assert.equal(network.requests.filter((request) => request.url === "https://api.resend.com/emails").length, 2);
+  assert.equal(sentEmails().length, 2);
 });
 
 test("sin Turnstile válido no se consulta el calendario", async () => {
@@ -210,7 +217,7 @@ test("si Google falla no se confirma nada", async () => {
   network.googleDown = true;
   const response = await call(bookings, { method: "POST", body: bookingBody() });
   assert.equal(response.status, 503);
-  assert.equal(network.requests.some((request) => request.url === "https://api.resend.com/emails"), false);
+  assert.equal(sentEmails().length, 0);
 });
 
 test("datos inválidos responden 400 con el detalle por campo y sin tocar la red", async () => {
@@ -244,7 +251,7 @@ test("un día marcado con un evento de todo el día aparece entero como no dispo
 });
 
 function cancelLinkFromEmail() {
-  const email = network.requests.find((request) => request.url === "https://api.resend.com/emails");
+  const email = sentEmails()[0];
   const text = JSON.parse(email.init.body).text;
   const url = text.match(/https:\/\/\S+\/api\/anular-turno\?t=(\S+)/);
   return url[1];
@@ -252,7 +259,7 @@ function cancelLinkFromEmail() {
 
 test("el correo al cliente trae el enlace para anular, del mismo sitio donde reservó", async () => {
   await call(bookings, { method: "POST", body: bookingBody() });
-  const email = network.requests.find((request) => request.url === "https://api.resend.com/emails");
+  const email = sentEmails()[0];
   assert.match(JSON.parse(email.init.body).text, /https:\/\/www\.escribaniaisbarbo\.com\.uy\/api\/anular-turno\?t=/);
 });
 
@@ -275,7 +282,7 @@ test("confirmar la anulación borra el evento, libera el horario y avisa a Elian
   assert.match(response.body, /Turno anulado/);
   assert.equal([...network.events.values()][0].status, "cancelled");
 
-  const notice = network.requests.filter((request) => request.url === "https://api.resend.com/emails").at(-1);
+  const notice = sentEmails().at(-1);
   assert.match(JSON.parse(notice.init.body).subject, /^Turno anulado: /);
 
   // El horario se puede volver a reservar.

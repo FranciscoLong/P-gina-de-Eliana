@@ -1,7 +1,14 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { SlotTakenError, eventIdFor, reserveSlot } = require("../lib/reservations");
+const {
+  SlotTakenError,
+  bookingService,
+  cancelToken,
+  eventIdFor,
+  findCancellableBooking,
+  reserveSlot
+} = require("../lib/reservations");
 
 const SLOT = { start: "2026-10-07T09:30:00-03:00", end: "2026-10-07T10:15:00-03:00" };
 
@@ -202,4 +209,47 @@ test("un evento de todo el día de otra fecha no bloquea", async () => {
   const calendar = fakeCalendar({ events: [allDay("ayer", "2026-10-06"), allDay("manana", "2026-10-08")] });
   const { created } = await reserve(calendar);
   assert.equal(created, true);
+});
+
+test("el evento guarda el trámite y una clave aleatoria para el enlace de anular", async () => {
+  const { event } = await reserve(fakeCalendar());
+  assert.equal(event.extendedProperties.private.service, "Sucesiones");
+  assert.match(event.extendedProperties.private.cancelKey, /^[A-Za-z0-9_-]{24}$/);
+  assert.equal(cancelToken(event), `${event.id}.${event.extendedProperties.private.cancelKey}`);
+  assert.equal(bookingService(event), "Sucesiones");
+  assert.equal(bookingService({ summary: "Turno: Poderes · Ana" }), "Poderes");
+});
+
+const BEFORE = new Date("2026-10-06T12:00:00-03:00");
+
+test("el enlace encuentra el turno solo con su clave y antes de que empiece", async () => {
+  const calendar = fakeCalendar();
+  const { event } = await reserve(calendar);
+  const token = cancelToken(event);
+
+  assert.equal((await findCancellableBooking(calendar, "cal", token, BEFORE)).state, "active");
+  assert.equal((await findCancellableBooking(calendar, "cal", `${event.id}.otra-clave`, BEFORE)).state, "invalid");
+  assert.equal((await findCancellableBooking(calendar, "cal", token, new Date(SLOT.start))).state, "invalid");
+  for (const malformed of [undefined, "", "sin-punto", `${token}.extra`, "IDMAYUSC.clave", "x".repeat(300)]) {
+    assert.equal((await findCancellableBooking(calendar, "cal", malformed, BEFORE)).state, "invalid", malformed);
+  }
+});
+
+test("un turno anulado o pasado a todo el día ya no se puede anular", async () => {
+  const calendar = fakeCalendar();
+  const { event } = await reserve(calendar);
+  const token = cancelToken(event);
+
+  calendar.store.set(event.id, { ...event, start: { date: "2026-10-07" }, end: { date: "2026-10-08" } });
+  assert.equal((await findCancellableBooking(calendar, "cal", token, BEFORE)).state, "inactive");
+
+  calendar.store.set(event.id, { ...event, status: "cancelled" });
+  assert.equal((await findCancellableBooking(calendar, "cal", token, BEFORE)).state, "inactive");
+});
+
+test("un evento que no es de la página no se puede anular aunque se adivine el id", async () => {
+  const calendar = fakeCalendar({
+    events: [{ id: "turno202610070930v0", status: "confirmed", start: { dateTime: SLOT.start }, end: { dateTime: SLOT.end } }]
+  });
+  assert.equal((await findCancellableBooking(calendar, "cal", "turno202610070930v0.clave", BEFORE)).state, "invalid");
 });

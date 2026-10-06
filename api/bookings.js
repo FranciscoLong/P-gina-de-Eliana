@@ -11,15 +11,15 @@
 
 const { readRules, validateBooking } = require("../lib/booking");
 const { createCalendarClient } = require("../lib/google-calendar");
-const { SlotTakenError, reserveSlot } = require("../lib/reservations");
+const { SlotTakenError, cancelToken, reserveSlot } = require("../lib/reservations");
 const { clientConfirmation, officeNotification, sendEmail } = require("../lib/booking-emails");
-const { createCancelToken } = require("../lib/booking-links");
 const {
   UNAVAILABLE_MESSAGE,
   bookingEnabled,
   calendarIds,
   clientIp,
   originAllowed,
+  requestOrigin,
   send,
   verifyTurnstile
 } = require("./_security");
@@ -41,11 +41,8 @@ function bookedAtLabel(now) {
 }
 
 // El enlace apunta al mismo sitio desde el que se reservó (producción o Preview); el origen ya está validado.
-function cancelUrlFor(req, event, booking) {
-  const token = createCancelToken({ eventId: event.id, start: booking.slot.start });
-  const host = String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim();
-  const origin = req.headers.origin || `https://${host}`;
-  return `${origin}/api/anular-turno?t=${token}`;
+function cancelUrlFor(req, event) {
+  return `${requestOrigin(req)}/api/anular-turno?t=${cancelToken(event)}`;
 }
 
 async function sendBookingEmails(booking, event, rules, cancelUrl) {
@@ -126,7 +123,7 @@ module.exports = async (req, res) => {
   }
 
   const emailSent = reservation.created
-    ? await sendBookingEmails(booking, reservation.event, rules, cancelUrlFor(req, reservation.event, booking))
+    ? await sendBookingEmails(booking, reservation.event, rules, cancelUrlFor(req, reservation.event))
     : true;
 
   return send(res, reservation.created ? 201 : 200, {

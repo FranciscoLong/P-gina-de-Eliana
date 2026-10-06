@@ -87,11 +87,12 @@ evento.
 
 Como cualquiera puede escribir un correo ajeno al reservar, la confirmación
 dice que, si no reservaste ningún turno, ignores el mensaje, y trae un enlace
-para anularlo (`/api/anular-turno`). El enlace está firmado con
-`BOOKING_LINK_SECRET`: solo sirve para ese turno y vence cuando el turno
-empieza. Abrirlo no anula nada; muestra el turno y un botón, porque algunos
-programas de correo abren los enlaces solos para revisarlos. Al confirmar se
-borra el evento, el horario queda libre y Eliana recibe un aviso.
+para anularlo (`/api/anular-turno`). El enlace lleva el id del evento y una
+clave aleatoria que se guarda en el propio evento al crearlo: solo sirve para
+ese turno y vence cuando el turno empieza. Abrirlo no anula nada; muestra el
+turno y un botón, porque algunos programas de correo abren los enlaces solos
+para revisarlos. Al confirmar se borra el evento, el horario queda libre y
+Eliana recibe un aviso.
 
 Reglas, centralizadas en `lib/booking.js`:
 
@@ -125,7 +126,6 @@ quedar libre.
 | `BOOKING_EMAIL_FROM` | Remitente con dominio verificado en Resend. |
 | `BOOKING_NOTIFY_EMAIL` | Opcional: a quién avisar de cada turno (por defecto, el correo de Eliana). |
 | `BOOKING_ALLOWED_ORIGINS` | `https://www.escribaniaisbarbo.com.uy` |
-| `BOOKING_LINK_SECRET` | Clave aleatoria (48 bytes o más) que firma los enlaces para anular. Si cambia, los enlaces ya enviados dejan de funcionar. |
 | `BOOKING_MIN_NOTICE_HOURS` | Opcional: anticipación mínima en horas (24 por defecto). |
 | `BOOKING_DURATION_MINUTES` | Opcional: duración del turno (45 por defecto). |
 
