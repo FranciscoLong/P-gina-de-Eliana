@@ -64,12 +64,13 @@ test("el id del evento solo usa caracteres base32hex", () => {
   assert.match(eventIdFor(SLOT, 12), /^[a-v0-9]{5,1024}$/);
 });
 
-test("crea un evento privado con el trámite, los datos y la clave de idempotencia", async () => {
+test("crea el evento con el trámite, los datos y la clave de idempotencia, sin invitados", async () => {
   const calendar = fakeCalendar();
   const { event, created } = await reserve(calendar);
   assert.equal(created, true);
   assert.equal(event.summary, "Turno: Sucesiones · Ana Pérez");
-  assert.equal(event.visibility, "private");
+  // Privado lo rechaza Google con el permiso acotado de la cuenta de servicio.
+  assert.equal(event.visibility, undefined);
   assert.equal(event.attendees, undefined);
   assert.match(event.description, /Teléfono: 099 123 456/);
   assert.equal(event.extendedProperties.private.bookingKey, "clave-de-prueba-0001");

@@ -80,7 +80,7 @@ funciona aunque JavaScript no esté disponible.
 
 El turno se **confirma al instante**. Las funciones de Vercel consultan el
 calendario de Eliana con una cuenta de servicio de Google, crean el evento
-privado con el trámite y los datos del cliente, y mandan dos correos con
+con el trámite y los datos del cliente, y mandan dos correos con
 Resend: la confirmación al cliente (con dirección y enlace de WhatsApp para
 cancelar) y un aviso a Eliana. Al cliente no se lo agrega como invitado del
 evento.
@@ -119,11 +119,12 @@ quedar libre.
 Cada calendario de la tabla tiene que estar compartido con el correo de la
 cuenta de servicio (`turnos-web@escribania-turnos.iam.gserviceaccount.com`):
 
-- El de los turnos, con **Hacer cambios y ver todos los detalles del evento**.
-  Los turnos se crean como eventos privados y la página necesita leerlos para no
-  duplicarlos; con "Hacer cambios (ver eventos privados como libre/ocupado)" no
-  alcanza, y con "Ver solo libre/ocupado" muestra horarios pero no puede
-  reservar.
+- El de los turnos, con **Hacer cambios (ver eventos privados como
+  libre/ocupado)**. Es el permiso más acotado que permite reservar: la página
+  no lee los detalles de los eventos privados de Eliana. Por eso los turnos se
+  crean como eventos normales y no privados: con ese permiso Google rechaza los
+  privados. Con "Ver solo libre/ocupado" la página muestra horarios pero no
+  puede reservar.
 - Los que solo bloquean horarios, con **Ver solo libre/ocupado**.
 
 Compartir un calendario no se puede desde la app del celular: hay que usar
