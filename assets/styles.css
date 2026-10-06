@@ -1301,6 +1301,60 @@ body.modal-open {
   margin-top: 8px;
 }
 
+/*
+  OPINIONES
+  Tarjetas de reseñas de a dos por fila, con la misma superficie que las
+  tarjetas de contacto. Sin filo de color: es una grilla, no una lista que se
+  recorre de arriba abajo (ver FILOS DE COLOR).
+*/
+.reviews-rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--gray-700);
+  font-weight: 600;
+}
+
+.review-stars {
+  color: #e2a20c;
+  letter-spacing: 0.12em;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 32px;
+  list-style: none;
+}
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid rgba(16, 44, 32, 0.1);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 18px 45px rgba(16, 44, 32, 0.09);
+}
+
+/* El texto ocupa el alto sobrante para que el autor quede al pie de cada tarjeta. */
+.review-card blockquote {
+  flex: 1 0 auto;
+  line-height: 1.65;
+}
+
+.review-author {
+  color: var(--gray-700);
+  font-size: 0.9rem;
+}
+
+.review-author strong {
+  color: var(--green-950);
+}
+
 .location-card {
   display: flex;
   flex-direction: column;
@@ -1502,7 +1556,8 @@ details p {
 
 @media (max-width: 960px) {
   .intro-grid,
-  .contact-layout {
+  .contact-layout,
+  .reviews-grid {
     grid-template-columns: 1fr;
   }
 

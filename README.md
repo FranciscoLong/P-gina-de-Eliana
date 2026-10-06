@@ -174,10 +174,22 @@ for f in assets/*.js api/*.js lib/*.js; do node --check "$f"; done
 
 Las pruebas no llaman a Google, Turnstile ni Resend: simulan sus respuestas.
 
+## Opiniones
+
+La sección **Opiniones**, antes del pie, muestra reseñas del Perfil de Empresa
+de Google copiadas a mano, tal cual las escribió cada persona, con el nombre y
+la inicial del apellido. Tiene un botón para dejar una reseña
+(`g.page/r/…/review`) y otro para ver todas en Google Maps. Para actualizarlas
+se comparan con el perfil y se edita el bloque `OPINIONES` de `index.html`
+(puntaje, cantidad y tarjetas). No llevan datos estructurados: Google no admite
+reseñas propias publicadas en el sitio para mostrar estrellas.
+
 ## Pendientes de contenido
 
 - [ ] Cargar coordenadas verificadas y el Perfil de Empresa oficial en los datos
       estructurados.
+- [ ] Armar una plantilla prolija (HTML) para los correos de la agenda, con la
+      versión en texto plano como alternativa.
 
 ## Datos de la escribanía
 
