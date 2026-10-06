@@ -184,6 +184,8 @@ test("confirma el turno, crea el evento y manda los dos correos una sola vez", a
   assert.deepEqual(office.to, ["esc.isbarbo@gmail.com"]);
   assert.equal(office.reply_to, "ana@example.com");
   assert.equal(emails[0].init.headers["idempotency-key"], `${body.idempotencyKey}-cliente`);
+  assert.equal(client.attachments[0].filename, "turno.ics");
+  assert.equal(office.attachments, undefined);
 
   const retry = await call(bookings, { method: "POST", body });
   assert.equal(retry.status, 200);

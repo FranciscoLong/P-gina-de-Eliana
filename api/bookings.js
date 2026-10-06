@@ -47,7 +47,10 @@ function cancelUrlFor(req, event) {
 
 async function sendBookingEmails(booking, event, rules, cancelUrl) {
   const results = await Promise.allSettled([
-    sendEmail(clientConfirmation(booking, rules.durationMinutes, cancelUrl), `${booking.idempotencyKey}-cliente`),
+    sendEmail(
+      clientConfirmation(booking, { durationMinutes: rules.durationMinutes, cancelUrl, eventId: event.id }),
+      `${booking.idempotencyKey}-cliente`
+    ),
     sendEmail(officeNotification(booking, event.htmlLink), `${booking.idempotencyKey}-oficina`)
   ]);
 
