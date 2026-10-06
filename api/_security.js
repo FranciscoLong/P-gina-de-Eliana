@@ -17,7 +17,8 @@ const REQUIRED_SETTINGS = [
   "TURNSTILE_SECRET_KEY",
   "TURNSTILE_SITE_KEY",
   "RESEND_API_KEY",
-  "BOOKING_EMAIL_FROM"
+  "BOOKING_EMAIL_FROM",
+  "BOOKING_LINK_SECRET"
 ];
 
 function bookingEnabled(env = process.env) {
