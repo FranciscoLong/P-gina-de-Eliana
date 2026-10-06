@@ -54,19 +54,16 @@
     return `Hola Eliana, quisiera ${buildConsultationPhrase(service)}.`;
   }
 
-  function buildEmailMessage(service) {
-    return [
-      "Hola Eliana,",
-      "",
-      `Quisiera ${buildConsultationPhrase(service)}.`,
-      "",
-      "Muchas gracias."
-    ].join("\n");
+  // Texto inicial del campo de consulta en la agenda; el cliente puede editarlo.
+  function buildBookingDetails(name, service) {
+    const trimmedName = typeof name === "string" ? name.trim() : "";
+    const greeting = trimmedName ? `Hola Eliana, soy ${trimmedName}.` : "Hola Eliana.";
+    return `${greeting} Quisiera ${buildConsultationPhrase(service)}.`;
   }
 
   return {
+    buildBookingDetails,
     buildConsultationPhrase,
-    buildEmailMessage,
     buildWhatsAppMessage
   };
 });

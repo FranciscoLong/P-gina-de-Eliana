@@ -2,8 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  buildBookingDetails,
   buildConsultationPhrase,
-  buildEmailMessage,
   buildWhatsAppMessage
 } = require("../assets/service-messages.js");
 
@@ -57,19 +57,21 @@ test("aplica las frases aprobadas a los servicios específicos", () => {
   });
 });
 
-test("prepara un correo editable para el trámite seleccionado", () => {
+test("usa la frase genérica para los servicios sin frase propia", () => {
   assert.equal(
-    buildEmailMessage("Cesión de Derechos Hereditarios"),
-    [
-      "Hola Eliana,",
-      "",
-      "Quisiera consultar por Cesión de Derechos Hereditarios.",
-      "",
-      "Muchas gracias."
-    ].join("\n")
+    buildWhatsAppMessage("Cesión de Derechos Hereditarios"),
+    "Hola Eliana, quisiera consultar por Cesión de Derechos Hereditarios."
   );
 });
 
 test("usa la consulta general cuando no recibe un servicio", () => {
   assert.equal(buildConsultationPhrase("  "), "hacer una consulta notarial");
+});
+
+test("prepara el texto inicial de la consulta en la agenda", () => {
+  assert.equal(
+    buildBookingDetails("  Ana Pérez ", "Sucesiones"),
+    "Hola Eliana, soy Ana Pérez. Quisiera consultar por una sucesión."
+  );
+  assert.equal(buildBookingDetails("", null), "Hola Eliana. Quisiera hacer una consulta notarial.");
 });
