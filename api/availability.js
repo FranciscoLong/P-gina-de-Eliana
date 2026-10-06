@@ -12,6 +12,7 @@
 
 const { TIME_ZONE, bookableDays, overlaps, readRules } = require("../lib/booking");
 const { createCalendarClient } = require("../lib/google-calendar");
+const { blockedIntervals } = require("../lib/reservations");
 const { UNAVAILABLE_MESSAGE, bookingEnabled, calendarIds, originAllowed, send } = require("./_security");
 
 const calendar = createCalendarClient();
@@ -34,8 +35,9 @@ module.exports = async (req, res) => {
       return send(res, 200, { timeZone: TIME_ZONE, days: [] }, SHARED_CACHE);
     }
 
-    const busy = await calendar.busyIntervals(
-      calendarIds().blockingCalendarIds,
+    const busy = await blockedIntervals(
+      calendar,
+      calendarIds(),
       days[0].slots[0].start,
       days.at(-1).slots.at(-1).end
     );

@@ -19,7 +19,8 @@ function booking(key = "clave-de-prueba-0001") {
 
 /*
   Calendario en memoria que imita a Google: el id de un evento borrado sigue
-  ocupado, freeBusy ignora los cancelados y una inserción con id repetido da 409.
+  ocupado, freeBusy ignora los cancelados, los de todo el día y los marcados
+  como disponibles, y una inserción con id repetido da 409.
 */
 function fakeCalendar({ events = [], extraBusy = [] } = {}) {
   const store = new Map(events.map((event) => [event.id, event]));
@@ -30,9 +31,12 @@ function fakeCalendar({ events = [], extraBusy = [] } = {}) {
     calls,
     async busyIntervals() {
       const own = [...store.values()]
-        .filter((event) => event.status !== "cancelled")
+        .filter((event) => event.status !== "cancelled" && event.start.dateTime && event.transparency !== "transparent")
         .map((event) => ({ start: event.start.dateTime, end: event.end.dateTime }));
       return own.concat(extraBusy);
+    },
+    async listEvents() {
+      return { items: [...store.values()].filter((event) => event.status !== "cancelled") };
     },
     async insertEvent(_calendarId, event) {
       calls.inserts += 1;
@@ -142,4 +146,60 @@ test("un error de Google que no es conflicto se propaga sin reintentos", async (
     throw Object.assign(new Error("quota"), { status: 403 });
   };
   await assert.rejects(reserve(calendar), (error) => error.status === 403);
+});
+
+function allDay(id, date, extra = {}) {
+  const next = new Date(`${date}T12:00:00Z`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  return {
+    id,
+    status: "confirmed",
+    transparency: "transparent",
+    start: { date },
+    end: { date: next.toISOString().slice(0, 10) },
+    ...extra
+  };
+}
+
+test("un evento de todo el día bloquea el día aunque Google lo marque como disponible", async () => {
+  const calendar = fakeCalendar({ events: [allDay("ausencia", "2026-10-07")] });
+  await assert.rejects(reserve(calendar), SlotTakenError);
+  assert.equal(calendar.calls.inserts, 0);
+});
+
+test("si Eliana pasa un turno a todo el día, ese día deja de ofrecerse", async () => {
+  const calendar = fakeCalendar({ events: [allDay("turno202610070930v0", "2026-10-07")] });
+  await assert.rejects(reserve(calendar), SlotTakenError);
+});
+
+test("cumpleaños, ubicación de trabajo e invitaciones rechazadas de todo el día no bloquean", async () => {
+  const calendar = fakeCalendar({
+    events: [
+      allDay("cumple", "2026-10-07", { eventType: "birthday" }),
+      allDay("oficina", "2026-10-07", { eventType: "workingLocation" }),
+      allDay("invitacion", "2026-10-07", { attendees: [{ self: true, responseStatus: "declined" }] })
+    ]
+  });
+  const { created } = await reserve(calendar);
+  assert.equal(created, true);
+});
+
+test("un evento con horario marcado como disponible no bloquea", async () => {
+  const calendar = fakeCalendar({
+    events: [{
+      id: "recordatorio",
+      status: "confirmed",
+      transparency: "transparent",
+      start: { dateTime: SLOT.start },
+      end: { dateTime: SLOT.end }
+    }]
+  });
+  const { created } = await reserve(calendar);
+  assert.equal(created, true);
+});
+
+test("un evento de todo el día de otra fecha no bloquea", async () => {
+  const calendar = fakeCalendar({ events: [allDay("ayer", "2026-10-06"), allDay("manana", "2026-10-08")] });
+  const { created } = await reserve(calendar);
+  assert.equal(created, true);
 });

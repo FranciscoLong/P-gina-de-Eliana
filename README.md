@@ -91,9 +91,13 @@ Reglas, centralizadas en `lib/booking.js`:
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá
   `BOOKING_MIN_NOTICE_HOURS` en Vercel (por ejemplo, `48`) y volvé a desplegar.
-- Cualquier evento marcado como **Ocupado** en el calendario bloquea los
-  horarios que toca. Para cerrar un día entero (feriados, licencia), alcanza con
-  un evento de todo el día marcado como Ocupado.
+- Un evento con horario bloquea los horarios que toca si está marcado como
+  **Ocupado** (lo normal); si está como Disponible, no bloquea.
+- Un evento **de todo el día** en el calendario de turnos bloquea el día entero,
+  aunque Google lo marque como Disponible (lo hace por defecto). Así Eliana
+  cierra un día (feriado, licencia, trámite fuera) con solo anotarlo. No
+  bloquean los cumpleaños, la ubicación de trabajo ni las invitaciones que
+  rechazó.
 
 Dos personas no pueden tomar el mismo horario: cada turno usa un id de evento
 fijo por horario y Google rechaza el segundo. Si un envío se reintenta, se
