@@ -84,10 +84,11 @@ Reglas acordadas con Francisco (2026-10-06):
 
 - **Línea del puntaje:** actualizar el número y la cantidad. Las cinco
   estrellas de esa línea son decorativas y no se cambian.
-- **No tocar nunca los dos botones** "Dejá tu reseña en Google"
+- **Los dos botones son parte fija de la sección** y se mantienen al
+  actualizar: "Dejá tu reseña en Google"
   (`https://g.page/r/Cd1U15WtAK7FEAE/review`) y "Ver todas las reseñas"
-  (`https://www.google.com/maps?cid=14244323416962716893`). Francisco lo pidió
-  expresamente.
+  (`https://www.google.com/maps?cid=14244323416962716893`). Al actualizar solo
+  cambian el puntaje, la cantidad y las tarjetas.
 - **No agregar datos estructurados de reseñas** (`Review`, `AggregateRating`):
   Google no admite reseñas propias publicadas en el sitio y puede tomarlo como
   manipulación.
