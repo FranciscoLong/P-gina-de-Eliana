@@ -110,7 +110,8 @@ module.exports = async (req, res) => {
     console.error("booking calendar failed", {
       code: error.code,
       status: error.status,
-      reason: error.reason
+      reason: error.reason,
+      detail: error.detail
     });
     return send(res, 503, { error: UNAVAILABLE_MESSAGE });
   }

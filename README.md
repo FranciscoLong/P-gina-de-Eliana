@@ -117,8 +117,17 @@ quedar libre.
 | `BOOKING_DURATION_MINUTES` | Opcional: duración del turno (45 por defecto). |
 
 Cada calendario de la tabla tiene que estar compartido con el correo de la
-cuenta de servicio: el de los turnos con permiso **Hacer cambios en eventos**;
-los que solo bloquean, con **Ver solo disponibilidad**.
+cuenta de servicio (`turnos-web@escribania-turnos.iam.gserviceaccount.com`):
+
+- El de los turnos, con **Hacer cambios y ver todos los detalles del evento**.
+  Los turnos se crean como eventos privados y la página necesita leerlos para no
+  duplicarlos; con "Hacer cambios (ver eventos privados como libre/ocupado)" no
+  alcanza, y con "Ver solo libre/ocupado" muestra horarios pero no puede
+  reservar.
+- Los que solo bloquean horarios, con **Ver solo libre/ocupado**.
+
+Compartir un calendario no se puede desde la app del celular: hay que usar
+calendar.google.com (en el celular, en la versión para computadoras).
 
 Si falta cualquiera de las obligatorias, o si `BOOKING_ENABLED` no vale `true`,
 la agenda se apaga sola: las funciones responden 503 sin tocar Google y la

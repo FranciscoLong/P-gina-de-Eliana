@@ -29,6 +29,30 @@ module.exports = async (req, res) => {
     result.google = `${error.code || "error"}: ${error.reason || error.message}`;
   }
 
+  /*
+    Con ?write=1 prueba crear un evento normal y uno privado en un horario sin
+    uso (5 de la mañana) y los borra enseguida, para ver cuál rechaza Google.
+  */
+  if (req.query?.write === "1") {
+    const calendar = createCalendarClient();
+    const { calendarId } = calendarIds();
+    result.write = {};
+    for (const visibility of ["default", "private"]) {
+      try {
+        const event = await calendar.insertEvent(calendarId, {
+          summary: "Prueba técnica de la agenda web (se borra sola)",
+          start: { dateTime: "2027-03-01T05:00:00-03:00", timeZone: "America/Montevideo" },
+          end: { dateTime: "2027-03-01T05:01:00-03:00", timeZone: "America/Montevideo" },
+          visibility
+        });
+        await calendar.deleteEvent(calendarId, event.id);
+        result.write[visibility] = "ok (creado y borrado)";
+      } catch (error) {
+        result.write[visibility] = `${error.status} ${error.reason}: ${error.detail || error.message}`;
+      }
+    }
+  }
+
   try {
     // Envío vacío: con una clave válida Resend responde 422 por los campos faltantes y no manda nada.
     const response = await fetch("https://api.resend.com/emails", {
