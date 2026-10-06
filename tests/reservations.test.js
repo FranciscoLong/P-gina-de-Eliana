@@ -8,7 +8,7 @@ const {
   eventIdFor,
   findCancellableBooking,
   reserveSlot
-} = require("../lib/reservations");
+} = require("../api/_lib/reservations");
 
 const SLOT = { start: "2026-10-07T09:30:00-03:00", end: "2026-10-07T10:15:00-03:00" };
 

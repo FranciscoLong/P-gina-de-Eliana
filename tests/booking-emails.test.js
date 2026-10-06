@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { cancellationNotice, clientConfirmation, formatSlot, officeNotification } = require("../lib/booking-emails");
+const { cancellationNotice, clientConfirmation, formatSlot, officeNotification } = require("../api/_lib/booking-emails");
 
 const BOOKING = {
   service: "Sucesiones",

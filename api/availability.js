@@ -11,9 +11,9 @@
   crear el turno.
 */
 
-const { TIME_ZONE, bookableDays, overlaps, readRules } = require("../lib/booking");
-const { createCalendarClient } = require("../lib/google-calendar");
-const { blockedIntervals } = require("../lib/reservations");
+const { TIME_ZONE, bookableDays, overlaps, readRules } = require("./_lib/booking");
+const { createCalendarClient } = require("./_lib/google-calendar");
+const { blockedIntervals } = require("./_lib/reservations");
 const { UNAVAILABLE_MESSAGE, bookingEnabled, calendarIds, originAllowed, send } = require("./_security");
 
 const calendar = createCalendarClient();

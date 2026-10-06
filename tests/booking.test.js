@@ -12,7 +12,7 @@ const {
   readRules,
   slotsForDate,
   validateBooking
-} = require("../lib/booking");
+} = require("../api/_lib/booking");
 
 const RULES = { durationMinutes: 45, minNoticeHours: 24 };
 // Lunes 5 de octubre de 2026, 10:00 en Montevideo.

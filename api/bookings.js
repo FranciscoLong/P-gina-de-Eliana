@@ -9,10 +9,10 @@
   al cliente que anote los datos, pero el turno no se deshace.
 */
 
-const { readRules, validateBooking } = require("../lib/booking");
-const { createCalendarClient } = require("../lib/google-calendar");
-const { SlotTakenError, cancelToken, reserveSlot } = require("../lib/reservations");
-const { clientConfirmation, officeNotification, sendEmail } = require("../lib/booking-emails");
+const { readRules, validateBooking } = require("./_lib/booking");
+const { createCalendarClient } = require("./_lib/google-calendar");
+const { SlotTakenError, cancelToken, reserveSlot } = require("./_lib/reservations");
+const { clientConfirmation, officeNotification, sendEmail } = require("./_lib/booking-emails");
 const {
   UNAVAILABLE_MESSAGE,
   bookingEnabled,

@@ -13,8 +13,14 @@ HTML, CSS y JavaScript puro, publicado en Vercel desde `main`, con funciones en
 - Los textos de la página usan voseo ("Elegí", "Contanos").
 - Trabajar en una rama, abrir un PR y mergear recién cuando Francisco lo pida.
   Los PR se mergean con squash y la rama se borra.
+- **Nada secreto en el repositorio, que es público:** las claves (Google,
+  Resend, Turnstile) viven solo en variables de Vercel marcadas como
+  Sensitive. El código compartido de las funciones va en `api/_lib/`, porque
+  el guion bajo evita que Vercel lo publique en la web; una carpeta nueva en
+  la raíz se publicaría. Los `.md` y `tests/` tampoco se publican (ver
+  `.vercelignore`).
 - Antes de commitear: `node --test tests/*.test.js` y
-  `for f in assets/*.js api/*.js lib/*.js; do node --check "$f"; done`.
+  `for f in assets/*.js api/*.js api/_lib/*.js; do node --check "$f"; done`.
 
 ## Actualizar las reseñas
 
