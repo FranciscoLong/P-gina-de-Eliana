@@ -54,9 +54,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=reservas-20261005">
-  <script src="assets/service-messages.js?v=reservas-20261005" defer></script>
-  <script src="assets/main.js?v=reservas-20261005" defer></script>
+  <link rel="stylesheet" href="assets/styles.css?v=reservas-20261006">
+  <script src="assets/service-messages.js?v=reservas-20261006" defer></script>
+  <script src="assets/main.js?v=reservas-20261006" defer></script>
 
   <script type="application/ld+json">
   {
@@ -809,7 +809,7 @@
           <span class="contact-dialog-eyebrow">Reservar turno</span>
           <h2 id="bookingTitle">Elegí día y horario</h2>
 
-          <form class="booking-form" id="bookingForm">
+          <form class="booking-form" id="bookingForm" novalidate>
             <div class="booking-form-body">
               <!--
                 Si el trámite vino elegido desde Servicios se muestra fijo; si
@@ -818,55 +818,67 @@
               <p class="booking-service" id="bookingServiceFixed">
                 Trámite: <strong data-selected-service>Consulta notarial</strong>
               </p>
-              <label class="booking-service-field" id="bookingServiceField" hidden>
-                Motivo de la consulta
-                <select id="bookingService" name="service" required disabled>
+              <div class="booking-field" id="bookingServiceField" hidden>
+                <label for="bookingService">Motivo de la consulta</label>
+                <select id="bookingService" name="service" required disabled aria-describedby="bookingServiceError">
                   <option value="">Elegí el motivo</option>
                 </select>
-              </label>
+                <p class="booking-field-error" id="bookingServiceError" hidden></p>
+              </div>
 
-              <div class="booking-picker">
+              <div class="booking-picker" id="bookingPicker">
                 <div>
                   <span class="booking-picker-label" id="bookingDatesLabel">Fecha</span>
                   <div class="booking-dates" id="bookingDates" role="group" aria-labelledby="bookingDatesLabel"></div>
                 </div>
-                <fieldset class="booking-slots">
+                <fieldset class="booking-slots" aria-describedby="bookingSlotError">
                   <legend>Horario</legend>
                   <div id="bookingSlots"></div>
                 </fieldset>
+                <p class="booking-field-error" id="bookingSlotError" hidden></p>
               </div>
 
               <div class="booking-contact-fields">
-                <label>
-                  Nombre y apellido
-                  <input name="name" autocomplete="name" autocapitalize="words" maxlength="120" required>
-                </label>
-                <label>
-                  Teléfono
-                  <input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required>
-                </label>
-                <label class="booking-wide">
-                  Correo electrónico
-                  <input name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="254" required>
-                </label>
-                <label class="booking-wide">
-                  Contanos brevemente qué necesitás consultar
-                  <textarea name="details" maxlength="400" rows="3" required aria-describedby="bookingSensitive"></textarea>
-                </label>
+                <div class="booking-field">
+                  <label for="bookingName">Nombre y apellido</label>
+                  <input id="bookingName" name="name" autocomplete="name" autocapitalize="words" maxlength="120" required aria-describedby="bookingNameError">
+                  <p class="booking-field-error" id="bookingNameError" hidden></p>
+                </div>
+                <div class="booking-field">
+                  <label for="bookingPhone">Teléfono</label>
+                  <input id="bookingPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required aria-describedby="bookingPhoneError">
+                  <p class="booking-field-error" id="bookingPhoneError" hidden></p>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="bookingEmail">Correo electrónico</label>
+                  <input id="bookingEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="254" required aria-describedby="bookingEmailError">
+                  <p class="booking-field-error" id="bookingEmailError" hidden></p>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="bookingDetails">Contanos brevemente qué necesitás consultar</label>
+                  <textarea id="bookingDetails" name="details" maxlength="400" rows="3" required aria-describedby="bookingSensitive bookingDetailsError"></textarea>
+                  <p class="booking-field-error" id="bookingDetailsError" hidden></p>
+                </div>
               </div>
               <p class="booking-sensitive" id="bookingSensitive">
                 No incluyas documentos, información financiera, números de
                 documento ni otros datos sensibles.
               </p>
-              <label class="booking-consent">
-                <input name="consent" type="checkbox" required>
-                Consiento que estos datos se usen solo para coordinar esta consulta.
-              </label>
+              <div class="booking-field">
+                <label class="booking-consent">
+                  <input name="consent" type="checkbox" required aria-describedby="bookingConsentError">
+                  Consiento que estos datos se usen solo para coordinar esta consulta.
+                </label>
+                <p class="booking-field-error" id="bookingConsentError" hidden></p>
+              </div>
               <div class="booking-turnstile" id="turnstileWidget"></div>
+              <p class="booking-field-error" id="bookingTurnstileError" hidden></p>
             </div>
 
             <div class="booking-actions">
               <p class="booking-status" id="bookingStatus" role="status" aria-live="polite"></p>
+              <!-- Lo que falta para confirmar; se achica a medida que se completa. -->
+              <p class="booking-missing" id="bookingMissing"></p>
               <a
                 class="btn btn-outline booking-fallback"
                 id="bookingFallback"
@@ -878,7 +890,7 @@
               >
                 Reservar por WhatsApp
               </a>
-              <button class="btn btn-dark" id="bookingSubmit" type="submit" disabled>Confirmar turno</button>
+              <button class="btn btn-dark is-incomplete" id="bookingSubmit" type="submit" aria-disabled="true">Confirmar turno</button>
             </div>
           </form>
         </div>

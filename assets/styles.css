@@ -951,8 +951,32 @@ body.modal-open {
   font-weight: 700;
 }
 
-.booking-form label[hidden] {
+/* Cada campo agrupa su etiqueta, el control y el aviso de error. */
+.booking-field {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.booking-field[hidden] {
   display: none;
+}
+
+.booking-field-error {
+  color: var(--red-700);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.booking-form [aria-invalid="true"],
+.booking-picker.is-invalid {
+  border-color: var(--red-700);
+}
+
+.booking-form [aria-invalid="true"]:focus {
+  border-color: var(--red-700);
+  box-shadow: inset 0 0 0 1px var(--red-700);
 }
 
 .booking-form input,
@@ -973,13 +997,18 @@ body.modal-open {
   resize: vertical;
 }
 
+/*
+  El foco se marca engrosando el borde hacia adentro. Un anillo por fuera queda
+  recortado contra el borde del área que desplaza y se ve como un segundo borde
+  gris cortado a la izquierda.
+*/
 .booking-form input:focus,
 .booking-form select:focus,
 .booking-form textarea:focus,
 .booking-date:focus-visible,
 .booking-slot:focus-visible {
   border-color: var(--green-800);
-  box-shadow: 0 0 0 3px rgba(32, 82, 56, 0.14);
+  box-shadow: inset 0 0 0 1px var(--green-800);
   outline: none;
 }
 
@@ -1174,8 +1203,15 @@ body.modal-open {
   color: var(--green-900);
 }
 
-.booking-status:empty {
+.booking-status:empty,
+.booking-missing:empty {
   display: none;
+}
+
+.booking-missing {
+  color: var(--gray-700);
+  font-size: 0.84rem;
+  line-height: 1.45;
 }
 
 .booking-status.is-error {
@@ -1191,12 +1227,20 @@ body.modal-open {
   display: none;
 }
 
+/*
+  Gris mientras falte algo. Es aria-disabled y no disabled para que un toque
+  igual muestre qué falta; disabled real solo mientras se envía.
+*/
+.booking-actions .btn.is-incomplete,
 .booking-actions .btn:disabled {
   border-color: var(--gray-200);
   background: var(--gray-100);
   color: var(--gray-500);
-  cursor: not-allowed;
   transform: none;
+}
+
+.booking-actions .btn:disabled {
+  cursor: progress;
 }
 
 .booking-done h2 {

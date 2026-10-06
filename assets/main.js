@@ -27,6 +27,8 @@ const bookingSlots = document.getElementById("bookingSlots");
 const bookingStatus = document.getElementById("bookingStatus");
 const bookingFallback = document.getElementById("bookingFallback");
 const bookingSubmit = document.getElementById("bookingSubmit");
+const bookingMissing = document.getElementById("bookingMissing");
+const bookingPicker = document.getElementById("bookingPicker");
 const turnstileWidget = document.getElementById("turnstileWidget");
 const bookingDoneTitle = document.getElementById("bookingDoneTitle");
 const bookingDoneService = document.getElementById("bookingDoneService");
@@ -328,6 +330,10 @@ let generatedDetails = "";
 let turnstileToken = "";
 let turnstileWidgetId = null;
 let turnstileLoading = null;
+// true después de tocar el botón gris: se marcan en rojo los campos que faltan.
+let markMissing = false;
+// Correo y teléfono mal escritos se avisan recién al salir del campo.
+const leftFields = new Set();
 
 function formatSlot(start) {
   const parts = Object.fromEntries(
@@ -390,21 +396,117 @@ function resetAttempt() {
   attemptKey = null;
 }
 
-function updateSubmitState() {
-  bookingSubmit.disabled = !selectedSlot || !turnstileToken || !bookingForm.checkValidity();
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Dónde se avisa cada problema y a qué control se lleva el foco.
+const BOOKING_FIELDS = {
+  service: { error: "bookingServiceError", control: () => bookingService },
+  slot: {
+    error: "bookingSlotError",
+    control: () => bookingSlots.querySelector("button:not([disabled])") || bookingDates.querySelector("button")
+  },
+  name: { error: "bookingNameError", control: () => bookingForm.elements.name },
+  phone: { error: "bookingPhoneError", control: () => bookingForm.elements.phone },
+  email: { error: "bookingEmailError", control: () => bookingForm.elements.email },
+  details: { error: "bookingDetailsError", control: () => bookingForm.elements.details },
+  consent: { error: "bookingConsentError", control: () => bookingForm.elements.consent },
+  turnstile: { error: "bookingTurnstileError", control: () => turnstileWidget }
+};
+
+/*
+  Lo que falta para confirmar, en el orden del formulario. Cada problema trae
+  cómo nombrarlo en el resumen y el aviso junto al campo. "malformed" marca lo
+  que está escrito pero mal (correo o teléfono incompletos).
+*/
+function bookingProblems() {
+  const fields = bookingForm.elements;
+  const problems = [];
+  const add = (key, summary, message, malformed = false) => problems.push({ key, summary, message, malformed });
+
+  if (!bookingService.disabled && !bookingService.value) {
+    add("service", "el motivo", "Elegí el motivo de la consulta.");
+  }
+  if (!selectedSlot) {
+    add("slot", "el horario", "Elegí un día y un horario.");
+  }
+  if (fields.name.value.trim().length < 2) {
+    add("name", "tu nombre", "Escribí tu nombre y apellido.");
+  }
+  const phoneDigits = (fields.phone.value.match(/\d/g) || []).length;
+  if (phoneDigits < 8) {
+    add(
+      "phone",
+      phoneDigits ? "un teléfono de al menos 8 números" : "el teléfono",
+      "Escribí un teléfono de al menos 8 números.",
+      phoneDigits > 0
+    );
+  }
+  const email = fields.email.value.trim();
+  if (!email) {
+    add("email", "el correo", "Escribí tu correo.");
+  } else if (!EMAIL_PATTERN.test(email)) {
+    add("email", "un correo válido", "Revisá el correo, parece incompleto (por ejemplo, nombre@gmail.com).", true);
+  }
+  if (!fields.details.value.trim()) {
+    add("details", "la consulta", "Contanos brevemente qué necesitás consultar.");
+  }
+  if (!fields.consent.checked) {
+    add("consent", "el consentimiento", "Marcá la casilla para poder reservar.");
+  }
+  if (!turnstileToken) {
+    add("turnstile", "la verificación de seguridad", "Esperá a que termine la verificación de seguridad.");
+  }
+  return problems;
 }
 
-// Recuerda el horario elegido y, mientras falte algo, qué falta: el botón gris no lo dice.
+function joinWithY(items) {
+  return items.length > 1 ? `${items.slice(0, -1).join(", ")} y ${items.at(-1)}` : items[0];
+}
+
+/*
+  El botón queda gris (aria-disabled, no disabled, para que un toque igual
+  muestre qué falta) hasta que está todo. Arriba, el resumen de lo que falta se
+  achica a medida que se completa; los avisos en rojo junto a cada campo
+  aparecen después de tocar el botón gris y se van limpiando al corregir.
+*/
+function refreshBookingForm() {
+  const problems = bookingProblems();
+  const complete = problems.length === 0;
+
+  bookingSubmit.setAttribute("aria-disabled", String(!complete));
+  bookingSubmit.classList.toggle("is-incomplete", !complete);
+
+  Object.entries(BOOKING_FIELDS).forEach(([key, field]) => {
+    const problem = problems.find((entry) => entry.key === key);
+    const show = Boolean(problem) && (markMissing || (problem.malformed && leftFields.has(key)));
+    const error = document.getElementById(field.error);
+    error.textContent = show ? problem.message : "";
+    error.hidden = !show;
+
+    const control = key === "slot" ? null : field.control();
+    if (control && key !== "turnstile") {
+      if (show) {
+        control.setAttribute("aria-invalid", "true");
+      } else {
+        control.removeAttribute("aria-invalid");
+      }
+    }
+    if (key === "slot") {
+      bookingPicker.classList.toggle("is-invalid", show);
+    }
+  });
+
+  // Sin agenda cargada no tiene sentido pedir datos: ahí manda el aviso de WhatsApp.
+  bookingMissing.textContent = availability && !complete
+    ? `Para confirmar falta: ${joinWithY(problems.map((problem) => problem.summary))}.`
+    : "";
+  return problems;
+}
+
 function showSlotHint() {
-  if (!selectedSlot) {
-    return;
+  if (selectedSlot && !bookingStatus.classList.contains("is-error")) {
+    setBookingStatus(`Elegiste el ${formatSlot(selectedSlot)}.`);
   }
-  const missing = !bookingForm.checkValidity()
-    ? " Completá tus datos para confirmar."
-    : !turnstileToken
-      ? " Falta la verificación de seguridad."
-      : "";
-  setBookingStatus(`Elegiste el ${formatSlot(selectedSlot)}.${missing}`);
 }
 
 async function showBookingStep() {
@@ -422,7 +524,7 @@ async function showBookingStep() {
 
   showDialogStep(bookingStep);
   bookingBack.focus();
-  updateSubmitState();
+  refreshBookingForm();
 
   const config = await loadBookingConfig();
   if (!config) {
@@ -469,7 +571,7 @@ async function loadAvailability() {
     setBookingStatus(UNAVAILABLE_MESSAGE, { error: true, offerWhatsApp: true });
   } finally {
     bookingDates.removeAttribute("aria-busy");
-    updateSubmitState();
+    refreshBookingForm();
   }
 }
 
@@ -507,7 +609,7 @@ function renderDates(center = false) {
       resetAttempt();
       renderDates();
       bookingDates.scrollLeft = keepScroll;
-      updateSubmitState();
+      refreshBookingForm();
     });
     return button;
   }));
@@ -541,7 +643,7 @@ function renderSlots() {
       }
       selectedSlot = slot.start;
       renderSlots();
-      updateSubmitState();
+      refreshBookingForm();
       showSlotHint();
     });
     return button;
@@ -581,18 +683,15 @@ async function setupTurnstile(siteKey) {
       size: "flexible",
       callback: (token) => {
         turnstileToken = token;
-        updateSubmitState();
-        if (!bookingStatus.classList.contains("is-error")) {
-          showSlotHint();
-        }
+        refreshBookingForm();
       },
       "expired-callback": () => {
         turnstileToken = "";
-        updateSubmitState();
+        refreshBookingForm();
       },
       "error-callback": () => {
         turnstileToken = "";
-        updateSubmitState();
+        refreshBookingForm();
       }
     });
   } catch (_error) {
@@ -605,7 +704,7 @@ function resetTurnstile() {
   if (window.turnstile && turnstileWidgetId !== null) {
     window.turnstile.reset(turnstileWidgetId);
   }
-  updateSubmitState();
+  refreshBookingForm();
 }
 
 function randomKey() {
@@ -639,20 +738,31 @@ bookingForm.elements.name.addEventListener("input", syncSuggestedDetails);
 
 bookingForm.addEventListener("input", () => {
   resetAttempt();
-  updateSubmitState();
-  if (!bookingStatus.classList.contains("is-error")) {
-    showSlotHint();
+  refreshBookingForm();
+});
+
+bookingForm.addEventListener("focusout", (event) => {
+  if (event.target.name === "email" || event.target.name === "phone") {
+    leftFields.add(event.target.name);
+    refreshBookingForm();
   }
 });
 
 bookingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!bookingForm.checkValidity()) {
-    bookingForm.reportValidity();
+  if (bookingSubmit.disabled) {
     return;
   }
-  if (!selectedSlot || !turnstileToken) {
-    setBookingStatus("Elegí un horario y completá la verificación.", { error: true });
+
+  // Botón gris: no se envía nada, se marca lo que falta y se lleva el foco al primero.
+  markMissing = true;
+  const problems = refreshBookingForm();
+  if (problems.length) {
+    const target = BOOKING_FIELDS[problems[0].key].control();
+    target?.scrollIntoView({ block: "center" });
+    if (target && target !== turnstileWidget) {
+      target.focus({ preventScroll: true });
+    }
     return;
   }
 
@@ -687,6 +797,7 @@ bookingForm.addEventListener("submit", async (event) => {
     response = null;
   }
 
+  bookingSubmit.disabled = false;
   // El token de Turnstile sirve para un solo envío, salió bien o mal.
   resetTurnstile();
 
@@ -698,6 +809,9 @@ bookingForm.addEventListener("submit", async (event) => {
     selectedSlot = null;
     resetAttempt();
     availability = null;
+    markMissing = false;
+    leftFields.clear();
+    refreshBookingForm();
     return;
   }
 
