@@ -54,9 +54,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=inicio-20260804-2">
-  <script src="assets/service-messages.js?v=inicio-20260804-2" defer></script>
-  <script src="assets/main.js?v=inicio-20260804-2" defer></script>
+  <link rel="stylesheet" href="assets/styles.css?v=reservas-20261006-3">
+  <script src="assets/service-messages.js?v=reservas-20261006-3" defer></script>
+  <script src="assets/main.js?v=reservas-20261006-3" defer></script>
 
   <script type="application/ld+json">
   {
@@ -196,6 +196,17 @@
         stroke-width="2"
       />
     </symbol>
+    <!-- Calendario: Lucide, licencia ISC (lucide.dev). -->
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <path
+        d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </symbol>
     <symbol id="icon-sun" viewBox="0 0 24 24">
       <path
         d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM12 2.5v2M12 19.5v2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M2.5 12h2M19.5 12h2M4.9 19.1l1.5-1.5M17.6 6.4l1.5-1.5"
@@ -309,7 +320,7 @@
         <li><a href="#eliana">Sobre mí</a></li>
         <li><a href="#servicios">Servicios</a></li>
         <li><a href="#preguntas">Preguntas</a></li>
-        <li><a href="#contactar">Contacto</a></li>
+        <li><a href="#contactar">Reserva</a></li>
       </ul>
     </nav>
   </header>
@@ -342,7 +353,7 @@
         </p>
 
         <div class="hero-actions">
-          <a class="btn btn-dark" href="#contactar" data-contact-open>Contactame</a>
+          <a class="btn btn-dark" href="#contactar" data-contact-open>Reservar turno</a>
           <a
             class="btn btn-secondary"
             href="https://maps.app.goo.gl/rCgRTZrHCtpmQmU78"
@@ -635,30 +646,41 @@
     <section class="section section-muted" id="contactar">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Contacto y ubicación</span>
-          <h2>Contactame</h2>
+          <span class="eyebrow">Reserva y ubicación</span>
+          <h2>Reservá tu turno</h2>
           <p>
-            Elegí el medio que te resulte más cómodo para escribirme: vas a
-            poder revisar y editar el mensaje antes de enviarlo. En esta misma
-            sección están la dirección, el horario y cómo llegar al escritorio.
+            Reservá tu turno en la agenda o, si preferís, escribime por
+            WhatsApp. En esta misma sección están la dirección, el horario y
+            cómo llegar al escritorio.
           </p>
         </div>
 
         <!--
           Dos columnas con roles separados para no repetir datos: a la
-          izquierda los canales para escribir, a la derecha dónde y cuándo.
-          El teléfono y el correo viven solo en las tarjetas de contacto; la
-          dirección y el horario, solo en la tarjeta de ubicación.
+          izquierda cómo coordinar (agenda o WhatsApp), a la derecha dónde y
+          cuándo. La dirección y el horario viven solo en la tarjeta de
+          ubicación.
         -->
         <div class="contact-layout">
           <div class="contact-panel">
-            <h3>Escribime</h3>
+            <h3>Elegí cómo coordinar</h3>
             <p class="contact-selected-service">
               Consulta seleccionada:
               <strong data-selected-service>Consulta notarial</strong>
             </p>
 
             <div class="contact-options">
+              <!-- Abre la ventana directamente en la agenda. -->
+              <button class="contact-option contact-option-booking" type="button" data-booking-start>
+                <span class="contact-option-icon">
+                  <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+                </span>
+                <span>
+                  <strong>Reservar turno</strong>
+                  <small>Elegí día y horario en la agenda.</small>
+                </span>
+              </button>
+
               <a
                 class="contact-option contact-option-whatsapp"
                 data-contact-whatsapp
@@ -672,20 +694,6 @@
                 <span>
                   <strong>WhatsApp</strong>
                   <small>Abrir una conversación con el mensaje preparado.</small>
-                </span>
-              </a>
-
-              <a
-                class="contact-option contact-option-email"
-                data-contact-email
-                href="mailto:esc.isbarbo@gmail.com?subject=Consulta%20notarial"
-              >
-                <span class="contact-option-icon">
-                  <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
-                </span>
-                <span>
-                  <strong>Correo electrónico</strong>
-                  <small>Abrir tu aplicación de correo con el mensaje preparado.</small>
                 </span>
               </a>
             </div>
@@ -745,54 +753,165 @@
           class="contact-dialog-close"
           id="closeContactDialog"
           type="button"
-          aria-label="Cerrar opciones de contacto"
+          aria-label="Cerrar"
         >
           <svg aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
         </button>
 
-        <span class="contact-dialog-eyebrow">Contacto</span>
-        <h2 id="contactDialogTitle">¿Cómo preferís contactarme?</h2>
-        <p class="contact-dialog-service">
-          Seleccionaste:
-          <strong data-selected-service>Consulta notarial</strong>
-        </p>
+        <!--
+          La ventana tiene tres pasos que se alternan con hidden: elegir la vía,
+          la agenda y la confirmación del turno.
+        -->
+        <div class="contact-dialog-step" id="channelStep">
+          <span class="contact-dialog-eyebrow">Reserva</span>
+          <h2 id="contactDialogTitle">¿Cómo preferís reservar?</h2>
+          <p class="contact-dialog-service" id="dialogSelectedService">
+            Seleccionaste:
+            <strong data-selected-service>Consulta notarial</strong>
+          </p>
 
-        <div class="contact-options">
-          <a
-            class="contact-option contact-option-whatsapp"
-            data-contact-whatsapp
-            href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="contact-option-icon">
-              <svg aria-hidden="true" focusable="false"><use href="#icon-whatsapp"></use></svg>
-            </span>
-            <span>
-              <strong>WhatsApp</strong>
-              <small>Abrir una conversación con el mensaje preparado.</small>
-            </span>
-          </a>
+          <div class="contact-options">
+            <button class="contact-option contact-option-booking" type="button" data-booking-start>
+              <span class="contact-option-icon">
+                <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+              </span>
+              <span>
+                <strong>Reservar turno</strong>
+                <small>Elegí día y horario en la agenda.</small>
+              </span>
+            </button>
 
-          <a
-            class="contact-option contact-option-email"
-            data-contact-email
-            href="mailto:esc.isbarbo@gmail.com?subject=Consulta%20notarial"
-          >
-            <span class="contact-option-icon">
-              <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
-            </span>
-            <span>
-              <strong>Correo electrónico</strong>
-              <small>Abrir tu aplicación de correo con el mensaje preparado.</small>
-            </span>
-          </a>
+            <a
+              class="contact-option contact-option-whatsapp"
+              data-contact-whatsapp
+              href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="contact-option-icon">
+                <svg aria-hidden="true" focusable="false"><use href="#icon-whatsapp"></use></svg>
+              </span>
+              <span>
+                <strong>WhatsApp</strong>
+                <small>Abrir una conversación con el mensaje preparado.</small>
+              </span>
+            </a>
+          </div>
+
+          <p class="contact-note">
+            Podés editar el mensaje antes de enviarlo. No incluyas documentación
+            ni datos sensibles en el primer contacto.
+          </p>
         </div>
 
-        <p class="contact-note">
-          Podés editar el mensaje antes de enviarlo. No incluyas documentación
-          ni datos sensibles en el primer contacto.
-        </p>
+        <div class="contact-dialog-step booking-step" id="bookingStep" hidden>
+          <button class="booking-back" id="bookingBack" type="button">← Volver</button>
+          <span class="contact-dialog-eyebrow">Reservar turno</span>
+          <h2 id="bookingTitle">Elegí día y horario</h2>
+
+          <form class="booking-form" id="bookingForm" novalidate>
+            <div class="booking-form-body">
+              <!-- Si el trámite vino elegido desde Servicios se muestra fijo acá. -->
+              <p class="booking-service" id="bookingServiceFixed">
+                Trámite: <strong data-selected-service>Consulta notarial</strong>
+              </p>
+
+              <div class="booking-picker" id="bookingPicker">
+                <div>
+                  <span class="booking-picker-label" id="bookingDatesLabel">Fecha</span>
+                  <div class="booking-dates" id="bookingDates" role="group" aria-labelledby="bookingDatesLabel"></div>
+                </div>
+                <fieldset class="booking-slots" aria-describedby="bookingSlotError">
+                  <legend>Horario</legend>
+                  <div id="bookingSlots"></div>
+                </fieldset>
+                <p class="booking-field-error" id="bookingSlotError" hidden></p>
+              </div>
+
+              <div class="booking-contact-fields">
+                <!--
+                  Si no vino de Servicios, el motivo se pide acá, junto a los
+                  datos: arriba de todo quedaba perdido en pantallas grandes.
+                  Las opciones se arman desde las tarjetas de Servicios.
+                -->
+                <div class="booking-field booking-wide" id="bookingServiceField" hidden>
+                  <label for="bookingService">Motivo de la consulta</label>
+                  <select id="bookingService" name="service" required disabled aria-describedby="bookingServiceError">
+                    <option value="">Seleccioná uno</option>
+                  </select>
+                  <p class="booking-field-error" id="bookingServiceError" hidden></p>
+                </div>
+                <div class="booking-field">
+                  <label for="bookingName">Nombre y apellido</label>
+                  <input id="bookingName" name="name" autocomplete="name" autocapitalize="words" maxlength="120" required aria-describedby="bookingNameError">
+                  <p class="booking-field-error" id="bookingNameError" hidden></p>
+                </div>
+                <div class="booking-field">
+                  <label for="bookingPhone">Teléfono</label>
+                  <input id="bookingPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required aria-describedby="bookingPhoneError">
+                  <p class="booking-field-error" id="bookingPhoneError" hidden></p>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="bookingEmail">Correo electrónico</label>
+                  <input id="bookingEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="254" required aria-describedby="bookingEmailError">
+                  <p class="booking-field-error" id="bookingEmailError" hidden></p>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="bookingDetails">Contanos brevemente qué necesitás consultar</label>
+                  <textarea id="bookingDetails" name="details" maxlength="400" rows="3" required aria-describedby="bookingSensitive bookingDetailsError"></textarea>
+                  <p class="booking-field-error" id="bookingDetailsError" hidden></p>
+                </div>
+              </div>
+              <p class="booking-sensitive" id="bookingSensitive">
+                No incluyas documentos, información financiera, números de
+                documento ni otros datos sensibles.
+              </p>
+              <div class="booking-field">
+                <label class="booking-consent">
+                  <input name="consent" type="checkbox" required aria-describedby="bookingConsentError">
+                  Consiento que estos datos se usen solo para coordinar esta consulta.
+                </label>
+                <p class="booking-field-error" id="bookingConsentError" hidden></p>
+              </div>
+              <div class="booking-turnstile" id="turnstileWidget"></div>
+              <p class="booking-field-error" id="bookingTurnstileError" hidden></p>
+            </div>
+
+            <div class="booking-actions">
+              <p class="booking-status" id="bookingStatus" role="status" aria-live="polite"></p>
+              <!-- Lo que falta para confirmar; se achica a medida que se completa. -->
+              <p class="booking-missing" id="bookingMissing"></p>
+              <a
+                class="btn btn-outline booking-fallback"
+                id="bookingFallback"
+                data-contact-whatsapp
+                href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+              >
+                Reservar por WhatsApp
+              </a>
+              <button class="btn btn-dark is-incomplete" id="bookingSubmit" type="submit" aria-disabled="true">Confirmar turno</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="contact-dialog-step booking-done" id="bookingDone" hidden>
+          <span class="contact-dialog-eyebrow">Reserva</span>
+          <h2 id="bookingDoneTitle" tabindex="-1">Turno confirmado</h2>
+          <p class="booking-done-summary">
+            <strong id="bookingDoneService"></strong><br>
+            <span id="bookingDoneWhen"></span><br>
+            Sarandí 294 esquina 18 de Julio, Rosario
+          </p>
+          <p id="bookingDoneEmail"></p>
+          <p>
+            Para cancelar o cambiar el horario,
+            <a id="bookingDoneWhatsapp" href="https://wa.me/59891048471" target="_blank" rel="noopener noreferrer">escribime por WhatsApp</a>.
+          </p>
+          <button class="btn btn-dark" id="bookingDoneClose" type="button">Cerrar</button>
+        </div>
       </div>
     </dialog>
 
@@ -824,7 +943,7 @@
           <li><a href="#eliana">Sobre mí</a></li>
           <li><a href="#servicios">Servicios</a></li>
           <li><a href="#preguntas">Preguntas</a></li>
-          <li><a href="#contactar">Contacto</a></li>
+          <li><a href="#contactar">Reserva</a></li>
         </ul>
       </nav>
 

@@ -1,7 +1,7 @@
 # Mensajes de contacto por servicio
 
 La página prepara el mensaje inicial según el servicio seleccionado. El texto
-es editable en WhatsApp o en la aplicación de correo antes de enviarlo.
+es editable en WhatsApp y en la agenda en línea antes de enviarlo.
 
 ## Formato
 
@@ -9,13 +9,12 @@ WhatsApp:
 
 > Hola Eliana, quisiera [consulta asociada al servicio].
 
-Correo:
+Agenda en línea (campo "Contanos brevemente qué necesitás consultar"):
 
-> Hola Eliana,
->
-> Quisiera [consulta asociada al servicio].
->
-> Muchas gracias.
+> Hola Eliana, soy [nombre]. Quisiera [consulta asociada al servicio].
+
+Mientras no se escribe el nombre, empieza con "Hola Eliana." y se completa al
+escribirlo. Si el visitante edita el texto, la página deja de reescribirlo.
 
 ## Frases específicas
 

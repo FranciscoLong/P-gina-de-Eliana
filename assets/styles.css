@@ -715,12 +715,14 @@ p {
   color: var(--white);
 }
 
-.contact-option-email {
+.contact-option-booking {
   background: var(--white);
   color: var(--green-950);
+  font: inherit;
+  cursor: pointer;
 }
 
-.contact-option-email:hover {
+.contact-option-booking:hover {
   border-color: var(--green-900);
   background: var(--green-100);
 }
@@ -735,13 +737,18 @@ p {
   background: rgba(255, 255, 255, 0.14);
 }
 
-.contact-option-email .contact-option-icon {
+.contact-option-booking .contact-option-icon {
   background: var(--green-100);
 }
 
 .contact-option-icon svg {
   width: 23px;
   height: 23px;
+}
+
+/* hidden tiene que ganarle al display: flex de la tarjeta cuando la agenda está apagada. */
+.contact-option[hidden] {
+  display: none;
 }
 
 .contact-option strong,
@@ -847,6 +854,434 @@ body.modal-open {
 
 .contact-dialog-service strong {
   color: var(--green-900);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+  AGENDA EN LÍNEA
+  En el paso de la agenda la ventana crece y pasa a alto fijo: el formulario
+  desplaza por dentro y el pie con el botón de confirmar queda siempre a la
+  vista, sin que ningún campo se corte contra él.
+*/
+.contact-dialog.is-booking {
+  width: min(94vw, 880px);
+  height: min(92vh, 780px);
+  max-height: none;
+  overflow: hidden;
+}
+
+.contact-dialog.is-booking .contact-dialog-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 26px 18px;
+}
+
+.booking-step:not([hidden]) {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-step .contact-dialog-eyebrow {
+  margin-bottom: 2px;
+  font-size: 0.68rem;
+}
+
+.booking-step h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+.booking-back {
+  width: fit-content;
+  margin-bottom: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--green-900);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.booking-back:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booking-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  minmax(0, 1fr): la columna no crece al ancho mínimo de su contenido. Sin
+  esto, en el teléfono la verificación de Cloudflare (300px de mínimo) o un
+  select con opciones largas ensanchaban todos los campos y quedaban cortados.
+*/
+.booking-form-body {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 14px;
+  padding-right: 6px;
+  overflow: auto;
+}
+
+.booking-service {
+  color: var(--gray-700);
+}
+
+.booking-service strong {
+  color: var(--green-900);
+}
+
+.booking-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--green-950);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+/* Cada campo agrupa su etiqueta, el control y el aviso de error. */
+.booking-field {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.booking-field[hidden] {
+  display: none;
+}
+
+.booking-field-error {
+  color: var(--red-700);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.booking-form [aria-invalid="true"],
+.booking-picker.is-invalid {
+  border-color: var(--red-700);
+}
+
+.booking-form [aria-invalid="true"]:focus {
+  border-color: var(--red-700);
+  box-shadow: inset 0 0 0 1px var(--red-700);
+}
+
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  font-weight: 400;
+}
+
+.booking-form textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+/*
+  El foco se marca engrosando el borde hacia adentro. Un anillo por fuera queda
+  recortado contra el borde del área que desplaza y se ve como un segundo borde
+  gris cortado a la izquierda.
+*/
+.booking-form input:focus,
+.booking-form select:focus,
+.booking-form textarea:focus,
+.booking-date:focus-visible,
+.booking-slot:focus-visible {
+  border-color: var(--green-800);
+  box-shadow: inset 0 0 0 1px var(--green-800);
+  outline: none;
+}
+
+/* Fecha y horario van juntos en una tarjeta, separados de los datos de contacto. */
+.booking-picker {
+  /*
+    Sin min-width la fila de días, que no envuelve, impone su ancho completo al
+    formulario y lo desborda hacia la derecha.
+  */
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--gray-100);
+}
+
+.booking-picker > * {
+  min-width: 0;
+}
+
+.booking-picker-label,
+.booking-slots legend {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--green-950);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.booking-dates {
+  min-width: 0;
+  min-height: 58px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.booking-date {
+  width: 56px;
+  flex: 0 0 auto;
+  display: grid;
+  gap: 1px;
+  justify-items: center;
+  padding: 6px 4px;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--green-950);
+  font: inherit;
+  cursor: pointer;
+  /* Evita el retardo del doble toque al elegir un día en el teléfono. */
+  touch-action: manipulation;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.booking-date-weekday,
+.booking-date-month {
+  color: var(--gray-700);
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.booking-date-day {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.booking-date:hover {
+  border-color: var(--green-800);
+  background: var(--green-100);
+}
+
+.booking-date.is-selected {
+  border-color: var(--green-950);
+  background: var(--green-950);
+  color: var(--white);
+}
+
+.booking-date.is-selected .booking-date-weekday,
+.booking-date.is-selected .booking-date-month {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.booking-slots {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#bookingSlots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 7px;
+}
+
+.booking-slot {
+  padding: 6px 5px;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--green-950);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.booking-slot:hover:not(:disabled):not(.is-selected) {
+  border-color: var(--green-800);
+  background: var(--green-100);
+}
+
+.booking-slot.is-selected {
+  border-color: var(--green-950);
+  background: var(--green-950);
+  color: var(--white);
+}
+
+/* Ocupado: tachado y con borde punteado, para no depender solo del color. */
+.booking-slot:disabled {
+  border-style: dashed;
+  background: transparent;
+  color: var(--gray-500);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.booking-contact-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.booking-contact-fields .booking-wide {
+  grid-column: 1 / -1;
+}
+
+.booking-sensitive,
+.booking-status {
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.booking-sensitive {
+  color: var(--gray-700);
+}
+
+.booking-form .booking-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--black);
+  font-size: 0.86rem;
+  font-weight: 400;
+}
+
+.booking-form .booking-consent input {
+  width: auto;
+  margin-top: 4px;
+}
+
+.booking-turnstile:empty {
+  display: none;
+}
+
+.booking-actions {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.booking-status {
+  color: var(--green-900);
+}
+
+.booking-status:empty,
+.booking-missing:empty {
+  display: none;
+}
+
+.booking-missing {
+  color: var(--gray-700);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.booking-status.is-error {
+  color: var(--red-700);
+}
+
+.booking-actions .btn {
+  min-height: 44px;
+  padding: 10px 20px;
+}
+
+.booking-actions .btn[hidden] {
+  display: none;
+}
+
+/*
+  Gris mientras falte algo. Es aria-disabled y no disabled para que un toque
+  igual muestre qué falta; disabled real solo mientras se envía.
+*/
+.booking-actions .btn.is-incomplete,
+.booking-actions .btn:disabled {
+  border-color: var(--gray-200);
+  background: var(--gray-100);
+  color: var(--gray-500);
+  transform: none;
+}
+
+.booking-actions .btn:disabled {
+  cursor: progress;
+}
+
+.booking-done h2 {
+  margin-bottom: 18px;
+}
+
+.booking-done h2:focus {
+  outline: none;
+}
+
+.booking-done p {
+  margin-bottom: 14px;
+  color: var(--gray-700);
+}
+
+.booking-done-summary {
+  padding: 16px 18px;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--gray-100);
+}
+
+.booking-done-summary strong,
+.booking-done a {
+  color: var(--green-900);
+}
+
+.booking-done a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booking-done .btn {
+  margin-top: 8px;
 }
 
 .location-card {
@@ -1167,6 +1602,23 @@ details p {
 
   .contact-dialog-panel {
     padding: 30px 20px 24px;
+  }
+
+  .contact-dialog.is-booking {
+    width: calc(100% - 16px);
+    height: 94vh;
+  }
+
+  .contact-dialog.is-booking .contact-dialog-panel {
+    padding: 22px 14px 14px;
+  }
+
+  .booking-contact-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .booking-picker {
+    padding: 12px;
   }
 
   .contact-options {
