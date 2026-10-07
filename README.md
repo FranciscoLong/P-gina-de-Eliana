@@ -39,7 +39,7 @@ sin dependencias).
 │       ├── booking-emails.js        Correos de confirmación y aviso
 │       └── client-calendar.js       Enlace de Google Calendar y archivo .ics
 ├── tests/                           Pruebas unitarias (Google y correo simulados)
-├── carteles/                        QR de /reservar para imprimir (no se publica)
+├── carteles/                        QR de /reservar y aviso A4 para imprimir (no se publica)
 ├── CLAUDE.md                        Instrucciones para agentes (reseñas, reglas)
 └── README.md
 ```
@@ -135,6 +135,15 @@ si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
   calidad), PDF y PNG de 2050 px. Es negro sobre blanco, con corrección de
   errores Q (aguanta un 25 % de daño) y el margen blanco que exige la norma: al
   armar el cartel no hay que recortarle el borde ni cambiarle los colores.
+- El aviso para la puerta (A4) está en `carteles/aviso-reservas.html` y su
+  PDF al lado. Después de editar el HTML, el PDF se regenera con Chrome:
+
+  ```bash
+  cd carteles
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
+    --no-pdf-header-footer --virtual-time-budget=8000 \
+    --print-to-pdf="$PWD/aviso-reservas.pdf" "file://$PWD/aviso-reservas.html"
+  ```
 
 ### Configuración en Vercel
 
