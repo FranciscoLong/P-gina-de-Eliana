@@ -31,6 +31,7 @@ const bookingMissing = document.getElementById("bookingMissing");
 const bookingPicker = document.getElementById("bookingPicker");
 const turnstileWidget = document.getElementById("turnstileWidget");
 const bookingDoneTitle = document.getElementById("bookingDoneTitle");
+const bookingTitle = document.getElementById("bookingTitle");
 const bookingDoneService = document.getElementById("bookingDoneService");
 const bookingDoneWhen = document.getElementById("bookingDoneWhen");
 const bookingDoneEmail = document.getElementById("bookingDoneEmail");
@@ -881,6 +882,8 @@ loadBookingConfig().then((config) => {
   }
   if (openBookingOnLoad) {
     openContactDialog(null, { booking: true });
+    // Sin un toque previo, el foco en "Volver" se ve como un recuadro rojo: lo toma el título.
+    bookingTitle.focus();
   }
 });
 
