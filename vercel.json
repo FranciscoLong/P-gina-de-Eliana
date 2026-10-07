@@ -11,6 +11,11 @@
       ],
       "destination": "https://www.escribaniaisbarbo.com.uy/$1",
       "permanent": true
+    },
+    {
+      "source": "/reservar",
+      "destination": "/?reservar#contactar",
+      "permanent": false
     }
   ]
 }

@@ -858,12 +858,29 @@ bookingForm.addEventListener("submit", async (event) => {
 buildServiceOptions();
 setSelectedService(null);
 
+/*
+  /reservar (el QR de los carteles) redirige a /?reservar#contactar: la página
+  cae en la sección de reserva y, si la agenda está prendida, abre la ventana
+  directo en la agenda. El parámetro se borra para que recargar no la reabra.
+*/
+const startParams = new URLSearchParams(location.search);
+const openBookingOnLoad = startParams.has("reservar");
+if (openBookingOnLoad) {
+  startParams.delete("reservar");
+  const query = startParams.toString();
+  history.replaceState(null, "", location.pathname + (query ? `?${query}` : "") + location.hash);
+}
+
 // Si la agenda está apagada, la página vuelve a ofrecer solo WhatsApp.
 loadBookingConfig().then((config) => {
   if (!config) {
     bookingStartButtons.forEach((button) => {
       button.hidden = true;
     });
+    return;
+  }
+  if (openBookingOnLoad) {
+    openContactDialog(null, { booking: true });
   }
 });
 

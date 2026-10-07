@@ -39,6 +39,7 @@ sin dependencias).
 │       ├── booking-emails.js        Correos de confirmación y aviso
 │       └── client-calendar.js       Enlace de Google Calendar y archivo .ics
 ├── tests/                           Pruebas unitarias (Google y correo simulados)
+├── carteles/                        QR de /reservar para imprimir (no se publica)
 ├── CLAUDE.md                        Instrucciones para agentes (reseñas, reglas)
 └── README.md
 ```
@@ -119,6 +120,21 @@ Dos personas no pueden tomar el mismo horario: cada turno usa un id de evento
 fijo por horario y Google rechaza el segundo. Si un envío se reintenta, se
 reconoce y no se duplica. Si Eliana borra o mueve un turno, el horario vuelve a
 quedar libre.
+
+### Enlace para carteles: `/reservar`
+
+`www.escribaniaisbarbo.com.uy/reservar` lleva directo a la agenda. Está
+**impreso en carteles con QR**, así que no se borra ni se le cambia el nombre:
+si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
+
+- `vercel.json` lo redirige (temporal, 307) a `/?reservar#contactar`.
+- `assets/main.js` ve el parámetro, lo borra de la dirección y, si la agenda
+  está prendida, abre la ventana en el paso de la agenda. Si está apagada, la
+  página queda en la sección de reserva con WhatsApp.
+- El QR está en `carteles/` en SVG (para imprenta, se agranda sin perder
+  calidad), PDF y PNG de 2050 px. Es negro sobre blanco, con corrección de
+  errores Q (aguanta un 25 % de daño) y el margen blanco que exige la norma: al
+  armar el cartel no hay que recortarle el borde ni cambiarle los colores.
 
 ### Configuración en Vercel
 
