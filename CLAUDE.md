@@ -17,8 +17,10 @@ HTML, CSS y JavaScript puro, publicado en Vercel desde `main`, con funciones en
   Resend, Turnstile) viven solo en variables de Vercel marcadas como
   Sensitive. El código compartido de las funciones va en `api/_lib/`, porque
   el guion bajo evita que Vercel lo publique en la web; una carpeta nueva en
-  la raíz se publicaría. Los `.md` y `tests/` tampoco se publican (ver
+  la raíz se publicaría. Los `.md`, `tests/` y `carteles/` no se publican (ver
   `.vercelignore`).
+- **`/reservar` está impreso en carteles con QR** (ver README, "Enlace para
+  carteles"): no borrar ni renombrar esa redirección de `vercel.json`.
 - Antes de commitear: `node --test tests/*.test.js` y
   `for f in assets/*.js api/*.js api/_lib/*.js; do node --check "$f"; done`.
 

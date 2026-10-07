@@ -3,3 +3,4 @@
 tests/
 .playwright-mcp/
 **/.DS_Store
+carteles/
