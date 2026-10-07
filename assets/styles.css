@@ -783,12 +783,14 @@ body.modal-open {
 /*
   Alto de la ventana: en el celular, vh mide la pantalla como si las barras
   del navegador estuvieran escondidas y la ventana quedaba cortada arriba y
-  abajo. dvh mide lo que de verdad se ve; el vh queda para navegadores viejos.
+  abajo. svh la mide con las barras a la vista: siempre entra y no cambia de
+  tamaño si las barras aparecen o se esconden. El vh queda para navegadores
+  viejos.
 */
 .contact-dialog {
   width: min(92vw, 760px);
   max-height: 90vh;
-  max-height: 90dvh;
+  max-height: 90svh;
   margin: auto;
   padding: 0;
   overflow: auto;
@@ -848,6 +850,11 @@ body.modal-open {
   text-transform: uppercase;
 }
 
+/* Los títulos de cada paso reciben el foco al cambiar de paso: sin recuadro. */
+.contact-dialog [tabindex="-1"]:focus {
+  outline: none;
+}
+
 .contact-dialog h2 {
   max-width: calc(100% - 48px);
   margin-bottom: 16px;
@@ -880,7 +887,7 @@ body.modal-open {
 .contact-dialog.is-booking {
   width: min(94vw, 880px);
   height: min(92vh, 780px);
-  height: min(92dvh, 780px);
+  height: min(92svh, 780px);
   max-height: none;
   overflow: hidden;
 }
@@ -907,11 +914,6 @@ body.modal-open {
 .booking-step h2 {
   margin-bottom: 12px;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
-}
-
-/* Recibe el foco cuando la ventana se abre sola desde /reservar. */
-.booking-step h2:focus {
-  outline: none;
 }
 
 .booking-back {
@@ -1282,10 +1284,6 @@ body.modal-open {
   margin-bottom: 18px;
 }
 
-.booking-done h2:focus {
-  outline: none;
-}
-
 .booking-done p {
   margin-bottom: 14px;
   color: var(--gray-700);
@@ -1625,6 +1623,9 @@ details p {
     box-shadow: var(--shadow);
     flex-direction: column;
     align-items: flex-start;
+    /* El alto máximo lo pone main.js al abrir (setMenuOpen). */
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .nav-links.open {
@@ -1712,7 +1713,7 @@ details p {
   .contact-dialog.is-booking {
     width: calc(100% - 16px);
     height: 94vh;
-    height: 94dvh;
+    height: 94svh;
   }
 
   .contact-dialog.is-booking .contact-dialog-panel {
