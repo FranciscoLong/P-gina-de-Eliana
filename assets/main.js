@@ -30,7 +30,6 @@ const bookingSubmit = document.getElementById("bookingSubmit");
 const bookingMissing = document.getElementById("bookingMissing");
 const bookingPicker = document.getElementById("bookingPicker");
 const turnstileWidget = document.getElementById("turnstileWidget");
-const bookingDoneTitle = document.getElementById("bookingDoneTitle");
 const bookingDoneService = document.getElementById("bookingDoneService");
 const bookingDoneWhen = document.getElementById("bookingDoneWhen");
 const bookingDoneEmail = document.getElementById("bookingDoneEmail");
@@ -59,6 +58,14 @@ function showToast(message) {
 
 function setMenuOpen(isOpen) {
   navLinks.classList.toggle("open", isOpen);
+  if (isOpen) {
+    /*
+      El menú se mueve con el encabezado: si no entra (teléfono acostado),
+      desplazar la página no muestra los últimos enlaces. Se mide lo que queda
+      debajo, que depende de la franja verde de arriba, y se desplaza por dentro.
+    */
+    navLinks.style.maxHeight = `${window.innerHeight - navLinks.getBoundingClientRect().top - 16}px`;
+  }
   menuButton.setAttribute("aria-expanded", String(isOpen));
   menuButton.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
   menuButton.textContent = isOpen ? "✕" : "☰";
@@ -201,16 +208,22 @@ function setSelectedService(service) {
   syncSuggestedDetails();
 }
 
+/*
+  Cada paso le da el foco a su título (tabindex="-1"), nunca a un botón: un
+  botón enfocado por código, sin que se haya usado el teclado, puede quedar
+  marcado con el recuadro rojo de foco (pasaba al abrir desde /reservar).
+*/
 function showDialogStep(step) {
   [channelStep, bookingStep, bookingDone].forEach((element) => {
     element.hidden = element !== step;
   });
   contactDialog.classList.toggle("is-booking", step === bookingStep);
-  contactDialog.setAttribute(
-    "aria-labelledby",
-    step === bookingStep ? "bookingTitle" : step === bookingDone ? "bookingDoneTitle" : "contactDialogTitle"
-  );
+  const titleId = step === bookingStep ? "bookingTitle" : step === bookingDone ? "bookingDoneTitle" : "contactDialogTitle";
+  contactDialog.setAttribute("aria-labelledby", titleId);
   contactDialog.scrollTop = 0;
+  if (contactDialog.open) {
+    document.getElementById(titleId).focus();
+  }
 }
 
 // Los botones generales abren sin trámite: el de una consulta anterior no se arrastra.
@@ -266,7 +279,6 @@ bookingDoneClose.addEventListener("click", closeContactDialog);
 
 bookingBack.addEventListener("click", () => {
   showDialogStep(channelStep);
-  channelStep.querySelector("[data-booking-start]").focus();
 });
 
 contactDialog.addEventListener("click", (event) => {
@@ -527,7 +539,6 @@ async function showBookingStep() {
   }
 
   showDialogStep(bookingStep);
-  bookingBack.focus();
   refreshBookingForm();
 
   const config = await loadBookingConfig();
@@ -743,7 +754,6 @@ function showBookingDone(result) {
     `Hola Eliana, tengo un turno el ${when} y necesito cancelarlo o cambiarlo.`
   );
   showDialogStep(bookingDone);
-  bookingDoneTitle.focus();
 }
 
 bookingService.addEventListener("change", () => {
@@ -879,7 +889,8 @@ loadBookingConfig().then((config) => {
     });
     return;
   }
-  if (openBookingOnLoad) {
+  // Si ya la abrió a mano mientras cargaba, reabrirla le borraría lo elegido.
+  if (openBookingOnLoad && !contactDialog.open) {
     openContactDialog(null, { booking: true });
   }
 });
