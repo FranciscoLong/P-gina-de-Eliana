@@ -4,6 +4,14 @@ const crypto = require("node:crypto");
 
 const { bookableDays, readRules } = require("../api/_lib/booking");
 
+/*
+  Reloj congelado: un lunes a las 8:00 de Montevideo, antes de que abra la
+  agenda. Con 24 horas de anticipación el primer día con turnos es el martes,
+  entero desde las 9:30. Así las pruebas y los handlers ven siempre la misma
+  hora: con el reloj real fallaban según el momento en que se corrían.
+*/
+const MONDAY_8AM = Date.parse("2026-10-12T08:00:00-03:00");
+
 const { privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const BASE_ENV = {
   BOOKING_ENABLED: "true",
@@ -123,11 +131,16 @@ function bookingBody(overrides = {}) {
 }
 
 test.beforeEach(() => {
+  test.mock.timers.enable({ apis: ["Date"], now: MONDAY_8AM });
   for (const key of Object.keys(process.env)) {
     if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key === "VERCEL_ENV") delete process.env[key];
   }
   Object.assign(process.env, BASE_ENV);
   Object.assign(network, { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false });
+});
+
+test.afterEach(() => {
+  test.mock.timers.reset();
 });
 
 test("con el interruptor apagado no se toca Google y la configuración dice que no hay agenda", async () => {
@@ -145,22 +158,27 @@ test("si falta una credencial la agenda queda apagada aunque el interruptor est�
 });
 
 test("la disponibilidad marca ocupados sin revelar qué los ocupa", async () => {
-  /*
-    Hace falta un día con dos horarios: uno ocupado y otro libre. El primer
-    día con turnos puede tener uno solo según la hora en que corre la prueba
-    (un jueves a las 17:30, con 24 horas de anticipación, al viernes solo le
-    queda el de las 18:00), así que se usa el primero que tenga dos.
-  */
-  const day = bookableDays(new Date(), readRules({})).find((candidate) => candidate.slots.length >= 2);
-  const [slot] = day.slots;
+  const slot = firstSlot();
   network.busy = [{ start: slot.start, end: slot.end }];
   const response = await call(availability);
   assert.equal(response.status, 200);
   assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=10");
-  const { slots } = response.body.days.find((candidate) => candidate.date === day.date);
-  assert.deepEqual(Object.keys(slots[0]).sort(), ["end", "start", "status"]);
-  assert.equal(slots[0].status, "unavailable");
-  assert.equal(slots[1].status, "available");
+  const first = response.body.days[0].slots[0];
+  assert.deepEqual(Object.keys(first).sort(), ["end", "start", "status"]);
+  assert.equal(first.status, "unavailable");
+  assert.equal(response.body.days[0].slots[1].status, "available");
+});
+
+test("si al día siguiente le queda un solo horario, se ofrece igual", async () => {
+  // Jueves 17:30: con 24 horas de anticipación al viernes solo le queda el de las 18:00.
+  test.mock.timers.setTime(Date.parse("2026-10-15T17:30:00-03:00"));
+  const response = await call(availability);
+  assert.equal(response.status, 200);
+  const [friday] = response.body.days;
+  assert.equal(friday.date, "2026-10-16");
+  assert.deepEqual(friday.slots.map(({ start, status }) => [start, status]), [
+    ["2026-10-16T18:00:00-03:00", "available"]
+  ]);
 });
 
 test("los errores de disponibilidad no quedan guardados en la CDN", async () => {
