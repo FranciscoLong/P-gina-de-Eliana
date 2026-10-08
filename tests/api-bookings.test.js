@@ -4,6 +4,14 @@ const crypto = require("node:crypto");
 
 const { bookableDays, readRules } = require("../api/_lib/booking");
 
+/*
+  Reloj congelado: un lunes a las 8:00 de Montevideo, antes de que abra la
+  agenda. Con 24 horas de anticipación el primer día con turnos es el martes,
+  entero desde las 9:30. Así las pruebas y los handlers ven siempre la misma
+  hora: con el reloj real fallaban según el momento en que se corrían.
+*/
+const MONDAY_8AM = Date.parse("2026-10-12T08:00:00-03:00");
+
 const { privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
 const BASE_ENV = {
   BOOKING_ENABLED: "true",
@@ -122,7 +130,9 @@ function bookingBody(overrides = {}) {
   };
 }
 
-test.beforeEach(() => {
+// Con t.mock, node:test descongela el reloj solo al terminar cada prueba.
+test.beforeEach((t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: MONDAY_8AM });
   for (const key of Object.keys(process.env)) {
     if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key === "VERCEL_ENV") delete process.env[key];
   }
