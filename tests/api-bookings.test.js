@@ -130,17 +130,14 @@ function bookingBody(overrides = {}) {
   };
 }
 
-test.beforeEach(() => {
-  test.mock.timers.enable({ apis: ["Date"], now: MONDAY_8AM });
+// Con t.mock, node:test descongela el reloj solo al terminar cada prueba.
+test.beforeEach((t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: MONDAY_8AM });
   for (const key of Object.keys(process.env)) {
     if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key === "VERCEL_ENV") delete process.env[key];
   }
   Object.assign(process.env, BASE_ENV);
   Object.assign(network, { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false });
-});
-
-test.afterEach(() => {
-  test.mock.timers.reset();
 });
 
 test("con el interruptor apagado no se toca Google y la configuración dice que no hay agenda", async () => {
@@ -167,18 +164,6 @@ test("la disponibilidad marca ocupados sin revelar qué los ocupa", async () => 
   assert.deepEqual(Object.keys(first).sort(), ["end", "start", "status"]);
   assert.equal(first.status, "unavailable");
   assert.equal(response.body.days[0].slots[1].status, "available");
-});
-
-test("si al día siguiente le queda un solo horario, se ofrece igual", async () => {
-  // Jueves 17:30: con 24 horas de anticipación al viernes solo le queda el de las 18:00.
-  test.mock.timers.setTime(Date.parse("2026-10-15T17:30:00-03:00"));
-  const response = await call(availability);
-  assert.equal(response.status, 200);
-  const [friday] = response.body.days;
-  assert.equal(friday.date, "2026-10-16");
-  assert.deepEqual(friday.slots.map(({ start, status }) => [start, status]), [
-    ["2026-10-16T18:00:00-03:00", "available"]
-  ]);
 });
 
 test("los errores de disponibilidad no quedan guardados en la CDN", async () => {

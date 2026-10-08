@@ -49,6 +49,13 @@ test("con 24 horas de anticipación, hoy no aparece y mañana arranca en el prim
   assert.equal(days[0].slots[0].start, "2026-10-06T10:15:00-03:00");
 });
 
+test("si al día siguiente le queda un solo horario, ese día se ofrece igual", () => {
+  // Jueves 15 a las 17:30: con 24 horas de anticipación al viernes solo le queda el de las 18:00.
+  const days = bookableDays(new Date("2026-10-15T17:30:00-03:00"), RULES);
+  assert.equal(days[0].date, "2026-10-16");
+  assert.deepEqual(days[0].slots.map((slot) => slot.start), ["2026-10-16T18:00:00-03:00"]);
+});
+
 test("la anticipación se cambia con BOOKING_MIN_NOTICE_HOURS", () => {
   const rules = readRules({ BOOKING_MIN_NOTICE_HOURS: "48" });
   assert.equal(rules.minNoticeHours, 48);
