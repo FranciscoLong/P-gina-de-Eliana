@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { uruguayDay, activeNotices, safeHref, richTextParts } = require("../assets/notices.js");
+const { uruguayDay, activeNotices, safeHref, richTextParts, unseenNotices } = require("../assets/notices.js");
 
 const notice = { active: true, title: "Horario especial", paragraphs: ["Solo con reserva."] };
 
@@ -46,4 +46,12 @@ test("**texto** marca la negrita y lo demás queda como texto común", () => {
   ]);
   assert.deepEqual(richTextParts("**Cerrado**"), [{ text: "Cerrado", strong: true }]);
   assert.deepEqual(richTextParts("Sin marcas ** sueltas"), [{ text: "Sin marcas ** sueltas", strong: false }]);
+});
+
+test("la ventana muestra solo los avisos con id que todavía no se vieron", () => {
+  const active = [{ ...notice, id: "visto" }, { ...notice, id: "nuevo" }, { ...notice }];
+  assert.deepEqual(unseenNotices(active, ["visto"]).map((entry) => entry.id), ["nuevo"]);
+  assert.deepEqual(unseenNotices(active, null).map((entry) => entry.id), ["visto", "nuevo"]);
+  assert.deepEqual(unseenNotices(active, "basura").map((entry) => entry.id), ["visto", "nuevo"]);
+  assert.deepEqual(unseenNotices(active, ["visto", "nuevo"]), []);
 });
