@@ -41,6 +41,12 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  /*
+    Reserva siempre el lugar de la barra de desplazamiento: al abrir una
+    ventana (body.modal-open) la barra se esconde y, sin esto, la página se
+    corría de costado en las pantallas donde la barra ocupa lugar.
+  */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -500,6 +506,8 @@ p {
   color: var(--black);
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   font-weight: 600;
+  /* Si se parte en dos líneas, que queden parejas y no una palabra sola. */
+  text-wrap: balance;
 }
 
 .notice-card h2 {
@@ -532,7 +540,10 @@ p {
 
 .notice-text strong {
   color: var(--black);
-  /* El horario no se parte entre dos líneas. */
+}
+
+/* notices.js marca así las negritas cortas, como un horario: no se parten. */
+.notice-text .notice-keep {
   white-space: nowrap;
 }
 
@@ -908,6 +919,24 @@ body.modal-open {
 */
 .notice-dialog {
   width: min(92vw, 640px);
+  /*
+    El navegador limita las ventanas a la pantalla menos 38px; sin esto, en
+    el celular no se aplica el ancho de calc(100% - 24px).
+  */
+  max-width: calc(100% - 24px);
+}
+
+/*
+  Cuando el aviso no entra a lo alto la ventana se desplaza por dentro: la
+  cruz queda pegada arriba en vez de irse con el contenido. El margen
+  negativo evita que empuje la tarjeta hacia abajo.
+*/
+.notice-dialog .contact-dialog-close {
+  position: sticky;
+  top: 18px;
+  right: auto;
+  z-index: 1;
+  margin: 18px 18px -56px auto;
 }
 
 .notice-dialog .notice-card {
@@ -1864,6 +1893,51 @@ details p {
 
   .btn {
     width: 100%;
+  }
+}
+
+/*
+  Pantallas bajas: celular acostado o celulares chicos. El título del aviso
+  crece con el ancho y en estas pantallas se comía la ventana; se achican
+  título y márgenes para que el aviso entre entero sin desplazar.
+*/
+@media (max-height: 600px) {
+  .notice-dialog .notice-card {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .notice-dialog .notice-tag {
+    margin-bottom: 10px;
+  }
+
+  .notice-dialog .notice-lead {
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+
+  .notice-dialog .notice-card h2 {
+    font-size: 1.9rem;
+  }
+
+  .notice-dialog .notice-card h2 + .notice-text {
+    margin-top: 12px;
+  }
+
+  .notice-dialog .notice-text {
+    font-size: 0.95rem;
+  }
+
+  .notice-dialog .notice-link {
+    margin-top: 16px;
+  }
+}
+
+/* Celular acostado: el alto útil ronda los 330px. */
+@media (max-height: 420px) {
+  .notice-dialog .notice-card {
+    padding-top: 14px;
+    padding-bottom: 16px;
   }
 }
 

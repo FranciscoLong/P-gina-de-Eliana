@@ -211,7 +211,8 @@ enlaces al menú ni necesita una API o base de datos.
 Además, la primera vez que alguien entra, el aviso se abre en una **ventana**
 con el mismo diseño, a los 0,7 segundos. El navegador recuerda el `id` de los
 avisos ya mostrados (clave `avisos-vistos`), así que la ventana sale una sola
-vez por aviso; un aviso nuevo, con otro `id`, vuelve a abrirla. No se abre a
+vez por aviso; un aviso nuevo, con otro `id`, vuelve a abrirla y muestra solo
+ese. No se abre a
 quien llega desde `/reservar` (el QR del cartel), que va directo a la agenda.
 Si la cierran sin leer, el aviso sigue en la sección.
 

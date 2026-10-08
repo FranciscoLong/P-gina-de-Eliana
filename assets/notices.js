@@ -47,7 +47,9 @@
     // Una pausa breve para que primero se vea la página.
     setTimeout(() => {
       if (document.querySelector("dialog[open]")) return;
-      dialogList.replaceChildren(...Array.from(list.children, (card) => card.cloneNode(true)));
+      const freshIds = new Set(fresh.map((notice) => notice.id));
+      const cards = Array.from(list.children).filter((card) => freshIds.has(card.dataset.noticeId));
+      dialogList.replaceChildren(...cards.map((card) => card.cloneNode(true)));
       dialog.showModal();
       document.body.classList.add("modal-open");
       // El foco va a la tarjeta y no a la cruz, que se vería con el recuadro rojo.
@@ -90,6 +92,9 @@
     const date = new Date(`${day}T00:00:00Z`);
     return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === day;
   }
+
+  // Hasta este largo una negrita entra en una línea aun en un celular de 320px.
+  const SHORT_BOLD = 24;
 
   function filled(text) {
     return typeof text === "string" && text.trim() !== "";
@@ -134,6 +139,8 @@
       // Mismo orden que el cartel impreso: etiqueta, línea previa, título y detalle.
       const item = doc.createElement("li");
       item.className = "notice-card";
+      // La ventana usa el id para copiar solo las tarjetas de avisos nuevos.
+      if (filled(notice.id)) item.dataset.noticeId = notice.id;
       const tag = doc.createElement("span");
       tag.className = "notice-tag";
       tag.textContent = "Aviso";
@@ -163,6 +170,8 @@
           }
           const bold = doc.createElement("strong");
           bold.textContent = part;
+          // Una negrita corta, como un horario, no se parte entre dos líneas.
+          if (part.length <= SHORT_BOLD) bold.className = "notice-keep";
           paragraph.append(bold);
         });
         item.append(paragraph);
