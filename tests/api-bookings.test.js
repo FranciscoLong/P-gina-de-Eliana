@@ -145,15 +145,22 @@ test("si falta una credencial la agenda queda apagada aunque el interruptor est�
 });
 
 test("la disponibilidad marca ocupados sin revelar qué los ocupa", async () => {
-  const slot = firstSlot();
+  /*
+    Hace falta un día con dos horarios: uno ocupado y otro libre. El primer
+    día con turnos puede tener uno solo según la hora en que corre la prueba
+    (un jueves a las 17:30, con 24 horas de anticipación, al viernes solo le
+    queda el de las 18:00), así que se usa el primero que tenga dos.
+  */
+  const day = bookableDays(new Date(), readRules({})).find((candidate) => candidate.slots.length >= 2);
+  const [slot] = day.slots;
   network.busy = [{ start: slot.start, end: slot.end }];
   const response = await call(availability);
   assert.equal(response.status, 200);
   assert.equal(response.headers["cache-control"], "public, max-age=0, s-maxage=10");
-  const first = response.body.days[0].slots[0];
-  assert.deepEqual(Object.keys(first).sort(), ["end", "start", "status"]);
-  assert.equal(first.status, "unavailable");
-  assert.equal(response.body.days[0].slots[1].status, "available");
+  const { slots } = response.body.days.find((candidate) => candidate.date === day.date);
+  assert.deepEqual(Object.keys(slots[0]).sort(), ["end", "start", "status"]);
+  assert.equal(slots[0].status, "unavailable");
+  assert.equal(slots[1].status, "available");
 });
 
 test("los errores de disponibilidad no quedan guardados en la CDN", async () => {
