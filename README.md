@@ -208,6 +208,14 @@ Debajo de la presentación inicial aparece **Avisos** solo cuando hay al menos
 un aviso activo y vigente. Sin avisos, el bloque no ocupa espacio. No agrega
 enlaces al menú ni necesita una API o base de datos.
 
+Además, la primera vez que alguien entra, el aviso se abre en una **ventana**
+con el mismo diseño, a los 0,7 segundos. El navegador recuerda el `id` de los
+avisos ya mostrados (clave `avisos-vistos`), así que la ventana sale una sola
+vez por aviso; un aviso nuevo, con otro `id`, vuelve a abrirla y muestra solo
+ese. No se abre a
+quien llega desde `/reservar` (el QR del cartel), que va directo a la agenda.
+Si la cierran sin leer, el aviso sigue en la sección.
+
 Cada aviso sigue el diseño del cartel impreso (`carteles/aviso-reservas.html`):
 etiqueta roja "Aviso", una línea previa, el título con la parte clave en rojo,
 el detalle en gris y un botón. El fondo continúa el crema del hero.

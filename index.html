@@ -54,9 +54,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=avisos-20261008-1">
+  <link rel="stylesheet" href="assets/styles.css?v=avisos-20261008-6">
   <script src="assets/notices-data.js?v=avisos-20261008-1" defer></script>
-  <script src="assets/notices.js?v=avisos-20261008-1" defer></script>
+  <script src="assets/notices.js?v=avisos-20261008-3" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
   <script src="assets/main.js?v=ventana-20261006-1" defer></script>
 
@@ -380,6 +380,24 @@
         <ul class="notice-list" id="avisosLista"></ul>
       </div>
     </section>
+
+    <!--
+      Ventana con el mismo aviso. notices.js la abre una sola vez por
+      visitante y por aviso (lo recuerda el navegador) y no se la muestra a
+      quien llega desde /reservar, que ya vio el cartel. Si la cierran sin
+      leerla, el aviso sigue en la sección de arriba.
+    -->
+    <dialog class="notice-dialog" id="avisoVentana" aria-label="Aviso">
+      <button
+        class="contact-dialog-close"
+        id="cerrarAvisoVentana"
+        type="button"
+        aria-label="Cerrar"
+      >
+        <svg aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
+      </button>
+      <ul class="notice-list" id="avisoVentanaLista" tabindex="-1"></ul>
+    </dialog>
 
     <section class="section" id="eliana">
       <div class="container intro-grid">
