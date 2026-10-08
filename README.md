@@ -202,6 +202,36 @@ for f in assets/*.js api/*.js api/_lib/*.js; do node --check "$f"; done
 
 Las pruebas no llaman a Google, Turnstile ni Resend: simulan sus respuestas.
 
+## Avisos
+
+Debajo de la presentación inicial aparece **Avisos** solo cuando hay al menos
+un aviso activo y vigente. Sin avisos, el bloque no ocupa espacio. No agrega
+enlaces al menú ni necesita una API o base de datos.
+
+Cada aviso sigue el diseño del cartel impreso (`carteles/aviso-reservas.html`):
+etiqueta roja "Aviso", una línea previa, el título con la parte clave en rojo,
+el detalle en gris y un botón. El fondo continúa el crema del hero.
+
+El contenido se administra en `assets/notices-data.js`. Cada entrada tiene
+`id`, `active`, `title`, `paragraphs` (lista de párrafos), y opcionalmente
+`lead` (la línea sobre el título), `highlight` (la segunda línea del título,
+en rojo) y `link: { label, href }`. En los párrafos, `**texto**` va en
+negrita. El enlace puede ser una ruta local o una URL HTTPS. Se muestra en el
+orden de la lista, con el mismo formato en móvil y escritorio.
+
+- `active: false` permite retirar un aviso sin borrarlo.
+- `startsOn` y `endsOn` son opcionales (`null` si no hay límite), en formato
+  `AAAA-MM-DD`. Ambos días se incluyen, según la fecha de Uruguay. Estas fechas
+  controlan **cuándo se publica el aviso**, no cuándo empieza el cambio anunciado.
+- Para ocultarlos todos, dejar `window.SiteNotices = [];`.
+- Los avisos futuros, vencidos, incompletos o con fechas inválidas se omiten.
+  La vigencia se comprueba al cargar y cada minuto mientras la página está abierta.
+
+Después de editar el contenido, renovar el `?v=` de `notices-data.js` en
+`index.html` y publicar mediante el despliegue habitual. Los avisos son públicos:
+no cargar información privada. Si JavaScript no está disponible, el bloque
+permanece oculto y el resto de la página sigue funcionando.
+
 ## Opiniones
 
 La sección **Opiniones**, antes del pie, muestra reseñas del Perfil de Empresa

@@ -10,6 +10,8 @@
   --gray-500: #777;
   --gray-200: #e5e5e5;
   --gray-100: #f5f5f2;
+  /* El crema en el que termina la foto del hero. */
+  --cream: #f5efe3;
   --white: #fff;
   --whatsapp-green: #25d366;
   --shadow: 0 18px 45px rgba(16, 44, 32, 0.12);
@@ -444,6 +446,94 @@ p {
 
 .hero .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.7);
+}
+
+/*
+  AVISOS
+  Siguen el esquema del cartel impreso (carteles/aviso-reservas.html):
+  etiqueta roja, línea previa, título con la parte clave en rojo y el detalle
+  en gris. El fondo continúa el crema del hero, así que el aviso se lee como
+  parte de la bienvenida. Sin avisos vigentes la sección no ocupa lugar.
+*/
+.notices {
+  padding: 0 0 72px;
+  background: var(--cream);
+}
+
+.notices[hidden] {
+  display: none;
+}
+
+.notice-list {
+  display: grid;
+  gap: 24px;
+  list-style: none;
+}
+
+.notice-card {
+  max-width: 860px;
+  margin-inline: auto;
+  padding: clamp(30px, 5vw, 48px) clamp(22px, 5vw, 56px);
+  border: 1px solid rgba(16, 44, 32, 0.1);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 18px 45px rgba(16, 44, 32, 0.1);
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+.notice-tag {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 5px 18px;
+  border-radius: 999px;
+  background: var(--red-700);
+  color: var(--white);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.notice-lead {
+  margin-bottom: 10px;
+  color: var(--black);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  font-weight: 600;
+}
+
+.notice-card h2 {
+  margin-bottom: 0;
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.notice-card h2 em {
+  display: block;
+  color: var(--red-700);
+  font-style: normal;
+}
+
+.notice-text {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.notice-card h2 + .notice-text {
+  margin-top: 20px;
+}
+
+.notice-text + .notice-text {
+  margin-top: 6px;
+}
+
+.notice-text strong {
+  color: var(--black);
+}
+
+.notice-link {
+  margin-top: 28px;
 }
 
 .intro-grid {
