@@ -54,7 +54,9 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=ventana-20261006-1">
+  <link rel="stylesheet" href="assets/styles.css?v=avisos-20261008-1">
+  <script src="assets/notices-data.js?v=avisos-20261008-1" defer></script>
+  <script src="assets/notices.js?v=avisos-20261008-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
   <script src="assets/main.js?v=ventana-20261006-1" defer></script>
 
@@ -364,6 +366,18 @@
             Cómo llegar
           </a>
         </div>
+      </div>
+    </section>
+
+    <!--
+      AVISOS
+      Oculto hasta que notices.js encuentra al menos un aviso vigente en
+      assets/notices-data.js. Cada tarjeta lleva su propia etiqueta "Aviso",
+      así que la sección no tiene título visible.
+    -->
+    <section class="notices" id="avisos" aria-label="Avisos" hidden>
+      <div class="container">
+        <ul class="notice-list" id="avisosLista"></ul>
       </div>
     </section>
 
