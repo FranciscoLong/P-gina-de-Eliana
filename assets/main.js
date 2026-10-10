@@ -154,6 +154,24 @@ function findCurrentSectionLink() {
   return current || sectionLinks[0].link;
 }
 
+/*
+  Con el celular horizontal el header se come una buena parte del alto, asi que
+  se esconde al bajar y vuelve apenas se sube. La clase se pone en cualquier
+  pantalla, pero solo tiene efecto en las bajas (ver HEADER QUE SE ESCONDE en el
+  CSS). Arriba de todo o con el menu abierto se queda a la vista.
+*/
+const siteHeader = document.querySelector(".site-header");
+const HEADER_HIDE_FROM = 200;
+
+function updateHeaderVisibility(scrollY) {
+  const hide =
+    navLinks.dataset.scrollDirection === "down" &&
+    scrollY > HEADER_HIDE_FROM &&
+    !navLinks.classList.contains("open");
+
+  siteHeader?.classList.toggle("is-hidden", hide);
+}
+
 function updateScrollIndicator() {
   const scrollY = window.scrollY;
 
@@ -162,6 +180,7 @@ function updateScrollIndicator() {
     lastScrollY = scrollY;
   }
 
+  updateHeaderVisibility(scrollY);
   setCurrentSectionLink(findCurrentSectionLink());
 }
 

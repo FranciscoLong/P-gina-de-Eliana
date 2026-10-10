@@ -200,6 +200,22 @@ p {
   backdrop-filter: blur(14px);
 }
 
+/*
+  HEADER QUE SE ESCONDE
+  En pantallas bajas (el celular horizontal mide de 320 a 430px de alto) el
+  header sube y se esconde al bajar; main.js le saca is-hidden apenas se sube.
+  Si algo de adentro tiene el foco (teclado) se queda a la vista.
+*/
+@media (max-height: 500px) {
+  .site-header {
+    transition: transform 0.25s ease;
+  }
+
+  .site-header.is-hidden:not(:focus-within) {
+    transform: translateY(-100%);
+  }
+}
+
 .nav {
   min-height: var(--header-height);
   display: flex;
@@ -1458,7 +1474,8 @@ body.modal-open {
 /*
   OPINIONES
   Tarjetas de reseñas de a dos por fila, con la misma superficie que las
-  tarjetas de contacto. Sin filo de color: es una grilla, no una lista que se
+  tarjetas de contacto. Solo bajan a una columna con el celular vertical (ver
+  la regla de 600px): acostado mide de 667 a 932px y entran dos. Sin filo de color: es una grilla, no una lista que se
   recorre de arriba abajo (ver FILOS DE COLOR).
 */
 .reviews-rating {
@@ -1728,8 +1745,7 @@ details p {
 
 @media (max-width: 960px) {
   .intro-grid,
-  .contact-layout,
-  .reviews-grid {
+  .contact-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1744,6 +1760,13 @@ details p {
   */
   .experience-card {
     right: 12px;
+  }
+}
+
+/* Celular vertical: una reseña por fila. Acostado siguen las dos (ver OPINIONES). */
+@media (max-width: 599px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
   }
 }
 
