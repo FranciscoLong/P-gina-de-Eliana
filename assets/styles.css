@@ -200,6 +200,22 @@ p {
   backdrop-filter: blur(14px);
 }
 
+/*
+  HEADER QUE SE ESCONDE
+  En pantallas bajas (el celular horizontal mide de 320 a 430px de alto) el
+  header sube y se esconde al bajar; main.js le saca is-hidden apenas se sube.
+  Si algo de adentro tiene el foco (teclado) se queda a la vista.
+*/
+@media (max-height: 500px) {
+  .site-header {
+    transition: transform 0.25s ease;
+  }
+
+  .site-header.is-hidden:not(:focus-within) {
+    transform: translateY(-100%);
+  }
+}
+
 .nav {
   min-height: var(--header-height);
   display: flex;
