@@ -155,6 +155,12 @@ si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
     --print-to-pdf="$PWD/aviso-reservas.pdf" "file://$PWD/aviso-reservas.html"
   ```
 
+- La hoja para el escritorio de la recepción está en
+  `carteles/reserva-turno-recepcion.html` y su PDF al lado: un A4 con dos
+  carteles iguales de "Reserva de turno" (se pega entera o se corta por la
+  línea punteada). El PDF se regenera con el mismo comando, cambiando el
+  nombre del archivo.
+
 ### Configuración en Vercel
 
 | Variable | Contenido |
