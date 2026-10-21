@@ -14,7 +14,7 @@ const {
   validateBooking
 } = require("../api/_lib/booking");
 
-const RULES = { durationMinutes: 45, minNoticeHours: 24 };
+const RULES = { durationMinutes: 45, minNoticeHours: 24, gapMinutes: 10 };
 // Lunes 5 de octubre de 2026, 10:00 en Montevideo.
 const NOW = new Date("2026-10-05T10:00:00-03:00");
 
@@ -36,6 +36,36 @@ test("la grilla de un día hábil arranca al abrir cada franja y no invade la pa
   const starts = slotsForDate("2026-10-07", RULES).map((slot) => slot.start.slice(11, 16));
   assert.deepEqual(starts, ["09:30", "10:15", "11:00", "11:45", "15:00", "15:45", "16:30", "17:15", "18:00"]);
   assert.equal(slotsForDate("2026-10-07", RULES).at(-1).end, "2026-10-07T18:45:00-03:00");
+});
+
+test("hasta el 30 de noviembre de 2026 los turnos siguen seguidos desde las 9:30", () => {
+  const starts = slotsForDate("2026-11-30", RULES).map((slot) => slot.start.slice(11, 16));
+  assert.deepEqual(starts, ["09:30", "10:15", "11:00", "11:45", "15:00", "15:45", "16:30", "17:15", "18:00"]);
+});
+
+test("desde el 1 de diciembre de 2026 la mañana arranca a las 9:00 y queda un margen entre turnos", () => {
+  const slots = slotsForDate("2026-12-01", RULES);
+  assert.deepEqual(
+    slots.map((slot) => `${slot.start.slice(11, 16)}-${slot.end.slice(11, 16)}`),
+    [
+      "09:00-09:45", "09:55-10:40", "10:50-11:35", "11:45-12:30",
+      "15:00-15:45", "15:55-16:40", "16:50-17:35", "17:45-18:30"
+    ]
+  );
+});
+
+test("el margen se cambia con BOOKING_GAP_MINUTES y 0 deja los turnos seguidos", () => {
+  const startsWith = (gap) => slotsForDate("2026-12-01", readRules({ BOOKING_GAP_MINUTES: gap }))
+    .map((slot) => slot.start.slice(11, 16));
+  assert.deepEqual(startsWith("15"), ["09:00", "10:00", "11:00", "15:00", "16:00", "17:00", "18:00"]);
+  assert.deepEqual(startsWith("0"), ["09:00", "09:45", "10:30", "11:15", "15:00", "15:45", "16:30", "17:15", "18:00"]);
+});
+
+test("desde el 1 de diciembre no se acepta un horario de la grilla anterior", () => {
+  const now = new Date("2026-11-20T10:00:00-03:00");
+  assert.equal(findBookableSlot("2026-12-01T09:30:00-03:00", now, RULES), null);
+  assert.equal(findBookableSlot("2026-12-01T10:15:00-03:00", now, RULES), null);
+  assert.equal(findBookableSlot("2026-12-01T09:55:00-03:00", now, RULES)?.end, "2026-12-01T10:40:00-03:00");
 });
 
 test("sábados y domingos no tienen horarios", () => {
@@ -60,12 +90,13 @@ test("la anticipación se cambia con BOOKING_MIN_NOTICE_HOURS", () => {
   const rules = readRules({ BOOKING_MIN_NOTICE_HOURS: "48" });
   assert.equal(rules.minNoticeHours, 48);
   assert.equal(bookableDays(NOW, rules)[0].slots[0].start, "2026-10-07T10:15:00-03:00");
-  assert.deepEqual(readRules({}), { durationMinutes: 45, minNoticeHours: 24 });
+  assert.deepEqual(readRules({}), { durationMinutes: 45, minNoticeHours: 24, gapMinutes: 10 });
 });
 
 test("un valor de configuración inválido apaga la agenda en vez de adivinar", () => {
   assert.throws(() => readRules({ BOOKING_MIN_NOTICE_HOURS: "48h" }), { code: "INVALID_CONFIG" });
   assert.throws(() => readRules({ BOOKING_DURATION_MINUTES: "0" }), { code: "INVALID_CONFIG" });
+  assert.throws(() => readRules({ BOOKING_GAP_MINUTES: "10m" }), { code: "INVALID_CONFIG" });
 });
 
 test("el horizonte llega exactamente hasta el día 45", () => {

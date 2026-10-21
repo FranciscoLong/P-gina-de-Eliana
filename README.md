@@ -104,7 +104,15 @@ Eliana recibe un aviso.
 
 Reglas, centralizadas en `api/_lib/booking.js`:
 
-- Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00, en turnos de 45 minutos.
+- Lunes a viernes, en turnos de 45 minutos. El horario va por tramos de fechas
+  (`SCHEDULES`):
+  - Hasta el 30 de noviembre de 2026: de 9:30 a 12:30 y de 15:00 a 19:00, con
+    los turnos seguidos.
+  - Desde el 1 de diciembre de 2026: de 9:00 a 12:30 y de 15:00 a 19:00, con
+    **10 minutos de margen** entre turno y turno por si alguno se alarga. Quedan
+    a las 9:00, 9:55, 10:50 y 11:45, y a las 15:00, 15:55, 16:50 y 17:45. Para
+    cambiar el margen, cargá `BOOKING_GAP_MINUTES` en Vercel (por ejemplo,
+    `15`; con `0` los turnos van seguidos) y volvé a desplegar.
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá
   `BOOKING_MIN_NOTICE_HOURS` en Vercel (por ejemplo, `48`) y volvé a desplegar.
@@ -160,6 +168,7 @@ si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
 | `BOOKING_ALLOWED_ORIGINS` | `https://www.escribaniaisbarbo.com.uy` |
 | `BOOKING_MIN_NOTICE_HOURS` | Opcional: anticipación mínima en horas (24 por defecto). |
 | `BOOKING_DURATION_MINUTES` | Opcional: duración del turno (45 por defecto). |
+| `BOOKING_GAP_MINUTES` | Opcional: margen entre turnos desde el 1 de diciembre de 2026 (10 por defecto). |
 
 Cada calendario de la tabla tiene que estar compartido con el correo de la
 cuenta de servicio (`turnos-web@escribania-turnos.iam.gserviceaccount.com`):

@@ -5,11 +5,13 @@
   horarios se ofrecen y cuáles se aceptan: el navegador solo muestra lo que
   devuelve /api/availability.
 
-  Dos reglas se cambian sin tocar código, con variables de entorno de Vercel
+  Tres reglas se cambian sin tocar código, con variables de entorno de Vercel
   (después hay que volver a desplegar para que tomen efecto):
 
   - BOOKING_MIN_NOTICE_HOURS: anticipación mínima para reservar, en horas.
   - BOOKING_DURATION_MINUTES: duración de cada turno, en minutos.
+  - BOOKING_GAP_MINUTES: margen entre turno y turno, en minutos, en los
+    tramos de SCHEDULES que lo usan.
 
   Si la variable no existe se usa el valor por defecto. Si existe pero no es un
   entero válido, la agenda se apaga (503) y el error queda en los logs: es
@@ -20,12 +22,28 @@ const TIME_ZONE = "America/Montevideo";
 // Uruguay no usa horario de verano desde 2015: el desfase es fijo.
 const UTC_OFFSET = "-03:00";
 const HORIZON_DAYS = 45;
-const OPENING_WINDOWS = Object.freeze([
-  ["09:30", "12:30"],
-  ["15:00", "19:00"]
+/*
+  Horario de la agenda por tramos de fechas: cada tramo rige desde su día
+  (fecha de Uruguay) hasta que empieza el siguiente. Desde el 1 de diciembre de
+  2026 la mañana arranca a las 9:00 y entre turno y turno queda el margen de
+  BOOKING_GAP_MINUTES, por si alguno se alarga. Pasado el 30 de noviembre de
+  2026, el primer tramo se puede borrar.
+*/
+const SCHEDULES = Object.freeze([
+  {
+    from: "2000-01-01",
+    windows: [["09:30", "12:30"], ["15:00", "19:00"]],
+    withGap: false
+  },
+  {
+    from: "2026-12-01",
+    windows: [["09:00", "12:30"], ["15:00", "19:00"]],
+    withGap: true
+  }
 ]);
 const DEFAULT_MIN_NOTICE_HOURS = 24;
 const DEFAULT_DURATION_MINUTES = 45;
+const DEFAULT_GAP_MINUTES = 10;
 const DEFAULT_SERVICE = "Consulta notarial";
 
 // Debe coincidir con los data-service de index.html (lo verifica una prueba).
@@ -93,7 +111,8 @@ function readRules(env = process.env) {
       "BOOKING_MIN_NOTICE_HOURS",
       DEFAULT_MIN_NOTICE_HOURS,
       24 * HORIZON_DAYS
-    )
+    ),
+    gapMinutes: readWholeNumber(env, "BOOKING_GAP_MINUTES", DEFAULT_GAP_MINUTES, 120)
   };
 }
 
@@ -125,16 +144,22 @@ function toHhmm(minutes) {
   return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
 }
 
-// Grilla fija del día: los turnos arrancan al abrir cada franja y se suceden sin huecos.
+function scheduleFor(ymd) {
+  return SCHEDULES.findLast((schedule) => schedule.from <= ymd);
+}
+
+// Grilla fija del día: los turnos arrancan al abrir cada franja y se suceden con el margen del tramo.
 function slotsForDate(ymd, rules) {
   if (!isWeekday(ymd)) {
     return [];
   }
 
+  const { windows, withGap } = scheduleFor(ymd);
+  const step = rules.durationMinutes + (withGap ? rules.gapMinutes : 0);
   const slots = [];
-  for (const [open, close] of OPENING_WINDOWS) {
+  for (const [open, close] of windows) {
     const last = toMinutes(close);
-    for (let minute = toMinutes(open); minute + rules.durationMinutes <= last; minute += rules.durationMinutes) {
+    for (let minute = toMinutes(open); minute + rules.durationMinutes <= last; minute += step) {
       slots.push({
         start: `${ymd}T${toHhmm(minute)}:00${UTC_OFFSET}`,
         end: `${ymd}T${toHhmm(minute + rules.durationMinutes)}:00${UTC_OFFSET}`
@@ -226,6 +251,7 @@ function validateBooking(input, now, rules) {
 module.exports = {
   DEFAULT_MIN_NOTICE_HOURS,
   DEFAULT_DURATION_MINUTES,
+  DEFAULT_GAP_MINUTES,
   DEFAULT_SERVICE,
   HORIZON_DAYS,
   LIMITS,
