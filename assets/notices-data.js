@@ -13,7 +13,7 @@ window.SiteNotices = [
     title: "Por la mañana,",
     highlight: "solo con reserva",
     paragraphs: [
-      "De lunes a viernes, de **9:30 a 12:30**, se atiende únicamente con turno reservado.",
+      "De lunes a viernes, de **9:00 a 12:30**, se atiende únicamente con turno reservado.",
       "Por la tarde, de 15:00 a 19:00, la atención continúa como siempre."
     ],
     link: { label: "Reservá tu turno", href: "/reservar" }
