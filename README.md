@@ -115,6 +115,12 @@ Reglas, centralizadas en `api/_lib/booking.js`:
     a las 9:00, 9:55, 10:50 y 11:45, y a las 15:00, 15:55, 16:50 y 17:45. Para
     cambiar el margen, cargá `BOOKING_GAP_MINUTES` en Vercel (por ejemplo,
     `15`; con `0` los turnos van seguidos) y volvé a desplegar.
+
+  Los horarios de la página (barra de arriba, Contacto, pie y datos
+  estructurados) están escritos a mano. Una prueba exige que todos coincidan
+  con un mismo tramo de `SCHEDULES` y que el aviso solo nombre horas de
+  apertura o cierre de algún tramo. Si se cambia el horario en un lugar y se
+  olvida otro, `node --test` falla.
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá
   `BOOKING_MIN_NOTICE_HOURS` en Vercel (por ejemplo, `48`) y volvé a desplegar.
