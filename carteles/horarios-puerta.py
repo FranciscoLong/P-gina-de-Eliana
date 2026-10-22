@@ -32,7 +32,7 @@ HEAD = [("HORARIOS", 34, 0), ("LUNES A VIERNES", 17, 12)]
 AGENDA = HEAD + [("Solo con agenda: 9:00 a 12:30 hs", 22, 20),
                  ("Atención normal: 15:00 a 19:00 hs", 22, 20)]
 RESERVA = HEAD + [("Mañana: solo con reserva", 22, 20),
-                  ("Tarde: 15:00 a 19:00 hs", 22, 20)]
+                  ("15:00 a 19:00 hs", 22, 20)]
 QR = 100      # mm del QR impreso, con su margen blanco incluido
 QR_GAP = 45   # mm entre el texto y el QR
 QR_TEXT = [("Escaneá", 11, 0), ("para reservar", 11, 5)]
