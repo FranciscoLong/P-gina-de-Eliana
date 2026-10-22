@@ -5,11 +5,11 @@
 #   python3 carteles/horarios-puerta.py
 # Escribe en carteles/:
 #   horarios-puerta.svg                  horario de la mañana con agenda
-#   horarios-puerta-reserva.svg          mañana solo con reserva, sin horario;
+#   horarios-puerta-reserva.svg          mañana solo con agenda, sin horario;
 #                                        deja vacío el lugar del QR
 #   horarios-puerta-reserva-montaje.svg  lo mismo con el QR en su lugar, para
 #                                        mostrar cómo se arma
-#   horarios-puerta-reserva-sin-qr.svg   mañana solo con reserva, para usar con
+#   horarios-puerta-reserva-sin-qr.svg   mañana solo con agenda, para usar con
 #                                        el QR aparte (qr-puerta-20x30.html)
 # El QR no se corta: va impreso negro sobre blanco. Los PDF se arman con
 # Chrome a partir de cada SVG, con la medida que imprime.
@@ -31,11 +31,11 @@ DESC = 5     # mm para la cola de la "g"
 HEAD = [("HORARIOS", 34, 0), ("LUNES A VIERNES", 17, 12)]
 AGENDA = HEAD + [("Solo con agenda: 9:00 a 12:30 hs", 22, 20),
                  ("Atención normal: 15:00 a 19:00 hs", 22, 20)]
-RESERVA = HEAD + [("Mañana: solo con reserva", 22, 20),
+RESERVA = HEAD + [("Mañana: solo con agenda", 22, 20),
                   ("15:00 a 19:00 hs", 22, 20)]
 QR = 100      # mm del QR impreso, con su margen blanco incluido
 QR_GAP = 45   # mm entre el texto y el QR
-QR_TEXT = [("Escaneá", 11, 0), ("para reservar", 11, 5)]
+QR_TEXT = [("Escaneá", 11, 0), ("para agendar", 11, 5)]
 
 
 def width(t, h):
@@ -85,7 +85,7 @@ draw(AGENDA, W / 2, (H - th) / 2, paths)
 write("horarios-puerta.svg", svg(W, H, paths))
 print("horarios-puerta:", W, "x", H, "mm", file=sys.stderr)
 
-# Mañana solo con reserva, sin QR
+# Mañana solo con agenda, sin QR
 tw = max(width(t, h) for t, h, _ in RESERVA)
 th = block_height(RESERVA)
 W, H = up(tw + 2 * MARGIN), up(th + 2 * MARGIN)
@@ -94,7 +94,7 @@ draw(RESERVA, W / 2, (H - th) / 2, paths)
 write("horarios-puerta-reserva-sin-qr.svg", svg(W, H, paths))
 print("horarios-puerta-reserva-sin-qr:", W, "x", H, "mm", file=sys.stderr)
 
-# Mañana solo con reserva, con el QR a la derecha y la leyenda debajo
+# Mañana solo con agenda, con el QR a la derecha y la leyenda debajo
 tw = max(width(t, h) for t, h, _ in RESERVA)
 th = block_height(RESERVA)
 qh = QR + 4 + block_height(QR_TEXT)
