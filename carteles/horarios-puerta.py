@@ -9,6 +9,8 @@
 #                                        deja vacío el lugar del QR
 #   horarios-puerta-reserva-montaje.svg  lo mismo con el QR en su lugar, para
 #                                        mostrar cómo se arma
+#   horarios-puerta-reserva-sin-qr.svg   mañana solo con reserva, para usar con
+#                                        el QR aparte (qr-puerta-20x30.html)
 # El QR no se corta: va impreso negro sobre blanco. Los PDF se arman con
 # Chrome a partir de cada SVG, con la medida que imprime.
 import os
@@ -82,6 +84,15 @@ paths = []
 draw(AGENDA, W / 2, (H - th) / 2, paths)
 write("horarios-puerta.svg", svg(W, H, paths))
 print("horarios-puerta:", W, "x", H, "mm", file=sys.stderr)
+
+# Mañana solo con reserva, sin QR
+tw = max(width(t, h) for t, h, _ in RESERVA)
+th = block_height(RESERVA)
+W, H = up(tw + 2 * MARGIN), up(th + 2 * MARGIN)
+paths = []
+draw(RESERVA, W / 2, (H - th) / 2, paths)
+write("horarios-puerta-reserva-sin-qr.svg", svg(W, H, paths))
+print("horarios-puerta-reserva-sin-qr:", W, "x", H, "mm", file=sys.stderr)
 
 # Mañana solo con reserva, con el QR a la derecha y la leyenda debajo
 tw = max(width(t, h) for t, h, _ in RESERVA)
