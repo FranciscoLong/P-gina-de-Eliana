@@ -17,7 +17,7 @@ cap = font["OS/2"].sCapHeight
 
 # (texto, altura de mayúscula en mm, espacio arriba en mm)
 lines = [("HORARIOS", 34, 0), ("LUNES A VIERNES", 17, 12),
-         ("MAÑANA  9:00 a 12:30 hs", 22, 20), ("solo con agenda", 19, 9),
+         ("solo con agenda", 19, 17), ("MAÑANA  9:00 a 12:30 hs", 22, 13),
          ("TARDE  15:00 a 19:00 hs", 22, 20)]
 
 def width(t, s): return sum(gs[cmap[ord(c)]].width for c in t) * s
