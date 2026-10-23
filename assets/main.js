@@ -940,8 +940,8 @@ document.addEventListener(
 /*
   CARRUSEL DE RESEÑAS
   Las flechas mueven la fila de a una tarjeta; el scroll-snap del CSS la deja
-  alineada. En las puntas se atenúan con aria-disabled y no con disabled, que
-  le sacaría el foco a quien usa el teclado. El CSS solo las muestra con
+  alineada. Dan la vuelta: desde la última, "siguiente" vuelve a la primera,
+  y desde la primera, "anterior" va a la última. El CSS solo las muestra con
   mouse; con el dedo la fila se desliza sola.
 */
 const reviewsCarousel = document.querySelector(".reviews-carousel");
@@ -949,26 +949,65 @@ const reviewsTrack = document.getElementById("reviewsTrack");
 const reviewsPrev = reviewsCarousel?.querySelector(".reviews-arrow-prev");
 const reviewsNext = reviewsCarousel?.querySelector(".reviews-arrow-next");
 
-function updateReviewArrows() {
-  const lastScroll = reviewsTrack.scrollWidth - reviewsTrack.clientWidth;
-  reviewsPrev.setAttribute("aria-disabled", String(reviewsTrack.scrollLeft <= 1));
-  reviewsNext.setAttribute("aria-disabled", String(reviewsTrack.scrollLeft >= lastScroll - 1));
-}
-
 function moveReviews(direction) {
   const card = reviewsTrack.querySelector(".review-card");
   const gap = parseFloat(getComputedStyle(reviewsTrack).columnGap) || 0;
+  const lastScroll = reviewsTrack.scrollWidth - reviewsTrack.clientWidth;
   // Sin "behavior": manda el scroll-behavior del CSS, que respeta reducir movimiento.
-  reviewsTrack.scrollBy({ left: direction * (card.offsetWidth + gap) });
+  if (direction > 0 && reviewsTrack.scrollLeft >= lastScroll - 1) {
+    reviewsTrack.scrollTo({ left: 0 });
+  } else if (direction < 0 && reviewsTrack.scrollLeft <= 1) {
+    reviewsTrack.scrollTo({ left: lastScroll });
+  } else {
+    reviewsTrack.scrollBy({ left: direction * (card.offsetWidth + gap) });
+  }
+}
+
+/*
+  LEER MÁS
+  El CSS corta las reseñas en 7 líneas. Las que no entran llevan el botón,
+  que se vuelve a medir al cambiar el ancho (en el celular se cortan más) y
+  cuando terminan de cargar las tipografías, que cambian el largo de línea.
+*/
+function updateReviewToggles() {
+  reviewsTrack.querySelectorAll(".review-card:not(.is-expanded)").forEach((card) => {
+    const text = card.querySelector("blockquote");
+    let toggle = card.querySelector(".review-toggle");
+    const cut = text.scrollHeight > text.clientHeight + 1;
+    if (cut && !toggle) {
+      toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "review-toggle";
+      toggle.textContent = "Leer más";
+      toggle.setAttribute("aria-expanded", "false");
+      text.after(toggle);
+    }
+    if (toggle) toggle.hidden = !cut;
+  });
 }
 
 if (reviewsCarousel && reviewsTrack && reviewsPrev && reviewsNext) {
-  reviewsCarousel.classList.add("has-arrows");
+  reviewsCarousel.classList.add("is-ready");
   reviewsPrev.addEventListener("click", () => moveReviews(-1));
   reviewsNext.addEventListener("click", () => moveReviews(1));
-  reviewsTrack.addEventListener("scroll", updateReviewArrows, { passive: true });
-  window.addEventListener("resize", updateReviewArrows);
-  updateReviewArrows();
+
+  reviewsTrack.addEventListener("click", (event) => {
+    const toggle = event.target.closest(".review-toggle");
+    if (!toggle) return;
+    const expanded = toggle.closest(".review-card").classList.toggle("is-expanded");
+    toggle.textContent = expanded ? "Leer menos" : "Leer más";
+    toggle.setAttribute("aria-expanded", String(expanded));
+    // Al cerrarla se mide de nuevo, por si el ancho cambió mientras estaba abierta.
+    if (!expanded) updateReviewToggles();
+  });
+
+  let toggleFrame = 0;
+  window.addEventListener("resize", () => {
+    cancelAnimationFrame(toggleFrame);
+    toggleFrame = requestAnimationFrame(updateReviewToggles);
+  });
+  document.fonts?.ready.then(updateReviewToggles);
+  updateReviewToggles();
 }
 
 copyAddressButton.addEventListener("click", async () => {

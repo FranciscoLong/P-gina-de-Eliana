@@ -257,7 +257,9 @@ La sección **Opiniones**, antes del pie, muestra reseñas del Perfil de Empresa
 de Google copiadas a mano, tal cual las escribió cada persona, con el nombre y
 la inicial del apellido. Van en un carrusel de una sola fila que se desliza
 para los costados: se ven dos (en el celular vertical, una y el borde de la
-siguiente) y con mouse aparecen flechas. Tiene un botón para dejar una reseña
+siguiente) y con mouse aparecen flechas, que dan la vuelta al llegar a una
+punta. Las reseñas que no entran en 7 líneas llevan "Leer más", que las abre
+enteras en la misma tarjeta. Tiene un botón para dejar una reseña
 (`g.page/r/…/review`) y otro para ver todas en Google Maps. Los pasos para
 actualizarlas están en `CLAUDE.md`, sección "Actualizar las reseñas". No llevan
 datos estructurados: Google no admite reseñas propias publicadas en el sitio

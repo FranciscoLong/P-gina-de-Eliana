@@ -1540,20 +1540,20 @@ body.modal-open {
 }
 
 /*
-  Flechas: solo con mouse (hover) y si main.js puso has-arrows. Van a los
-  costados, en un margen propio, para no tapar el texto de las tarjetas. En
-  las puntas quedan atenuadas (aria-disabled) sin perder el foco.
+  Flechas: solo con mouse (hover) y si main.js puso is-ready. Van a los
+  costados, en un margen propio, para no tapar el texto de las tarjetas. Dan
+  la vuelta: desde la última, "siguiente" vuelve a la primera.
 */
 .reviews-arrow {
   display: none;
 }
 
 @media (hover: hover) {
-  .reviews-carousel.has-arrows {
+  .reviews-carousel.is-ready {
     padding-inline: 56px;
   }
 
-  .has-arrows .reviews-arrow {
+  .is-ready .reviews-arrow {
     position: absolute;
     top: calc(50% - 6px);
     z-index: 1;
@@ -1567,7 +1567,7 @@ body.modal-open {
     color: var(--green-950);
     box-shadow: 0 8px 20px rgba(16, 44, 32, 0.1);
     transform: translateY(-50%);
-    transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    transition: border-color 0.2s ease, color 0.2s ease;
   }
 
   .reviews-arrow-prev {
@@ -1581,13 +1581,6 @@ body.modal-open {
   .reviews-arrow:hover {
     border-color: var(--green-800);
     color: var(--green-800);
-  }
-
-  .reviews-arrow[aria-disabled="true"] {
-    border-color: var(--gray-200);
-    color: var(--gray-500);
-    opacity: 0.45;
-    cursor: default;
   }
 }
 
@@ -1630,13 +1623,45 @@ body.modal-open {
   }
 }
 
-/* El texto ocupa el alto sobrante para que el autor quede al pie de cada tarjeta. */
 .review-card blockquote {
-  flex: 1 0 auto;
   line-height: 1.65;
 }
 
+/*
+  LEER MÁS
+  Con main.js (is-ready), las reseñas se cortan en 7 líneas para que las
+  tarjetas tengan un alto normal; a las que no les entra, main.js les agrega
+  "Leer más", que muestra la reseña entera en la misma tarjeta. Sin
+  JavaScript no se corta nada, porque no habría cómo abrirlas. El texto no
+  crece: si la tarjeta es más alta, el corte de -webkit-line-clamp dejaría
+  ver las líneas de abajo. El que empuja al autor al pie es su margin-top.
+*/
+.is-ready .review-card:not(.is-expanded) blockquote {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
+  overflow: hidden;
+}
+
+.review-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--green-800);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.review-toggle:hover {
+  color: var(--green-950);
+}
+
 .review-author {
+  margin-top: auto;
   color: var(--gray-700);
   font-size: 0.9rem;
 }
