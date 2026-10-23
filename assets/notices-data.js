@@ -13,7 +13,7 @@ window.SiteNotices = [
     title: "Por la mañana,",
     highlight: "el escritorio permanecerá cerrado",
     paragraphs: [
-      "Por la tarde atendemos como siempre, de lunes a viernes de **15:00 a 19:00**."
+      "Por la tarde atendemos como siempre, de lunes a viernes de **15:00 a 19:00 hs**."
     ],
     link: {
       label: "Escribinos por WhatsApp",
@@ -30,8 +30,8 @@ window.SiteNotices = [
     title: "Por la mañana,",
     highlight: "solo con agenda",
     paragraphs: [
-      "De lunes a viernes, de **9:00 a 12:30**, se atenderá únicamente con turno agendado.",
-      "Por la tarde, de 15:00 a 19:00, la atención continuará como siempre."
+      "De lunes a viernes, de **9:00 a 12:30 hs**, se atenderá únicamente con turno agendado.",
+      "Por la tarde, de 15:00 a 19:00 hs, la atención continuará como siempre."
     ],
     link: { label: "Agendá tu turno", href: "/reservar" }
   }
