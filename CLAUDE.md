@@ -75,8 +75,9 @@ Reglas acordadas con Francisco (2026-10-06):
   carbajal" se escribe "Marisel C.").
 - **Fecha:** mes y año en minúscula ("septiembre de 2026"), calculada a partir
   de "hace N semanas/meses" contando desde el día de la revisión.
-- **Orden:** de la más nueva a la más vieja. La grilla muestra dos por fila;
-  con un número impar, la última queda sola.
+- **Orden:** de la más nueva a la más vieja. Van todas en un carrusel de una
+  sola fila, con dos a la vista; las nuevas se agregan al principio de la
+  lista (`reviews-track`).
 - **Formato de cada tarjeta.** Las estrellas van rellenas (★) o vacías (☆) y
   `aria-label` dice la cantidad:
 
