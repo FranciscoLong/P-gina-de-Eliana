@@ -38,6 +38,23 @@ test("la grilla de un día hábil arranca al abrir cada franja y no invade la pa
   assert.equal(slotsForDate("2026-10-07", RULES).at(-1).end, "2026-10-07T18:45:00-03:00");
 });
 
+test("del 2 al 23 de noviembre de 2026 no hay turnos por la mañana y el 24 vuelven", () => {
+  const starts = (ymd) => slotsForDate(ymd, RULES).map((slot) => slot.start.slice(11, 16));
+  const afternoon = ["15:00", "15:45", "16:30", "17:15", "18:00"];
+  const fullDay = ["09:30", "10:15", "11:00", "11:45", ...afternoon];
+  assert.deepEqual(starts("2026-10-30"), fullDay);
+  assert.deepEqual(starts("2026-11-02"), afternoon);
+  assert.deepEqual(starts("2026-11-23"), afternoon);
+  assert.deepEqual(starts("2026-11-24"), fullDay);
+  const now = new Date("2026-10-22T10:00:00-03:00");
+  // Los 16 días hábiles del cierre, no solo los bordes.
+  const closed = bookableDays(now, RULES).filter((day) => day.date >= "2026-11-02" && day.date <= "2026-11-23");
+  assert.equal(closed.length, 16);
+  assert.ok(closed.every((day) => day.slots.every((slot) => slot.start.slice(11, 16) >= "15:00")));
+  assert.equal(findBookableSlot("2026-11-10T09:30:00-03:00", now, RULES), null);
+  assert.equal(findBookableSlot("2026-11-10T15:00:00-03:00", now, RULES)?.end, "2026-11-10T15:45:00-03:00");
+});
+
 test("hasta el 30 de noviembre de 2026 los turnos siguen seguidos desde las 9:30", () => {
   const starts = slotsForDate("2026-11-30", RULES).map((slot) => slot.start.slice(11, 16));
   assert.deepEqual(starts, ["09:30", "10:15", "11:00", "11:45", "15:00", "15:45", "16:30", "17:15", "18:00"]);
@@ -103,8 +120,8 @@ test("el horizonte llega exactamente hasta el día 45", () => {
   const days = bookableDays(NOW, RULES);
   assert.equal(days.at(-1).date, "2026-11-19");
   assert.equal(HORIZON_DAYS, 45);
-  assert.equal(findBookableSlot("2026-11-19T09:30:00-03:00", NOW, RULES)?.start, "2026-11-19T09:30:00-03:00");
-  assert.equal(findBookableSlot("2026-11-20T09:30:00-03:00", NOW, RULES), null);
+  assert.equal(findBookableSlot("2026-11-19T15:00:00-03:00", NOW, RULES)?.start, "2026-11-19T15:00:00-03:00");
+  assert.equal(findBookableSlot("2026-11-20T15:00:00-03:00", NOW, RULES), null);
 });
 
 test("detecta superposición parcial y respeta los bordes exactos", () => {

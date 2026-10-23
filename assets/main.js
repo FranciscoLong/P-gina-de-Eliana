@@ -155,10 +155,11 @@ function findCurrentSectionLink() {
 }
 
 /*
-  Con el celular horizontal el header se come una buena parte del alto, asi que
-  se esconde al bajar y vuelve apenas se sube. La clase se pone en cualquier
-  pantalla, pero solo tiene efecto en las bajas (ver HEADER QUE SE ESCONDE en el
-  CSS). Arriba de todo o con el menu abierto se queda a la vista.
+  En el celular el header se come una buena parte del alto, asi que se esconde
+  al bajar y vuelve apenas se sube. La clase se pone en cualquier pantalla,
+  pero solo tiene efecto en pantallas angostas o bajas (ver HEADER QUE SE
+  ESCONDE en el CSS).
+  Arriba de todo o con el menu abierto se queda a la vista.
 */
 const siteHeader = document.querySelector(".site-header");
 const HEADER_HIDE_FROM = 200;

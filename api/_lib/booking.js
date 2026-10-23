@@ -24,15 +24,29 @@ const UTC_OFFSET = "-03:00";
 const HORIZON_DAYS = 45;
 /*
   Horario de la agenda por tramos de fechas: cada tramo rige desde su día
-  (fecha de Uruguay) hasta que empieza el siguiente. Desde el 1 de diciembre de
-  2026 la mañana arranca a las 9:00 y entre turno y turno queda el margen de
-  BOOKING_GAP_MINUTES, por si alguno se alarga. Pasado el 30 de noviembre de
-  2026, el primer tramo se puede borrar.
+  (fecha de Uruguay) hasta que empieza el siguiente. Del 2 al 23 de noviembre
+  de 2026 el escritorio cierra por la mañana y solo hay turnos de tarde. Desde
+  el 1 de diciembre de 2026 la mañana arranca a las 9:00 y entre turno y turno
+  queda el margen de BOOKING_GAP_MINUTES, por si alguno se alarga. Pasado el 30
+  de noviembre de 2026, los tres primeros tramos y USUAL_WINDOWS se pueden
+  borrar.
 */
+// El horario de siempre, el mismo antes y después del cierre de noviembre.
+const USUAL_WINDOWS = [["09:30", "12:30"], ["15:00", "19:00"]];
 const SCHEDULES = Object.freeze([
   {
     from: "2000-01-01",
-    windows: [["09:30", "12:30"], ["15:00", "19:00"]],
+    windows: USUAL_WINDOWS,
+    withGap: false
+  },
+  {
+    from: "2026-11-02",
+    windows: [["15:00", "19:00"]],
+    withGap: false
+  },
+  {
+    from: "2026-11-24",
+    windows: USUAL_WINDOWS,
     withGap: false
   },
   {
