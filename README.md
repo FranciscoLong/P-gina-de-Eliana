@@ -108,6 +108,8 @@ Reglas, centralizadas en `api/_lib/booking.js`:
   (`SCHEDULES`):
   - Hasta el 30 de noviembre de 2026: de 9:30 a 12:30 y de 15:00 a 19:00, con
     los turnos seguidos.
+  - Del 2 al 23 de noviembre de 2026 el escritorio cierra por la mañana: solo
+    hay turnos de 15:00 a 19:00. El 24 vuelve la mañana sin tocar nada.
   - Desde el 1 de diciembre de 2026: de 9:00 a 12:30 y de 15:00 a 19:00, con
     **10 minutos de margen** entre turno y turno por si alguno se alarga. Quedan
     a las 9:00, 9:55, 10:50 y 11:45, y a las 15:00, 15:55, 16:50 y 17:45. Para
