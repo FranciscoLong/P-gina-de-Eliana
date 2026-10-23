@@ -10,6 +10,7 @@ const {
   findBookableSlot,
   overlaps,
   readRules,
+  SCHEDULES,
   slotsForDate,
   validateBooking
 } = require("../api/_lib/booking");
@@ -163,4 +164,59 @@ test("la lista de trámites del servidor coincide con los enlaces de Servicios",
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const fromHtml = [...html.matchAll(/data-service="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual([...new Set(fromHtml)].sort(), SERVICES.filter((s) => s !== "Consulta notarial").sort());
+});
+
+/*
+  Los horarios de la página están escritos a mano; SCHEDULES es la fuente.
+  La barra de arriba, Contacto, el pie y los datos estructurados tienen que
+  coincidir todos con un mismo tramo: antes de que empiece un tramo nuevo la
+  página sigue mostrando el vigente. Cada bloque nombra la tarde completa y
+  no puede tener horas que no sean apertura o cierre de ese tramo.
+*/
+function hoursProblems(windows, html) {
+  const problems = [];
+  const ldScripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+  const specs = ldScripts.map((match) => JSON.parse(match[1])).find((data) => data.openingHoursSpecification)
+    .openingHoursSpecification;
+  if (JSON.stringify(specs.map((spec) => [spec.opens, spec.closes])) !== JSON.stringify(windows)) {
+    problems.push("datos estructurados");
+  }
+
+  const short = (hhmm) => hhmm.replace(/^0/, "");
+  const allowed = new Set(windows.flat().map(short));
+  const [afternoonOpen, afternoonClose] = windows.at(-1).map(short);
+  const blocks = {
+    "barra de arriba": html.match(/<div class="container topbar-content">\s*<span>([\s\S]*?)<\/span>/)[1],
+    Contacto: html.match(/<span>Horario<\/span>([\s\S]*?)<\/li>/)[1],
+    pie: html.match(/<div class="footer-hours">([\s\S]*?)<\/div>/)[1]
+  };
+  for (const [name, text] of Object.entries(blocks)) {
+    const plain = text.replace(/&nbsp;/g, " ");
+    if (!plain.includes(`${afternoonOpen} a ${afternoonClose}`)) {
+      problems.push(`${name} sin la tarde`);
+    }
+    for (const [time] of plain.matchAll(/\b\d{1,2}:\d{2}\b/g)) {
+      if (!allowed.has(time)) {
+        problems.push(`${name}: ${time}`);
+      }
+    }
+  }
+  return problems;
+}
+
+test("los horarios de la página coinciden con un tramo de la agenda", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const results = SCHEDULES.map(({ from, windows }) => ({ from, problems: hoursProblems(windows, html) }));
+  assert.ok(
+    results.some((result) => result.problems.length === 0),
+    results.map((result) => `${result.from}: ${result.problems.join(", ")}`).join("\n")
+  );
+});
+
+test("el aviso solo nombra horas de apertura o cierre de la agenda", () => {
+  const notices = fs.readFileSync(path.join(__dirname, "..", "assets", "notices-data.js"), "utf8");
+  const allowed = new Set(SCHEDULES.flatMap(({ windows }) => windows.flat()).map((hhmm) => hhmm.replace(/^0/, "")));
+  for (const [time] of notices.matchAll(/\b\d{1,2}:\d{2}\b/g)) {
+    assert.ok(allowed.has(time), `el aviso dice ${time}`);
+  }
 });

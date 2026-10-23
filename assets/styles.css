@@ -1920,6 +1920,14 @@ details p {
   .experience-card {
     right: 12px;
   }
+
+  /*
+    El horario no entra en una línea junto al teléfono y el correo: hasta acá
+    la barra muestra solo el horario. El contacto sigue en Contacto y en el pie.
+  */
+  .topbar-content span:last-child {
+    display: none;
+  }
 }
 
 /*
@@ -2008,10 +2016,6 @@ details p {
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .topbar-content span:last-child {
-    display: none;
   }
 
   .brand-copy span {
