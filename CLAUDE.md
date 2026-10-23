@@ -11,6 +11,10 @@ HTML, CSS y JavaScript puro, publicado en Vercel desde `main`, con funciones en
   confirmación. Los cambios invisibles (datos estructurados, metadatos) pueden
   ir directo.
 - Los textos de la página usan voseo ("Elegí", "Contanos").
+- Los turnos se nombran con **agenda**, no con reserva: "turno agendado",
+  "Agendá tu turno", "solo con agenda". Vale para la página, los avisos, los
+  carteles y los correos. La dirección `/reservar` y los nombres internos no
+  cambian.
 - Trabajar en una rama, abrir un PR y mergear recién cuando Francisco lo pida.
   Los PR se mergean con squash y la rama se borra.
 - **Nada secreto en el repositorio, que es público:** las claves (Google,
