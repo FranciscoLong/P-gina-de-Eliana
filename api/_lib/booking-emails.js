@@ -79,7 +79,7 @@ function clientConfirmation(booking, { durationMinutes, cancelUrl, eventId }, no
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappText)}`,
       "",
       // Cualquiera puede escribir un correo ajeno al reservar: el enlace deshace eso.
-      "Si no reservaste ningún turno, ignorá por completo este mensaje. Si querés, podés anularlo para liberar el horario:",
+      "Si no agendaste ningún turno, ignorá por completo este mensaje. Si querés, podés anularlo para liberar el horario:",
       cancelUrl,
       "",
       "Eliana Isbarbo Gfeller",
@@ -101,7 +101,7 @@ function officeNotification(booking, eventLink, env = process.env) {
     replyTo: booking.email,
     subject: `Nuevo turno: ${booking.service} · ${when}`,
     text: [
-      "Se reservó un turno desde la página.",
+      "Se agendó un turno desde la página.",
       "",
       `Trámite: ${booking.service}`,
       `Día y hora: ${when}`,
@@ -114,7 +114,7 @@ function officeNotification(booking, eventLink, env = process.env) {
       "",
       eventLink ? `Ver en Google Calendar: ${eventLink}` : "El turno ya está en Google Calendar.",
       "",
-      "Respondiendo este correo le escribís directamente a quien reservó."
+      "Respondiendo este correo le escribís directamente a quien agendó el turno."
     ].join("\n")
   };
 }
@@ -134,7 +134,7 @@ function cancellationNotice(event, env = process.env) {
       `Turno: ${title}`,
       `Día y hora: ${when}`,
       "",
-      "Quien recibió la confirmación indicó que no hizo esta reserva. El evento se",
+      "Quien recibió la confirmación indicó que no agendó este turno. El evento se",
       "borró de tu calendario y el horario quedó libre en la página.",
       "",
       "Los datos del turno estaban en la descripción del evento:",

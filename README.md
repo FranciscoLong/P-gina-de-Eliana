@@ -68,11 +68,11 @@ familia. Esas tarjetas se distinguen por su título y su contenido.
 
 La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
 
-## Reserva y contacto desde la página
+## Agenda y contacto desde la página
 
-La sección **Reserva** ofrece dos vías:
+La sección **Agenda** ofrece dos vías:
 
-- **Reservar turno** en la agenda en línea.
+- **Agendar turno** en la agenda en línea.
 - **WhatsApp** al +598 91 048 471, con el mensaje preparado según el trámite.
 
 Al elegir un servicio, la página abre una ventana con ambas vías. Si el turno
@@ -188,7 +188,7 @@ calendar.google.com (en el celular, en la versión para computadoras).
 
 Si falta cualquiera de las obligatorias, o si `BOOKING_ENABLED` no vale `true`,
 la agenda se apaga sola: las funciones responden 503 sin tocar Google y la
-página oculta **Reservar turno** y deja WhatsApp. Es la forma de apagarla ante
+página oculta **Agendar turno** y deja WhatsApp. Es la forma de apagarla ante
 un problema sin tocar el código.
 
 En Preview se pueden usar las claves de prueba de Turnstile con

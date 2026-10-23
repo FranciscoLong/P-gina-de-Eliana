@@ -33,7 +33,7 @@ test("la confirmación al cliente trae trámite, fecha, dirección y cómo cance
   assert.match(message.text, /Sarandí 294 esquina 18 de Julio/);
   assert.match(message.text, /https:\/\/wa\.me\/59891048471\?text=Hola%20Eliana%2C%20tengo%20un%20turno/);
   assert.doesNotMatch(message.text, /099 123 456|sucesión de mi padre/);
-  assert.match(message.text, /Si no reservaste ningún turno, ignorá por completo este mensaje\./);
+  assert.match(message.text, /Si no agendaste ningún turno, ignorá por completo este mensaje\./);
   assert.match(message.text, /https:\/\/www\.escribaniaisbarbo\.com\.uy\/api\/anular-turno\?t=abc/);
 });
 
@@ -56,7 +56,7 @@ test("el aviso de anulación le dice a Eliana qué turno se liberó y por qué",
   }, {});
   assert.equal(message.to, "esc.isbarbo@gmail.com");
   assert.equal(message.subject, "Turno anulado: Sucesiones · Ana María Pérez · miércoles 7 de octubre a las 10:15");
-  assert.match(message.text, /indicó que no hizo esta reserva/);
+  assert.match(message.text, /indicó que no agendó este turno/);
   assert.match(message.text, /Teléfono: 099 123 456/);
 });
 

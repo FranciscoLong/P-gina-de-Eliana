@@ -114,7 +114,7 @@ module.exports = async (req, res) => {
         <strong>${escapeHtml(bookingService(event))}</strong><br>
         ${escapeHtml(when.charAt(0).toUpperCase() + when.slice(1))}
       </p>
-      <p>Si no hiciste esta reserva, anulala y el horario queda libre para otra persona. Eliana recibe un aviso.</p>
+      <p>Si no agendaste este turno, anulalo y el horario queda libre para otra persona. Eliana recibe un aviso.</p>
       <form method="post" action="/api/anular-turno">
         <input type="hidden" name="t" value="${escapeHtml(token)}">
         <button class="btn btn-dark" type="submit">Sí, anular el turno</button>

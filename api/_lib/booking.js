@@ -242,7 +242,7 @@ function validateBooking(input, now, rules) {
   const slot = findBookableSlot(value.start, now, rules);
 
   if (!SERVICES.includes(service)) errors.service = "Elegí el motivo de la consulta.";
-  if (!slot) errors.start = "Ese horario ya no se puede reservar. Elegí otro.";
+  if (!slot) errors.start = "Ese horario ya no se puede agendar. Elegí otro.";
   if (name.length < 2) errors.name = "Ingresá tu nombre.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Ingresá un correo válido.";
   if ((phone.match(/\d/g) || []).length < 8) errors.phone = "Ingresá un teléfono válido.";
@@ -250,9 +250,9 @@ function validateBooking(input, now, rules) {
   else if (details.length > LIMITS.details) {
     errors.details = `La explicación no puede superar los ${LIMITS.details} caracteres.`;
   }
-  if (value.consent !== true) errors.consent = "Necesitamos tu consentimiento para reservar.";
+  if (value.consent !== true) errors.consent = "Necesitamos tu consentimiento para agendar el turno.";
   if (!/^[A-Za-z0-9_-]{16,128}$/.test(idempotencyKey)) {
-    errors.idempotencyKey = "Intento de reserva inválido.";
+    errors.idempotencyKey = "No se pudo agendar el turno. Volvé a intentar.";
   }
 
   return {
