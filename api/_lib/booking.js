@@ -28,12 +28,15 @@ const HORIZON_DAYS = 45;
   de 2026 el escritorio cierra por la mañana y solo hay turnos de tarde. Desde
   el 1 de diciembre de 2026 la mañana arranca a las 9:00 y entre turno y turno
   queda el margen de BOOKING_GAP_MINUTES, por si alguno se alarga. Pasado el 30
-  de noviembre de 2026, los tres primeros tramos se pueden borrar.
+  de noviembre de 2026, los tres primeros tramos y USUAL_WINDOWS se pueden
+  borrar.
 */
+// El horario de siempre, el mismo antes y después del cierre de noviembre.
+const USUAL_WINDOWS = [["09:30", "12:30"], ["15:00", "19:00"]];
 const SCHEDULES = Object.freeze([
   {
     from: "2000-01-01",
-    windows: [["09:30", "12:30"], ["15:00", "19:00"]],
+    windows: USUAL_WINDOWS,
     withGap: false
   },
   {
@@ -43,7 +46,7 @@ const SCHEDULES = Object.freeze([
   },
   {
     from: "2026-11-24",
-    windows: [["09:30", "12:30"], ["15:00", "19:00"]],
+    windows: USUAL_WINDOWS,
     withGap: false
   },
   {

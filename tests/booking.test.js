@@ -47,6 +47,10 @@ test("del 2 al 23 de noviembre de 2026 no hay turnos por la mañana y el 24 vuel
   assert.deepEqual(starts("2026-11-23"), afternoon);
   assert.deepEqual(starts("2026-11-24"), fullDay);
   const now = new Date("2026-10-22T10:00:00-03:00");
+  // Los 16 días hábiles del cierre, no solo los bordes.
+  const closed = bookableDays(now, RULES).filter((day) => day.date >= "2026-11-02" && day.date <= "2026-11-23");
+  assert.equal(closed.length, 16);
+  assert.ok(closed.every((day) => day.slots.every((slot) => slot.start.slice(11, 16) >= "15:00")));
   assert.equal(findBookableSlot("2026-11-10T09:30:00-03:00", now, RULES), null);
   assert.equal(findBookableSlot("2026-11-10T15:00:00-03:00", now, RULES)?.end, "2026-11-10T15:45:00-03:00");
 });

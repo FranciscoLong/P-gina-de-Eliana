@@ -202,11 +202,11 @@ p {
 
 /*
   HEADER QUE SE ESCONDE
-  En el celular, vertical (hasta 680px de ancho) u horizontal (de 320 a 430px
-  de alto), el header sube y se esconde al bajar, para dejarle el lugar al
-  contenido; main.js le saca is-hidden apenas se sube. En tablet y escritorio
-  sobra lugar y queda fijo. Si algo de adentro tiene el foco (teclado) se queda
-  a la vista.
+  En pantallas angostas (hasta 680px de ancho, el celular vertical) o bajas (el
+  celular horizontal mide de 320 a 430px de alto), el header sube y se esconde
+  al bajar, para dejarle el lugar al contenido; main.js le saca is-hidden
+  apenas se sube. Más grande, como en tablet o escritorio, sobra lugar y queda
+  fijo. Si algo de adentro tiene el foco (teclado) se queda a la vista.
 */
 @media (max-width: 680px), (max-height: 500px) {
   .site-header {
