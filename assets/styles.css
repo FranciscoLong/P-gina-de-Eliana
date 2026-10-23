@@ -1540,12 +1540,27 @@ body.modal-open {
 }
 
 /*
-  Flechas: solo con mouse (hover) y si main.js puso is-ready. Van a los
-  costados, en un margen propio, para no tapar el texto de las tarjetas. Dan
-  la vuelta: desde la última, "siguiente" vuelve a la primera.
+  Flechas: aparecen si main.js puso is-ready y dan la vuelta (desde la
+  última, "siguiente" vuelve a la primera). Con mouse van a los costados, en
+  un margen propio, para no tapar el texto de las tarjetas. En pantallas
+  táctiles van debajo, una al lado de la otra: a los costados taparían el
+  borde de las reseñas vecinas.
 */
 .reviews-arrow {
   display: none;
+}
+
+.is-ready .reviews-arrow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gray-200);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--green-950);
+  box-shadow: 0 8px 20px rgba(16, 44, 32, 0.1);
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 @media (hover: hover) {
@@ -1557,17 +1572,7 @@ body.modal-open {
     position: absolute;
     top: calc(50% - 6px);
     z-index: 1;
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--gray-200);
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--green-950);
-    box-shadow: 0 8px 20px rgba(16, 44, 32, 0.1);
     transform: translateY(-50%);
-    transition: border-color 0.2s ease, color 0.2s ease;
   }
 
   .reviews-arrow-prev {
@@ -1579,6 +1584,34 @@ body.modal-open {
   }
 
   .reviews-arrow:hover {
+    border-color: var(--green-800);
+    color: var(--green-800);
+  }
+}
+
+@media (hover: none) {
+  .reviews-carousel.is-ready {
+    display: grid;
+    grid-template-columns: 1fr auto auto 1fr;
+    column-gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .is-ready .reviews-track {
+    grid-column: 1 / -1;
+  }
+
+  .is-ready .reviews-arrow-prev {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .is-ready .reviews-arrow-next {
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  .reviews-arrow:active {
     border-color: var(--green-800);
     color: var(--green-800);
   }
@@ -1890,13 +1923,20 @@ details p {
 }
 
 /*
-  Celular vertical: una reseña a la vista y el borde de la siguiente, para que
-  se note que la fila se desliza. Acostado siguen las dos (ver OPINIONES).
+  Celular vertical: una reseña a la vista, centrada, con el borde de la
+  anterior a la izquierda y el de la siguiente a la derecha, para que se note
+  hacia qué lado hay más. En la primera y en la última el centrado no llega
+  y queda pegada a su costado, así que asoma una sola vecina. Acostado siguen
+  las dos (ver OPINIONES).
 */
 @media (max-width: 599px) {
   .reviews-track {
-    grid-auto-columns: 86%;
+    grid-auto-columns: 82%;
     gap: 16px;
+  }
+
+  .reviews-track > li {
+    scroll-snap-align: center;
   }
 }
 

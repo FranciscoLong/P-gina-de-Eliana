@@ -941,8 +941,8 @@ document.addEventListener(
   CARRUSEL DE RESEÑAS
   Las flechas mueven la fila de a una tarjeta; el scroll-snap del CSS la deja
   alineada. Dan la vuelta: desde la última, "siguiente" vuelve a la primera,
-  y desde la primera, "anterior" va a la última. El CSS solo las muestra con
-  mouse; con el dedo la fila se desliza sola.
+  y desde la primera, "anterior" va a la última. Con mouse van a los
+  costados y en pantallas táctiles, debajo de la fila (ver el CSS).
 */
 const reviewsCarousel = document.querySelector(".reviews-carousel");
 const reviewsTrack = document.getElementById("reviewsTrack");
