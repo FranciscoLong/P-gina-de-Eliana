@@ -13,7 +13,7 @@ window.SiteNotices = [
     title: "Por la mañana,",
     highlight: "el escritorio permanecerá cerrado",
     paragraphs: [
-      "Por la tarde atendemos como siempre, de lunes a viernes de **15:00 a 19:00**."
+      "Por la tarde atendemos como siempre, de lunes a viernes de **15:00 a 19:00 hs**."
     ],
     link: {
       label: "Escribinos por WhatsApp",
