@@ -937,6 +937,40 @@ document.addEventListener(
   { passive: true }
 );
 
+/*
+  CARRUSEL DE RESEÑAS
+  Las flechas mueven la fila de a una tarjeta; el scroll-snap del CSS la deja
+  alineada. En las puntas se atenúan con aria-disabled y no con disabled, que
+  le sacaría el foco a quien usa el teclado. El CSS solo las muestra con
+  mouse; con el dedo la fila se desliza sola.
+*/
+const reviewsCarousel = document.querySelector(".reviews-carousel");
+const reviewsTrack = document.getElementById("reviewsTrack");
+const reviewsPrev = reviewsCarousel?.querySelector(".reviews-arrow-prev");
+const reviewsNext = reviewsCarousel?.querySelector(".reviews-arrow-next");
+
+function updateReviewArrows() {
+  const lastScroll = reviewsTrack.scrollWidth - reviewsTrack.clientWidth;
+  reviewsPrev.setAttribute("aria-disabled", String(reviewsTrack.scrollLeft <= 1));
+  reviewsNext.setAttribute("aria-disabled", String(reviewsTrack.scrollLeft >= lastScroll - 1));
+}
+
+function moveReviews(direction) {
+  const card = reviewsTrack.querySelector(".review-card");
+  const gap = parseFloat(getComputedStyle(reviewsTrack).columnGap) || 0;
+  // Sin "behavior": manda el scroll-behavior del CSS, que respeta reducir movimiento.
+  reviewsTrack.scrollBy({ left: direction * (card.offsetWidth + gap) });
+}
+
+if (reviewsCarousel && reviewsTrack && reviewsPrev && reviewsNext) {
+  reviewsCarousel.classList.add("has-arrows");
+  reviewsPrev.addEventListener("click", () => moveReviews(-1));
+  reviewsNext.addEventListener("click", () => moveReviews(1));
+  reviewsTrack.addEventListener("scroll", updateReviewArrows, { passive: true });
+  window.addEventListener("resize", updateReviewArrows);
+  updateReviewArrows();
+}
+
 copyAddressButton.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(OFFICE_ADDRESS);
