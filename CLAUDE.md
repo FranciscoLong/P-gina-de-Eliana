@@ -113,4 +113,4 @@ assets; sí hace falta si se tocan `styles.css` o `main.js`.
    para mergear.
 3. Después del merge, verificar en www.escribaniaisbarbo.com.uy que estén las
    tarjetas nuevas, el puntaje y los dos botones, y que sigan los botones de
-   "Reservar turno": aparecen solo si la agenda está prendida.
+   "Agendar turno": aparecen solo si la agenda está prendida.

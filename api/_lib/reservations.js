@@ -100,7 +100,7 @@ function describeBooking(booking, bookedAt) {
     "Consulta:",
     booking.details,
     "",
-    `Reservado desde escribaniaisbarbo.com.uy el ${bookedAt}.`
+    `Agendado desde escribaniaisbarbo.com.uy el ${bookedAt}.`
   ].join("\n");
 }
 

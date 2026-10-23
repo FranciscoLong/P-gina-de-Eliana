@@ -350,7 +350,7 @@ const DATE_LABEL_FORMATTER = new Intl.DateTimeFormat("es-UY", {
 });
 
 const UNAVAILABLE_MESSAGE =
-  "No pudimos cargar la agenda en este momento. Podés reservar por WhatsApp con el trámite ya cargado.";
+  "No pudimos cargar la agenda en este momento. Podés agendar por WhatsApp con el trámite ya cargado.";
 
 let bookingConfigRequest = null;
 let availability = null;
@@ -487,7 +487,7 @@ function bookingProblems() {
     add("details", "la consulta", "Contanos brevemente qué necesitás consultar.");
   }
   if (!fields.consent.checked) {
-    add("consent", "el consentimiento", "Marcá la casilla para poder reservar.");
+    add("consent", "el consentimiento", "Marcá la casilla para poder agendar el turno.");
   }
   if (!turnstileToken) {
     add("turnstile", "la verificación de seguridad", "Esperá a que termine la verificación de seguridad.");
@@ -880,7 +880,7 @@ bookingForm.addEventListener("submit", async (event) => {
   }
 
   setBookingStatus(
-    "No pudimos confirmar el turno. Tus datos siguen cargados: podés reintentar o reservar por WhatsApp.",
+    "No pudimos confirmar el turno. Tus datos siguen cargados: podés reintentar o agendar por WhatsApp.",
     { error: true, offerWhatsApp: true }
   );
 });
