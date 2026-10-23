@@ -182,6 +182,11 @@
         link.className = "btn btn-dark notice-link";
         link.textContent = notice.link.label;
         link.href = href;
+        // Como los demás enlaces de afuera de la página (WhatsApp), abre otra pestaña.
+        if (href.startsWith("https:")) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
         item.append(link);
       }
       fragment.append(item);
