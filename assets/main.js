@@ -953,6 +953,7 @@ const CONSULTA_FIELDS = {
   name: { error: "consultaNameError", control: () => consultaForm.elements.name },
   email: { error: "consultaEmailError", control: () => consultaForm.elements.email },
   message: { error: "consultaMessageError", control: () => consultaForm.elements.message },
+  consent: { error: "consultaConsentError", control: () => consultaForm.elements.consent },
   turnstile: { error: "consultaTurnstileError", control: () => consultaTurnstileBox }
 };
 
@@ -978,6 +979,7 @@ function consultaProblems() {
     problems.email = "Revisá el correo, parece incompleto (por ejemplo, nombre@gmail.com).";
   }
   if (!fields.message.value.trim()) problems.message = "Escribí tu consulta.";
+  if (!fields.consent.checked) problems.consent = "Marcá la casilla para poder enviar la consulta.";
   if (!consultaTurnstile.token) problems.turnstile = "Esperá a que termine la verificación de seguridad.";
   return problems;
 }
@@ -1056,6 +1058,7 @@ consultaForm.addEventListener("submit", async (event) => {
     name: fields.name.value,
     email: fields.email.value,
     message: fields.message.value,
+    consent: fields.consent.checked,
     turnstileToken: consultaTurnstile.token,
     idempotencyKey: consultaKey
   };

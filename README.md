@@ -92,7 +92,8 @@ encuentren. Las consultas por correo llegan por un formulario:
 
 - La persona deja **nombre y apellido** y **su correo** (obligatorios), el
   **trámite** (opcional; si vino desde Servicios, ya viene elegido) y **su
-  consulta**, de hasta **2000 caracteres** con un contador.
+  consulta**, de hasta **2000 caracteres** con un contador, y marca el mismo
+  consentimiento que la agenda (obligatorio; el servidor también lo exige).
 - `api/consultas.js` valida los datos, verifica Turnstile (con su propia
   action, `consulta`: un token de la agenda no sirve) y le manda a Eliana un
   correo con **«Responder a» = el correo de la persona**. Eliana toca

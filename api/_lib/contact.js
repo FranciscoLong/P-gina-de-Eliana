@@ -2,7 +2,8 @@
 
 /*
   Consultas por correo desde la página. La persona deja su nombre, su correo,
-  el trámite (opcional) y su consulta; a Eliana le llega un correo con
+  el trámite (opcional) y su consulta, y marca el consentimiento (el mismo de
+  la agenda); a Eliana le llega un correo con
   «Responder a» = el correo de la persona. El correo de Eliana no aparece en la
   página: la persona lo ve recién cuando Eliana le contesta.
 
@@ -33,6 +34,7 @@ function validateContact(input) {
   else if (message.length > CONTACT_LIMITS.message) {
     errors.message = `La consulta no puede superar los ${CONTACT_LIMITS.message} caracteres.`;
   }
+  if (value.consent !== true) errors.consent = "Necesitamos tu consentimiento para enviar la consulta.";
   if (!/^[A-Za-z0-9_-]{16,128}$/.test(idempotencyKey)) {
     errors.idempotencyKey = "No se pudo enviar la consulta. Volvé a intentar.";
   }
