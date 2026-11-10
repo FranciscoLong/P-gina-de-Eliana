@@ -25,6 +25,7 @@ sin dependencias).
 │   ├── styles.css                   Estilos del sitio
 │   ├── main.js                      Navegación, reserva, contacto y copia de dirección
 │   ├── service-messages.js          Mensajes contextuales por trámite
+│   ├── hours.js                     Horario de la franja, «Dónde encontrarme» y el pie, por fechas
 │   └── imágenes y favicons
 ├── api/                             Funciones de Vercel de la agenda
 │   ├── booking-config.js            Si la agenda está prendida y la clave de Turnstile
@@ -115,6 +116,14 @@ Reglas, centralizadas en `api/_lib/booking.js`:
     a las 9:00, 9:55, 10:50 y 11:45, y a las 15:00, 15:55, 16:50 y 17:45. Para
     cambiar el margen, cargá `BOOKING_GAP_MINUTES` en Vercel (por ejemplo,
     `15`; con `0` los turnos van seguidos) y volvé a desplegar.
+  - El horario que muestra la página (la franja de arriba, «Dónde
+    encontrarme» y el pie) sale de los mismos tramos, copiados en
+    `assets/hours.js` (`SITE_HOURS`), y cambia solo con la fecha. Al cambiar un
+    tramo hay que cambiarlo en los dos lugares: una prueba
+    (`tests/hours.test.js`) falla si no coinciden. Ahí también va la
+    aclaración de cada franja (desde el 1 de diciembre, «solo con agenda» a la
+    mañana y «atención normal» a la tarde) y,
+    después de editarlo, se renueva el `?v=` de `hours.js` en `index.html`.
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá
   `BOOKING_MIN_NOTICE_HOURS` en Vercel (por ejemplo, `48`) y volvé a desplegar.

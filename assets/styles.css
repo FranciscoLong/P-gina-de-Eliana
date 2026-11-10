@@ -2090,6 +2090,83 @@ details p {
 }
 
 /*
+  CELULARES: lo que se toca con el dedo (2026-11-10)
+  - La portada: el logo ya está en el encabezado, así que acá va más chico y
+    con menos aire arriba, para que «Agendar turno» entre en la primera
+    pantalla.
+  - Los servicios y el botón del menú tienen 44 px para tocar, lo recomendado
+    para el dedo; los enlaces del pie, unos 40, para no separarlos de más.
+  - El pie deja lugar abajo para que el botón flotante de WhatsApp no tape
+    la última línea.
+*/
+@media (max-width: 680px) {
+  .hero {
+    min-height: 0;
+  }
+
+  .hero-content {
+    padding: 32px 0 56px;
+  }
+
+  .hero-brand {
+    width: 64px;
+    margin-bottom: 12px;
+  }
+
+  .hero p {
+    margin: 18px 0 24px;
+  }
+
+  .menu-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .service-list {
+    gap: 0;
+  }
+
+  .service-list li {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .service-list svg {
+    margin-top: 0;
+  }
+
+  .service-list a {
+    flex: 1;
+    padding: 10px 0;
+  }
+
+  .footer-nav ul {
+    gap: 0;
+  }
+
+  .footer-nav a {
+    display: inline-block;
+    padding: 8px 0;
+  }
+
+  .site-footer {
+    padding-bottom: 96px;
+  }
+}
+
+/*
+  En pantallas táctiles «Consultar» se ve siempre: sin transparencia (al 55 %
+  el rojo quedaba en 3 a 1 contra el blanco, poco para leer) y un poco más
+  grande.
+*/
+@media (hover: none) {
+  .service-cta {
+    opacity: 1;
+    font-size: 0.85rem;
+  }
+}
+
+/*
   Pantallas bajas: celular acostado o celulares chicos. El título del aviso
   crece con el ancho y en estas pantallas se comía la ventana; se achican
   título y márgenes para que el aviso entre entero sin desplazar.
