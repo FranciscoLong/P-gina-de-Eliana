@@ -1,10 +1,14 @@
 /*
-  HORARIO DE ATENCIÓN
-  El horario de la página (la franja de arriba, «Dónde encontrarme» y el pie)
-  sale de estos tramos de fechas, los mismos que usa la agenda
-  (SCHEDULES en api/_lib/booking.js): una prueba verifica que coincidan. Cada
-  tramo rige desde su día (fecha de Uruguay) hasta que empieza el siguiente.
-  El horario escrito en index.html queda para quien no tiene JavaScript.
+  HORARIO DE ATENCIÓN — el único lugar donde se cambia
+  De estos tramos de fechas salen:
+  - los turnos que ofrece la agenda (api/_lib/booking.js los lee de acá);
+  - el horario de la página: la franja de arriba, «Dónde encontrarme» y el pie;
+  - el horario de los datos para Google (openingHoursSpecification).
+  Cada tramo rige desde su día (fecha de Uruguay) hasta que empieza el
+  siguiente. windows son las franjas del día; withGap, si la agenda deja
+  BOOKING_GAP_MINUTES entre turno y turno. Después de editar, renovar el ?v=
+  de hours.js en index.html.
+  El horario escrito en index.html queda sólo para quien no tiene JavaScript.
   notes son las aclaraciones de cada franja, en el mismo orden que windows,
   entre paréntesis donde aparece el horario: desde el 1 de diciembre de 2026,
   «(solo con agenda)» a la mañana y «(atención normal)» a la tarde.
@@ -18,6 +22,7 @@
   const period = hours.periodFor(hours.uruguayDay());
   if (!period) return;
   const { windows, notes = [] } = period;
+  hours.updateStructuredData(document, windows);
   document.querySelectorAll("[data-hours]").forEach((element) => {
     if (element.dataset.hours === "list") {
       const items = windows.map(([from, to], index) => {
@@ -36,13 +41,16 @@
   });
 })(this, function hoursFactory() {
   const TIME_ZONE = "America/Montevideo";
+  // Pasado el 30 de noviembre de 2026, los tres primeros tramos se pueden borrar.
   const SITE_HOURS = [
-    { from: "2000-01-01", windows: [["09:30", "12:30"], ["15:00", "19:00"]] },
-    { from: "2026-11-02", windows: [["15:00", "19:00"]] },
-    { from: "2026-11-24", windows: [["09:30", "12:30"], ["15:00", "19:00"]] },
+    { from: "2000-01-01", windows: [["09:30", "12:30"], ["15:00", "19:00"]], withGap: false },
+    // Del 2 al 23 de noviembre de 2026 el escritorio cierra por la mañana.
+    { from: "2026-11-02", windows: [["15:00", "19:00"]], withGap: false },
+    { from: "2026-11-24", windows: [["09:30", "12:30"], ["15:00", "19:00"]], withGap: false },
     {
       from: "2026-12-01",
       windows: [["09:00", "12:30"], ["15:00", "19:00"]],
+      withGap: true,
       notes: ["solo con agenda", "atención normal"]
     }
   ];
@@ -70,5 +78,40 @@
     return place === "location" ? `Lunes a viernes, ${ranges}.` : `Lunes a viernes ${ranges}`;
   }
 
-  return { SITE_HOURS, uruguayDay, periodFor, rangeText, sentence };
+  const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+  // El horario para Google: una franja por cada una del día, de lunes a viernes.
+  function openingHours(windows) {
+    return windows.map(([opens, closes]) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: WEEKDAYS,
+      opens,
+      closes
+    }));
+  }
+
+  // Reescribe el horario en los datos estructurados de la página (los que lo tienen).
+  function updateStructuredData(doc, windows) {
+    doc.querySelectorAll('script[type="application/ld+json"]').forEach((script) => {
+      let data;
+      try {
+        data = JSON.parse(script.textContent);
+      } catch {
+        return;
+      }
+      if (!data || !("openingHoursSpecification" in data)) return;
+      data.openingHoursSpecification = openingHours(windows);
+      script.textContent = JSON.stringify(data, null, 2);
+    });
+  }
+
+  return {
+    SITE_HOURS,
+    uruguayDay,
+    periodFor,
+    rangeText,
+    sentence,
+    openingHours,
+    updateStructuredData
+  };
 });
