@@ -1137,7 +1137,7 @@ function syncOptionRows() {
 
 /*
   La agenda y el formulario de consultas se prenden por separado. Apagada la
-  agenda, se ocultan sus botones y la línea «¿Preferís venir al escritorio?»;
+  agenda, se ocultan sus botones y la línea «¿Venís al escritorio?»;
   apagado el formulario, su opción. WhatsApp está siempre.
 */
 Promise.all([loadBookingConfig(), loadConsultaConfig()]).then(([bookingConfig, consultaConfig]) => {

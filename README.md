@@ -79,8 +79,8 @@ La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
   el pie) es para escribir: **¿Cómo preferís escribirnos?**, con **WhatsApp**
   al +598 91 048 471 (mensaje preparado según el trámite) y **Escribir por
   correo** (el formulario, ver abajo). Debajo, una línea recuerda la agenda:
-  «¿Preferís venir al escritorio? Agendá tu turno.» (sin agenda, no se
-  muestra). Al lado, **Dónde encontrarnos**: dirección, horario y mapa.
+  «¿Venís al escritorio? Agendá tu turno: te atendemos a la hora que elijas,
+  sin esperas.» (sin agenda, no se muestra). Al lado, **Dónde encontrarnos**: dirección, horario y mapa.
 - Los **Consultar** de Servicios y el enlace «contactarme» abren el menú
   **«Consulta / ¿Cómo preferís consultarnos?»**, solo para escribir: WhatsApp
   y correo, con el trámite ya elegido.
