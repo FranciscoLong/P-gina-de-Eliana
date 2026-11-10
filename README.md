@@ -329,4 +329,4 @@ para mostrar estrellas.
 - **Dirección:** Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay
 - **Teléfono / WhatsApp:** +598 91 048 471
 - **Correo:** esc.isbarbo@gmail.com (no se publica en la página: las consultas llegan por el formulario)
-- **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda»)
+- **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda en línea», más arriba)
