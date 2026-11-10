@@ -334,6 +334,10 @@ consultaStartButtons.forEach((button) => {
 // El botón flotante de WhatsApp pregunta primero si es urgente y ofrece la agenda.
 urgenteOpenButtons.forEach((link) => {
   link.addEventListener("click", (event) => {
+    // Ctrl, Cmd, Shift o la rueda: el navegador abre WhatsApp en otra pestaña, como cualquier enlace.
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
     event.preventDefault();
     openContactDialog(null, { urgente: true });
   });
@@ -1135,26 +1139,40 @@ if (openBookingOnLoad) {
   history.replaceState(null, "", location.pathname + (query ? `?${query}` : "") + location.hash);
 }
 
-// El formulario de consultas aparece solo si está prendido (Turnstile y Resend configurados).
-loadConsultaConfig().then((config) => {
+/*
+  Cada fila de opciones se acomoda a lo que quedó visible: sin opciones se
+  oculta y con una sola va a lo ancho (is-single). Se hace acá y no con
+  :has() en el CSS, que los navegadores viejos no entienden.
+*/
+function syncOptionRows() {
+  document.querySelectorAll(".contact-options").forEach((row) => {
+    const visible = [...row.children].filter(
+      (child) => child.classList.contains("contact-option") && !child.hidden
+    ).length;
+    row.hidden = visible === 0;
+    row.classList.toggle("is-single", visible === 1);
+  });
+}
+
+/*
+  La agenda y el formulario de consultas se prenden por separado. Apagada la
+  agenda, se ocultan sus botones; apagado el formulario, su opción y el
+  bloque «¿Preferís escribirnos?». WhatsApp queda en el botón flotante.
+*/
+Promise.all([loadBookingConfig(), loadConsultaConfig()]).then(([bookingConfig, consultaConfig]) => {
+  bookingStartButtons.forEach((button) => {
+    button.hidden = !bookingConfig;
+  });
   consultaStartButtons.forEach((button) => {
-    button.hidden = !config;
+    button.hidden = !consultaConfig;
   });
   consultaBlocks.forEach((block) => {
-    block.hidden = !config;
+    block.hidden = !consultaConfig;
   });
-});
+  syncOptionRows();
 
-// Si la agenda está apagada, la página vuelve a ofrecer solo WhatsApp.
-loadBookingConfig().then((config) => {
-  if (!config) {
-    bookingStartButtons.forEach((button) => {
-      button.hidden = true;
-    });
-    return;
-  }
   // Si ya la abrió a mano mientras cargaba, reabrirla le borraría lo elegido.
-  if (openBookingOnLoad && !contactDialog.open) {
+  if (bookingConfig && openBookingOnLoad && !contactDialog.open) {
     openContactDialog(null, { booking: true });
   }
 });

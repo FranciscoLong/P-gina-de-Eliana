@@ -54,12 +54,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=urgente-20261110-1">
+  <link rel="stylesheet" href="assets/styles.css?v=urgente-20261110-2">
   <script src="assets/hours.js?v=horario-20261110-4" defer></script>
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=urgente-20261110-1" defer></script>
+  <script src="assets/main.js?v=urgente-20261110-2" defer></script>
 
   <script type="application/ld+json">
   {
@@ -743,7 +743,10 @@
         -->
         <div class="contact-layout">
           <div class="contact-panel">
-            <!-- La agenda va sola y directo; escribir (WhatsApp o correo) va aparte. -->
+            <!--
+              La agenda va sola y destacada; debajo, escribir por correo.
+              WhatsApp está solo en el botón flotante, para urgencias.
+            -->
             <div class="contact-options contact-options-single">
               <!-- Abre la ventana directamente en la agenda. -->
               <button class="contact-option contact-option-booking contact-option-primary" type="button" data-booking-start>
@@ -757,26 +760,26 @@
               </button>
             </div>
 
-            <!-- WhatsApp queda solo en el botón flotante, para urgencias. Sin el formulario, este bloque no se muestra. -->
+            <!-- Sin el formulario de consultas, este bloque no se muestra. -->
             <div class="contact-write" data-consulta-block hidden>
-            <h3>¿Preferís escribirnos?</h3>
-            <p class="contact-selected-service">
-              Consulta seleccionada:
-              <strong data-selected-service>Consulta notarial</strong>
-            </p>
+              <h3>¿Preferís escribirnos?</h3>
+              <p class="contact-selected-service">
+                Consulta seleccionada:
+                <strong data-selected-service>Consulta notarial</strong>
+              </p>
 
-            <div class="contact-options contact-options-single">
-              <!-- Abre la ventana en el formulario de consultas por correo. -->
-              <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
-                <span class="contact-option-icon">
-                  <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
-                </span>
-                <span>
-                  <strong>Escribir por correo</strong>
-                  <small>Dejá tu consulta y te respondemos por correo.</small>
-                </span>
-              </button>
-            </div>
+              <div class="contact-options contact-options-single">
+                <!-- Abre la ventana en el formulario de consultas por correo. -->
+                <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
+                  <span class="contact-option-icon">
+                    <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
+                  </span>
+                  <span>
+                    <strong>Escribir por correo</strong>
+                    <small>Dejá tu consulta y te respondemos por correo.</small>
+                  </span>
+                </button>
+              </div>
             </div>
 
             <p class="contact-note">
@@ -969,7 +972,7 @@
           </p>
         </div>
 
-                <!-- El botón flotante de WhatsApp pasa por acá: WhatsApp es para urgencias. -->
+        <!-- El botón flotante de WhatsApp pasa por acá: WhatsApp es para urgencias. -->
         <div class="contact-dialog-step urgente-step" id="urgenteStep" hidden>
           <span class="contact-dialog-eyebrow">WhatsApp</span>
           <h2 id="urgenteTitle" tabindex="-1">¿Es urgente?</h2>
@@ -991,7 +994,7 @@
           </div>
         </div>
 
-<div class="contact-dialog-step booking-step" id="bookingStep" hidden>
+        <div class="contact-dialog-step booking-step" id="bookingStep" hidden>
           <span class="contact-dialog-eyebrow">Agendar turno</span>
           <h2 id="bookingTitle" tabindex="-1">Elegí día y horario</h2>
 

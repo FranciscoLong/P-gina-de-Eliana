@@ -326,6 +326,29 @@ para mostrar estrellas.
 - [ ] Armar una plantilla prolija (HTML) para los correos de la agenda, con la
       versión en texto plano como alternativa.
 
+### Pendientes de decidir: la agenda primero (PR #32)
+
+Del `/code-review` del 2026-11-10. Cambian lo que se ve, así que esperan la
+decisión de Francisco con el texto exacto:
+
+- [ ] **Agenda y correo apagados a la vez.** La sección «Agendá tu turno» queda
+      sin ninguna opción y el menú de «Consultar» queda vacío (solo título y
+      nota): el único contacto es el botón flotante. Antes, WhatsApp cubría ese
+      caso. ¿Se muestra WhatsApp como salida cuando no hay ni agenda ni correo?
+      (Es lo que se ve hoy en la Preview, que no tiene las claves.)
+- [ ] **«¿Es urgente?» con la agenda apagada.** El botón «Agendar turno» se
+      oculta, pero el texto sigue diciendo «Para consultas y trámites, agendá tu
+      turno…». Falta el texto para ese caso.
+- [ ] **El mensaje de WhatsApp de «Es urgente».** Sale el genérico («Hola
+      Eliana, quisiera hacer una consulta notarial.»), sin decir que es urgente
+      y sin el trámite: al abrir «¿Es urgente?» se borra el trámite elegido
+      antes. ¿Un mensaje propio, por ejemplo «Hola, tengo una consulta
+      urgente.»?
+- [ ] **«← Volver» en la agenda.** Se sacó porque la agenda se abría directo.
+      Ahora también se llega desde «¿Es urgente?» y desde el menú de
+      «Consultar»: si no hay horario que sirva, para volver a WhatsApp o al
+      correo hay que cerrar la ventana y empezar de nuevo.
+
 ## Datos de la escribanía
 
 - **Dirección:** Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay
