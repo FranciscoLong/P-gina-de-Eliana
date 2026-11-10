@@ -78,3 +78,36 @@ test("se reescribe el horario de los datos estructurados de index.html, y nada m
   assert.deepEqual(restAfter, restBefore);
   assert.deepEqual(after.filter((data) => !("openingHoursSpecification" in data)), before.filter((data) => !("openingHoursSpecification" in data)));
 });
+
+/*
+  Traídas del PR #21. El aviso (notices-data.js) y el horario escrito en
+  index.html para quien no tiene JavaScript son texto a mano: que no nombren
+  una hora que la agenda no tiene.
+*/
+const allowedTimes = new Set(
+  SITE_HOURS.flatMap(({ windows }) => windows.flat()).map((hhmm) => hhmm.replace(/^0/, ""))
+);
+
+test("el aviso solo nombra horas de apertura o cierre de la agenda", () => {
+  const notices = fs.readFileSync(path.join(__dirname, "..", "assets", "notices-data.js"), "utf8");
+  for (const [time] of notices.matchAll(/\b\d{1,2}:\d{2}\b/g)) {
+    assert.ok(allowedTimes.has(time), `el aviso dice ${time}`);
+  }
+});
+
+test("el horario escrito en index.html es el de algún tramo, con su formato", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const plain = (text) => text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const topbar = plain(html.match(/<span data-hours="topbar">([\s\S]*?)<\/span>/)[1]);
+  const location = plain(html.match(/<li data-hours="location">\s*<span>Horario<\/span>([\s\S]*?)<\/li>/)[1]);
+  const list = [...html.match(/<ul data-hours="list">([\s\S]*?)<\/ul>/)[1].matchAll(/<li>([\s\S]*?)<\/li>/g)]
+    .map(([, text]) => plain(text));
+  assert.ok(
+    SITE_HOURS.some((period) =>
+      topbar === sentence(period, "topbar") &&
+      location === sentence(period, "location") &&
+      JSON.stringify(list) === JSON.stringify(period.windows.map(([from, to], index) => rangeText(from, to, period.notes?.[index])))
+    ),
+    `franja: ${topbar} | Dónde encontrarme: ${location} | pie: ${list.join(" / ")}`
+  );
+});
