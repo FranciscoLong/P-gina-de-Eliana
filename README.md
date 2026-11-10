@@ -121,7 +121,8 @@ Reglas, centralizadas en `api/_lib/booking.js`:
     `assets/hours.js` (`SITE_HOURS`), y cambia solo con la fecha. Al cambiar un
     tramo hay que cambiarlo en los dos lugares: una prueba
     (`tests/hours.test.js`) falla si no coinciden. Ahí también va la
-    aclaración de la mañana («solo con agenda» desde el 1 de diciembre) y,
+    aclaración de cada franja (desde el 1 de diciembre, «solo con agenda» a la
+    mañana y «atención normal» a la tarde) y,
     después de editarlo, se renueva el `?v=` de `hours.js` en `index.html`.
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá

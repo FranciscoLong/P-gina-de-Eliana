@@ -19,23 +19,24 @@ test("cada tramo rige desde su día hasta que empieza el siguiente", () => {
   assert.deepEqual(windows("2026-12-01"), [["09:00", "12:30"], ["15:00", "19:00"]]);
 });
 
-test("los textos de la franja y de «Dónde encontrarme»", () => {
+test("los textos de la franja y de «Dónde encontrarme» llevan «hs»", () => {
   const usual = periodFor("2026-11-24");
-  assert.equal(sentence(usual, "topbar"), "Lunes a viernes de 9:30 a 12:30 y de 15:00 a 19:00");
-  assert.equal(sentence(usual, "location"), "Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00.");
-  assert.equal(sentence(periodFor("2026-11-10"), "topbar"), "Lunes a viernes de 15:00 a 19:00");
+  assert.equal(sentence(usual, "topbar"), "Lunes a viernes de 9:30 a 12:30 hs y de 15:00 a 19:00 hs");
+  assert.equal(sentence(usual, "location"), "Lunes a viernes, de 9:30 a 12:30 hs y de 15:00 a 19:00 hs.");
+  assert.equal(sentence(periodFor("2026-11-10"), "topbar"), "Lunes a viernes de 15:00 a 19:00 hs");
+  assert.equal(rangeText("15:00", "19:00"), "15:00 a 19:00 hs");
 });
 
-test("desde el 1 de diciembre la mañana aclara que es solo con agenda", () => {
+test("desde el 1 de diciembre la mañana es solo con agenda y la tarde, atención normal", () => {
   const december = periodFor("2026-12-01");
   assert.equal(
     sentence(december, "topbar"),
-    "Lunes a viernes de 9:00 a 12:30 (solo con agenda) y de 15:00 a 19:00"
+    "Lunes a viernes de 9:00 a 12:30 hs (solo con agenda) y de 15:00 a 19:00 hs (atención normal)"
   );
   assert.equal(
     sentence(december, "location"),
-    "Lunes a viernes, de 9:00 a 12:30 (solo con agenda) y de 15:00 a 19:00."
+    "Lunes a viernes, de 9:00 a 12:30 hs (solo con agenda) y de 15:00 a 19:00 hs (atención normal)."
   );
-  assert.equal(rangeText("09:00", "12:30", "solo con agenda"), "9:00 a 12:30 (solo con agenda)");
-  assert.equal(periodFor("2026-11-24").morningNote, undefined);
+  assert.equal(rangeText("09:00", "12:30", "solo con agenda"), "9:00 a 12:30 hs (solo con agenda)");
+  assert.equal(periodFor("2026-11-24").notes, undefined);
 });

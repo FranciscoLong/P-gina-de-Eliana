@@ -5,8 +5,9 @@
   (SCHEDULES en api/_lib/booking.js): una prueba verifica que coincidan. Cada
   tramo rige desde su día (fecha de Uruguay) hasta que empieza el siguiente.
   El horario escrito en index.html queda para quien no tiene JavaScript.
-  morningNote es la aclaración de la mañana, entre paréntesis, donde aparece
-  el horario («(solo con agenda)», desde el 1 de diciembre de 2026).
+  notes son las aclaraciones de cada franja, en el mismo orden que windows,
+  entre paréntesis donde aparece el horario: desde el 1 de diciembre de 2026,
+  «(solo con agenda)» a la mañana y «(atención normal)» a la tarde.
 */
 (function initializeHours(root, factory) {
   const hours = factory();
@@ -16,12 +17,12 @@
   }
   const period = hours.periodFor(hours.uruguayDay());
   if (!period) return;
-  const { windows, morningNote } = period;
+  const { windows, notes = [] } = period;
   document.querySelectorAll("[data-hours]").forEach((element) => {
     if (element.dataset.hours === "list") {
-      const items = windows.map(([from, to]) => {
+      const items = windows.map(([from, to], index) => {
         const item = document.createElement("li");
-        item.textContent = hours.rangeText(from, to, from === windows[0][0] ? morningNote : null);
+        item.textContent = hours.rangeText(from, to, notes[index]);
         return item;
       });
       element.replaceChildren(...items);
@@ -42,7 +43,7 @@
     {
       from: "2026-12-01",
       windows: [["09:00", "12:30"], ["15:00", "19:00"]],
-      morningNote: "solo con agenda"
+      notes: ["solo con agenda", "atención normal"]
     }
   ];
 
@@ -56,15 +57,15 @@
 
   // "09:30" se escribe "9:30", como en el resto de la página.
   const clock = (hhmm) => hhmm.replace(/^0/, "");
+  // Los horarios llevan «hs», como en los avisos.
   const rangeText = (from, to, note) =>
-    `${clock(from)} a ${clock(to)}${note ? ` (${note})` : ""}`;
+    `${clock(from)} a ${clock(to)} hs${note ? ` (${note})` : ""}`;
 
-  // "topbar": «Lunes a viernes de 9:30 a 12:30 y de 15:00 a 19:00».
-  // "location": «Lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00.»
-  // La aclaración va sólo en la primera franja, la de la mañana.
-  function sentence({ windows, morningNote }, place) {
+  // "topbar": «Lunes a viernes de 9:30 a 12:30 hs y de 15:00 a 19:00 hs».
+  // "location": «Lunes a viernes, de 9:30 a 12:30 hs y de 15:00 a 19:00 hs.»
+  function sentence({ windows, notes = [] }, place) {
     const ranges = windows
-      .map(([from, to], index) => `de ${rangeText(from, to, index === 0 ? morningNote : null)}`)
+      .map(([from, to], index) => `de ${rangeText(from, to, notes[index])}`)
       .join(" y ");
     return place === "location" ? `Lunes a viernes, ${ranges}.` : `Lunes a viernes ${ranges}`;
   }
