@@ -17,7 +17,6 @@ const dialogSelectedService = document.getElementById("dialogSelectedService");
 const channelStep = document.getElementById("channelStep");
 const bookingStep = document.getElementById("bookingStep");
 const bookingDone = document.getElementById("bookingDone");
-const bookingBack = document.getElementById("bookingBack");
 const bookingForm = document.getElementById("bookingForm");
 const bookingServiceFixed = document.getElementById("bookingServiceFixed");
 const bookingServiceField = document.getElementById("bookingServiceField");
@@ -303,7 +302,9 @@ openContactButtons.forEach((button) => {
 });
 
 bookingStartButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
+    // El de la portada es un enlace a #contactar, para quien no tiene JavaScript.
+    event.preventDefault();
     if (contactDialog.contains(button)) {
       showBookingStep();
     } else {
@@ -326,10 +327,9 @@ closeContactDialogButton.addEventListener("click", closeContactDialog);
 bookingDoneClose.addEventListener("click", closeContactDialog);
 consultaDoneClose.addEventListener("click", closeContactDialog);
 
-[bookingBack, consultaBack].forEach((button) => {
-  button.addEventListener("click", () => {
-    showDialogStep(channelStep);
-  });
+// «Volver» de la consulta lleva al menú de contacto. La agenda se abre directo y no tiene «Volver».
+consultaBack.addEventListener("click", () => {
+  showDialogStep(channelStep);
 });
 
 contactDialog.addEventListener("click", (event) => {

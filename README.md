@@ -73,16 +73,21 @@ La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
 
 ## Agenda y contacto desde la página
 
-La sección **Agenda** ofrece tres vías:
+La sección **Agenda** separa agendar de escribir:
 
-- **Agendar turno** en la agenda en línea.
-- **WhatsApp** al +598 91 048 471, con el mensaje preparado según el trámite.
-- **Escribir por correo**: el formulario de consultas (ver abajo).
+- **Agendar turno**, solo y arriba: abre la ventana directo en la agenda
+  («Elegí día y horario»). El botón de la portada hace lo mismo. Si la agenda
+  está apagada, los dos se ocultan.
+- **¿Preferís escribirnos?**: **WhatsApp** al +598 91 048 471, con el mensaje
+  preparado según el trámite, y **Escribir por correo**, el formulario de
+  consultas (ver abajo).
 
-Al elegir un servicio, la página abre una ventana con las tres vías. Si el turno
-se pide desde un trámite de Servicios, la agenda lo muestra fijo; si se entra
-desde el botón general, pide el motivo con un select. El enlace de WhatsApp
-funciona aunque JavaScript no esté disponible.
+Los **Consultar** de Servicios y el enlace «contactarme» abren el menú de
+contacto de la ventana («¿Cómo preferís escribirnos?»), con WhatsApp y el
+correo, y el trámite ya elegido. Ese menú no ofrece la agenda: para agendar
+está «Agendar turno». Si se entra desde el botón general, la agenda pide el
+motivo con un select. El enlace de WhatsApp funciona aunque JavaScript no
+esté disponible.
 
 ### Consulta por correo
 

@@ -853,14 +853,30 @@ p {
 }
 
 /*
-  «Escribir por correo» es la tercera opción: va a lo ancho, debajo de la
-  agenda y WhatsApp, más baja. Si la agenda está apagada, WhatsApp también va
-  a lo ancho para no quedar sola en media fila.
+  La agenda va sola, a lo ancho y más baja; debajo, «¿Preferís escribirnos?»
+  con WhatsApp y el correo. Si la agenda está apagada, su fila no ocupa lugar.
 */
-.contact-options > .contact-option-mail,
-.contact-options:has(> [data-booking-start][hidden]) > .contact-option {
-  grid-column: 1 / -1;
+.contact-options-single {
+  grid-template-columns: 1fr;
+  margin-bottom: 28px;
+}
+
+.contact-options-single > .contact-option {
   min-height: auto;
+}
+
+.contact-options-single:not(:has(> .contact-option:not([hidden]))) {
+  display: none;
+}
+
+/* Sin el formulario de consultas, WhatsApp va a lo ancho para no quedar sola en media fila. */
+.contact-options:has(> [data-consulta-start][hidden]) > .contact-option {
+  grid-column: 1 / -1;
+}
+
+/* Un .btn con hidden (el «Agendar turno» de la portada sin agenda) no se muestra. */
+.btn[hidden] {
+  display: none;
 }
 
 .contact-option-icon {

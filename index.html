@@ -54,12 +54,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=consulta-20261110-1">
+  <link rel="stylesheet" href="assets/styles.css?v=agenda-directa-20261110-1">
   <script src="assets/hours.js?v=horario-20261110-4" defer></script>
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=consulta-20261110-2" defer></script>
+  <script src="assets/main.js?v=agenda-directa-20261110-1" defer></script>
 
   <script type="application/ld+json">
   {
@@ -402,7 +402,8 @@
         </p>
 
         <div class="hero-actions">
-          <a class="btn btn-dark" href="#contactar" data-contact-open>Agendar turno</a>
+          <!-- Abre la ventana directo en la agenda; si la agenda está apagada, se oculta. -->
+          <a class="btn btn-dark" href="#contactar" data-booking-start>Agendar turno</a>
           <a
             class="btn btn-secondary"
             href="https://maps.app.goo.gl/rCgRTZrHCtpmQmU78"
@@ -742,13 +743,8 @@
         -->
         <div class="contact-layout">
           <div class="contact-panel">
-            <h3>Elegí cómo coordinar</h3>
-            <p class="contact-selected-service">
-              Consulta seleccionada:
-              <strong data-selected-service>Consulta notarial</strong>
-            </p>
-
-            <div class="contact-options">
+            <!-- La agenda va sola y directo; escribir (WhatsApp o correo) va aparte. -->
+            <div class="contact-options contact-options-single">
               <!-- Abre la ventana directamente en la agenda. -->
               <button class="contact-option contact-option-booking" type="button" data-booking-start>
                 <span class="contact-option-icon">
@@ -759,7 +755,15 @@
                   <small>Elegí día y horario en la agenda.</small>
                 </span>
               </button>
+            </div>
 
+            <h3>¿Preferís escribirnos?</h3>
+            <p class="contact-selected-service">
+              Consulta seleccionada:
+              <strong data-selected-service>Consulta notarial</strong>
+            </p>
+
+            <div class="contact-options">
               <a
                 class="contact-option contact-option-whatsapp"
                 data-contact-whatsapp
@@ -943,24 +947,14 @@
           la agenda y la confirmación del turno.
         -->
         <div class="contact-dialog-step" id="channelStep">
-          <span class="contact-dialog-eyebrow">Agenda</span>
-          <h2 id="contactDialogTitle" tabindex="-1">¿Cómo preferís agendar tu turno?</h2>
+          <span class="contact-dialog-eyebrow">Contacto</span>
+          <h2 id="contactDialogTitle" tabindex="-1">¿Cómo preferís escribirnos?</h2>
           <p class="contact-dialog-service" id="dialogSelectedService">
             Seleccionaste:
             <strong data-selected-service>Consulta notarial</strong>
           </p>
 
           <div class="contact-options">
-            <button class="contact-option contact-option-booking" type="button" data-booking-start>
-              <span class="contact-option-icon">
-                <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
-              </span>
-              <span>
-                <strong>Agendar turno</strong>
-                <small>Elegí día y horario en la agenda.</small>
-              </span>
-            </button>
-
             <a
               class="contact-option contact-option-whatsapp"
               data-contact-whatsapp
@@ -994,7 +988,6 @@
         </div>
 
         <div class="contact-dialog-step booking-step" id="bookingStep" hidden>
-          <button class="booking-back" id="bookingBack" type="button">← Volver</button>
           <span class="contact-dialog-eyebrow">Agendar turno</span>
           <h2 id="bookingTitle" tabindex="-1">Elegí día y horario</h2>
 
