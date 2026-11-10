@@ -1920,6 +1920,15 @@ details p {
   .experience-card {
     right: 12px;
   }
+
+  /*
+    El horario no entra en una línea junto al teléfono y el correo: hasta acá
+    la barra muestra solo el horario. El contacto sigue en Contacto y en el pie.
+    (Traído del PR #21.)
+  */
+  .topbar-content span:last-child {
+    display: none;
+  }
 }
 
 /*
@@ -2010,10 +2019,6 @@ details p {
     align-items: flex-start;
   }
 
-  .topbar-content span:last-child {
-    display: none;
-  }
-
   .brand-copy span {
     display: none;
   }
@@ -2091,7 +2096,7 @@ details p {
 
 /*
   CELULARES: lo que se toca con el dedo (2026-11-10)
-  - La portada: el logo ya está en el encabezado, así que acá va más chico y
+  - La portada: sin el logo ni el nombre, que ya están en el encabezado, y
     con menos aire arriba, para que «Agendar turno» entre en la primera
     pantalla.
   - Los servicios y el botón del menú tienen 44 px para tocar, lo recomendado
@@ -2108,9 +2113,27 @@ details p {
     padding: 32px 0 56px;
   }
 
+  /*
+    El logo y el nombre ya están en el encabezado, justo arriba: en la portada
+    se repetían casi pegados (Francisco, 2026-11-10). Se ocultan a la vista y
+    queda «Escribana Pública». El nombre sigue dentro del h1 para Google y los
+    lectores de pantalla (mismo recurso que .visually-hidden).
+  */
   .hero-brand {
-    width: 64px;
-    margin-bottom: 12px;
+    display: none;
+  }
+
+  .hero-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hero-profession {
+    margin-top: 0;
   }
 
   .hero p {

@@ -25,7 +25,7 @@ sin dependencias).
 │   ├── styles.css                   Estilos del sitio
 │   ├── main.js                      Navegación, reserva, contacto y copia de dirección
 │   ├── service-messages.js          Mensajes contextuales por trámite
-│   ├── hours.js                     Horario de la franja, «Dónde encontrarme» y el pie, por fechas
+│   ├── hours.js                     Horario por fechas: agenda, página y datos para Google
 │   └── imágenes y favicons
 ├── api/                             Funciones de Vercel de la agenda
 │   ├── booking-config.js            Si la agenda está prendida y la clave de Turnstile
@@ -103,27 +103,32 @@ turno y un botón, porque algunos programas de correo abren los enlaces solos
 para revisarlos. Al confirmar se borra el evento, el horario queda libre y
 Eliana recibe un aviso.
 
-Reglas, centralizadas en `api/_lib/booking.js`:
+Reglas, centralizadas en `api/_lib/booking.js` (el horario, en `assets/hours.js`):
 
 - Lunes a viernes, en turnos de 45 minutos. El horario va por tramos de fechas
-  (`SCHEDULES`):
-  - Hasta el 30 de noviembre de 2026: de 9:30 a 12:30 y de 15:00 a 19:00, con
+  (`SITE_HOURS` en `assets/hours.js`; `booking.js` los lee de ahí):
+  - Hasta el 1 de noviembre de 2026: de 9:30 a 12:30 y de 15:00 a 19:00, con
     los turnos seguidos.
   - Del 2 al 23 de noviembre de 2026 el escritorio cierra por la mañana: solo
-    hay turnos de 15:00 a 19:00. El 24 vuelve la mañana sin tocar nada.
+    hay turnos de 15:00 a 19:00.
+  - Del 24 al 30 de noviembre de 2026 vuelve la mañana de 9:30 a 12:30.
   - Desde el 1 de diciembre de 2026: de 9:00 a 12:30 y de 15:00 a 19:00, con
     **10 minutos de margen** entre turno y turno por si alguno se alarga. Quedan
     a las 9:00, 9:55, 10:50 y 11:45, y a las 15:00, 15:55, 16:50 y 17:45. Para
     cambiar el margen, cargá `BOOKING_GAP_MINUTES` en Vercel (por ejemplo,
     `15`; con `0` los turnos van seguidos) y volvé a desplegar.
-  - El horario que muestra la página (la franja de arriba, «Dónde
-    encontrarme» y el pie) sale de los mismos tramos, copiados en
-    `assets/hours.js` (`SITE_HOURS`), y cambia solo con la fecha. Al cambiar un
-    tramo hay que cambiarlo en los dos lugares: una prueba
-    (`tests/hours.test.js`) falla si no coinciden. Ahí también va la
-    aclaración de cada franja (desde el 1 de diciembre, «solo con agenda» a la
-    mañana y «atención normal» a la tarde) y,
-    después de editarlo, se renueva el `?v=` de `hours.js` en `index.html`.
+  - **El horario se cambia en un solo lugar: `assets/hours.js`
+    (`SITE_HOURS`).** De ahí salen los turnos de la agenda
+    (`api/_lib/booking.js` lo lee), el horario de la página (la franja de
+    arriba, «Dónde encontrarme» y el pie, según la fecha de Uruguay) y el de
+    los datos para Google. Estos van escritos fijos en `index.html`, con la
+    vigencia de cada tramo, para que los lea cualquier buscador: si no
+    coinciden con `hours.js`, `node --test` falla y muestra el bloque correcto
+    para pegar. Ahí también van
+    las aclaraciones de cada franja (desde el 1 de diciembre, «solo con
+    agenda» a la mañana y «atención normal» a la tarde). Después de editarlo,
+    renovar el `?v=` de `hours.js` en `index.html`. El horario escrito en
+    `index.html` queda sólo para quien no tiene JavaScript.
 - Hasta 45 días hacia adelante.
 - **Anticipación mínima de 24 horas.** Para cambiarla, cargá
   `BOOKING_MIN_NOTICE_HOURS` en Vercel (por ejemplo, `48`) y volvé a desplegar.
@@ -292,4 +297,4 @@ para mostrar estrellas.
 - **Dirección:** Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay
 - **Teléfono / WhatsApp:** +598 91 048 471
 - **Correo:** esc.isbarbo@gmail.com
-- **Horario:** lunes a viernes, de 9:30 a 12:30 y de 15:00 a 19:00
+- **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda»)
