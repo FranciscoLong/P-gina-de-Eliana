@@ -54,6 +54,7 @@ function contactBody(overrides = {}) {
     name: "Ana Pérez",
     email: "Ana@Example.com",
     message: "Hola Eliana, quisiera consultar por la sucesión de mi padre.",
+    consent: true,
     turnstileToken: "token-turnstile",
     idempotencyKey: crypto.randomBytes(12).toString("hex"),
     ...overrides
@@ -108,6 +109,15 @@ test("datos inválidos responden 400 por campo, sin tocar la red", async () => {
   });
   assert.equal(response.status, 400);
   assert.deepEqual(Object.keys(response.body.fields).sort(), ["email", "message", "name", "service"]);
+  assert.equal(network.requests.length, 0);
+});
+
+test("sin el consentimiento marcado no se manda nada", async () => {
+  for (const consent of [false, undefined, "true"]) {
+    const response = await call(consultas, { body: contactBody({ consent }) });
+    assert.equal(response.status, 400);
+    assert.match(response.body.fields.consent, /consentimiento/);
+  }
   assert.equal(network.requests.length, 0);
 });
 

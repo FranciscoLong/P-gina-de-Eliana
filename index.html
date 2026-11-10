@@ -59,7 +59,7 @@
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=consulta-20261110-1" defer></script>
+  <script src="assets/main.js?v=consulta-20261110-2" defer></script>
 
   <script type="application/ld+json">
   {
@@ -1136,6 +1136,13 @@
                 No envíes documentación, datos financieros ni números de documento
                 en el primer mensaje.
               </p>
+              <div class="booking-field">
+                <label class="booking-consent">
+                  <input name="consent" type="checkbox" required aria-describedby="consultaConsentError">
+                  Consiento que estos datos se usen solo para coordinar esta consulta.
+                </label>
+                <p class="booking-field-error" id="consultaConsentError" hidden></p>
+              </div>
               <div class="booking-turnstile" id="consultaTurnstile"></div>
               <p class="booking-field-error" id="consultaTurnstileError" hidden></p>
             </div>
