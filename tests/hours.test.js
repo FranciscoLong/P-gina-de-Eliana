@@ -37,7 +37,7 @@ test("cada tramo rige desde su día hasta que empieza el siguiente", () => {
   assert.deepEqual(windows("2026-12-01"), [["09:00", "12:30"], ["15:00", "19:00"]]);
 });
 
-test("los textos de la franja y de «Dónde encontrarme» llevan «hs»", () => {
+test("los textos de la franja y de «Dónde encontrarnos» llevan «hs»", () => {
   const usual = periodFor("2026-11-24");
   assert.equal(sentence(usual, "topbar"), "Lunes a viernes de 9:30 a 12:30 hs y de 15:00 a 19:00 hs");
   assert.equal(sentence(usual, "location"), "Lunes a viernes, de 9:30 a 12:30 hs y de 15:00 a 19:00 hs.");
@@ -112,6 +112,6 @@ test("el horario escrito en index.html es el de algún tramo, con su formato", (
       location === sentence(period, "location") &&
       JSON.stringify(list) === JSON.stringify(period.windows.map(([from, to], index) => rangeText(from, to, period.notes?.[index])))
     ),
-    `franja: ${topbar} | Dónde encontrarme: ${location} | pie: ${list.join(" / ")}`
+    `franja: ${topbar} | Dónde encontrarnos: ${location} | pie: ${list.join(" / ")}`
   );
 });
