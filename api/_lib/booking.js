@@ -262,6 +262,7 @@ module.exports = {
   TIME_ZONE,
   UTC_OFFSET,
   bookableDays,
+  cleanText,
   findBookableSlot,
   overlaps,
   readRules,

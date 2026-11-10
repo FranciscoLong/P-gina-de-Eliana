@@ -35,6 +35,19 @@ const bookingDoneWhen = document.getElementById("bookingDoneWhen");
 const bookingDoneEmail = document.getElementById("bookingDoneEmail");
 const bookingDoneWhatsapp = document.getElementById("bookingDoneWhatsapp");
 const bookingDoneClose = document.getElementById("bookingDoneClose");
+const consultaStartButtons = document.querySelectorAll("[data-consulta-start]");
+const consultaStep = document.getElementById("consultaStep");
+const consultaDone = document.getElementById("consultaDone");
+const consultaBack = document.getElementById("consultaBack");
+const consultaForm = document.getElementById("consultaForm");
+const consultaService = document.getElementById("consultaService");
+const consultaCounter = document.getElementById("consultaCounter");
+const consultaStatus = document.getElementById("consultaStatus");
+const consultaFallback = document.getElementById("consultaFallback");
+const consultaSubmit = document.getElementById("consultaSubmit");
+const consultaTurnstileBox = document.getElementById("consultaTurnstile");
+const consultaDoneEmail = document.getElementById("consultaDoneEmail");
+const consultaDoneClose = document.getElementById("consultaDoneClose");
 const copyAddressButton = document.getElementById("copyAddress");
 const toast = document.getElementById("toast");
 
@@ -233,12 +246,15 @@ function setSelectedService(service) {
   botón enfocado por código, sin que se haya usado el teclado, puede quedar
   marcado con el recuadro rojo de foco (pasaba al abrir desde /reservar).
 */
+const DIALOG_STEPS = [channelStep, bookingStep, bookingDone, consultaStep, consultaDone];
+
 function showDialogStep(step) {
-  [channelStep, bookingStep, bookingDone].forEach((element) => {
+  DIALOG_STEPS.forEach((element) => {
     element.hidden = element !== step;
   });
-  contactDialog.classList.toggle("is-booking", step === bookingStep);
-  const titleId = step === bookingStep ? "bookingTitle" : step === bookingDone ? "bookingDoneTitle" : "contactDialogTitle";
+  // Los pasos con formulario (la agenda y la consulta) usan la ventana grande.
+  contactDialog.classList.toggle("is-booking", step.classList.contains("booking-step"));
+  const titleId = step.querySelector("h2").id;
   contactDialog.setAttribute("aria-labelledby", titleId);
   contactDialog.scrollTop = 0;
   if (contactDialog.open) {
@@ -247,7 +263,7 @@ function showDialogStep(step) {
 }
 
 // Los botones generales abren sin trámite: el de una consulta anterior no se arrastra.
-function openContactDialog(service = null, { booking = false, fromService = false } = {}) {
+function openContactDialog(service = null, { booking = false, consulta = false, fromService = false } = {}) {
   setSelectedService(service);
   serviceIsFixed = fromService && Boolean(selectedService);
 
@@ -259,6 +275,8 @@ function openContactDialog(service = null, { booking = false, fromService = fals
 
   if (booking) {
     showBookingStep();
+  } else if (consulta) {
+    showConsultaStep();
   } else {
     showDialogStep(channelStep);
   }
@@ -294,11 +312,24 @@ bookingStartButtons.forEach((button) => {
   });
 });
 
+consultaStartButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (contactDialog.contains(button)) {
+      showConsultaStep();
+    } else {
+      openContactDialog(null, { consulta: true });
+    }
+  });
+});
+
 closeContactDialogButton.addEventListener("click", closeContactDialog);
 bookingDoneClose.addEventListener("click", closeContactDialog);
+consultaDoneClose.addEventListener("click", closeContactDialog);
 
-bookingBack.addEventListener("click", () => {
-  showDialogStep(channelStep);
+[bookingBack, consultaBack].forEach((button) => {
+  button.addEventListener("click", () => {
+    showDialogStep(channelStep);
+  });
 });
 
 contactDialog.addEventListener("click", (event) => {
@@ -312,7 +343,7 @@ contactDialog.addEventListener("close", () => {
   showDialogStep(channelStep);
 });
 
-contactDialog.querySelectorAll("#channelStep [data-contact-whatsapp], #bookingFallback").forEach((link) => {
+contactDialog.querySelectorAll("#channelStep [data-contact-whatsapp], #bookingFallback, #consultaFallback").forEach((link) => {
   link.addEventListener("click", closeContactDialog);
 });
 
@@ -358,8 +389,6 @@ let selectedDate = null;
 let selectedSlot = null;
 let attemptKey = null;
 let generatedDetails = "";
-let turnstileToken = "";
-let turnstileWidgetId = null;
 let turnstileLoading = null;
 // true después de tocar el botón gris: se marcan en rojo los campos que faltan.
 let markMissing = false;
@@ -395,27 +424,35 @@ async function readJson(response) {
   }
 }
 
-function loadBookingConfig() {
+// Qué ofrece hoy la página: la agenda y el formulario de consultas se prenden por separado.
+function loadSiteConfig() {
   bookingConfigRequest ||= fetch("/api/booking-config", { headers: { accept: "application/json" } })
-    .then(async (response) => {
-      const config = response.ok ? await readJson(response) : null;
-      return config?.enabled === true && config.turnstileSiteKey ? config : null;
-    })
+    .then(async (response) => (response.ok ? await readJson(response) : null))
     .catch(() => null);
   return bookingConfigRequest;
 }
 
-// El select de motivos se arma desde las tarjetas de Servicios, agrupado igual que en la página.
-function buildServiceOptions() {
+async function loadBookingConfig() {
+  const config = await loadSiteConfig();
+  return config?.enabled === true && config.turnstileSiteKey ? config : null;
+}
+
+async function loadConsultaConfig() {
+  const config = await loadSiteConfig();
+  return config?.contactEnabled === true && config.turnstileSiteKey ? config : null;
+}
+
+// Los selects de trámites se arman desde las tarjetas de Servicios, agrupados igual que en la página.
+function buildServiceOptions(select) {
   document.querySelectorAll(".service-card").forEach((card) => {
     const group = document.createElement("optgroup");
     group.label = card.querySelector("h3").textContent.trim();
     card.querySelectorAll("[data-service]").forEach((link) => {
       group.append(new Option(link.dataset.service, link.dataset.service));
     });
-    bookingService.append(group);
+    select.append(group);
   });
-  bookingService.append(new Option("Otra consulta notarial", DEFAULT_SERVICE));
+  select.append(new Option("Otra consulta notarial", DEFAULT_SERVICE));
 }
 
 function syncSuggestedDetails() {
@@ -489,7 +526,7 @@ function bookingProblems() {
   if (!fields.consent.checked) {
     add("consent", "el consentimiento", "Marcá la casilla para poder agendar el turno.");
   }
-  if (!turnstileToken) {
+  if (!bookingTurnstile.token) {
     add("turnstile", "la verificación de seguridad", "Esperá a que termine la verificación de seguridad.");
   }
   return problems;
@@ -567,7 +604,9 @@ async function showBookingStep() {
     return;
   }
 
-  setupTurnstile(config.turnstileSiteKey);
+  bookingTurnstile.setup(config.turnstileSiteKey).catch(() => {
+    setBookingStatus(UNAVAILABLE_MESSAGE, { error: true, offerWhatsApp: true });
+  });
   // Siempre se piden de nuevo: si Eliana bloqueó un día, que se vea al abrir.
   await loadAvailability();
 }
@@ -708,51 +747,58 @@ function loadTurnstileScript() {
   return turnstileLoading;
 }
 
-async function setupTurnstile(siteKey) {
-  if (turnstileWidgetId !== null) {
-    return;
-  }
+/*
+  Una verificación de Turnstile por formulario (la agenda y la consulta), cada
+  una con su action: el servidor no acepta el token de un formulario en el
+  otro. onChange avisa cuando aparece o se pierde el token.
+*/
+function createTurnstileField(container, action, onChange) {
+  let token = "";
+  let widgetId = null;
 
-  try {
-    const turnstile = await loadTurnstileScript();
-    if (turnstileWidgetId !== null) {
-      return;
-    }
-    // "flexible" no baja de 300px: en teléfonos angostos se usa el compacto.
-    // Se mide el formulario porque el contenedor vacío está oculto y mide 0.
-    const formBody = turnstileWidget.parentElement;
-    const formStyle = getComputedStyle(formBody);
-    const available = formBody.clientWidth - parseFloat(formStyle.paddingLeft) - parseFloat(formStyle.paddingRight);
-    turnstileWidgetId = turnstile.render(turnstileWidget, {
-      sitekey: siteKey,
-      action: "booking",
-      language: "es",
-      size: available >= 300 ? "flexible" : "compact",
-      callback: (token) => {
-        turnstileToken = token;
-        refreshBookingForm();
-      },
-      "expired-callback": () => {
-        turnstileToken = "";
-        refreshBookingForm();
-      },
-      "error-callback": () => {
-        turnstileToken = "";
-        refreshBookingForm();
+  return {
+    get token() {
+      return token;
+    },
+    async setup(siteKey) {
+      if (widgetId !== null) {
+        return;
       }
-    });
-  } catch (_error) {
-    setBookingStatus(UNAVAILABLE_MESSAGE, { error: true, offerWhatsApp: true });
-  }
+      const turnstile = await loadTurnstileScript();
+      if (widgetId !== null) {
+        return;
+      }
+      // "flexible" no baja de 300px: en teléfonos angostos se usa el compacto.
+      // Se mide el formulario porque el contenedor vacío está oculto y mide 0.
+      const formBody = container.parentElement;
+      const formStyle = getComputedStyle(formBody);
+      const available = formBody.clientWidth - parseFloat(formStyle.paddingLeft) - parseFloat(formStyle.paddingRight);
+      const update = (value) => {
+        token = value;
+        onChange();
+      };
+      widgetId = turnstile.render(container, {
+        sitekey: siteKey,
+        action,
+        language: "es",
+        size: available >= 300 ? "flexible" : "compact",
+        callback: (value) => update(value),
+        "expired-callback": () => update(""),
+        "error-callback": () => update("")
+      });
+    },
+    // El token sirve para un solo envío, salió bien o mal.
+    reset() {
+      token = "";
+      if (window.turnstile && widgetId !== null) {
+        window.turnstile.reset(widgetId);
+      }
+      onChange();
+    }
+  };
 }
 
-function resetTurnstile() {
-  turnstileToken = "";
-  if (window.turnstile && turnstileWidgetId !== null) {
-    window.turnstile.reset(turnstileWidgetId);
-  }
-  refreshBookingForm();
-}
+const bookingTurnstile = createTurnstileField(turnstileWidget, "booking", () => refreshBookingForm());
 
 function randomKey() {
   return Array.from(crypto.getRandomValues(new Uint8Array(16)), (value) => value.toString(16).padStart(2, "0")).join("");
@@ -823,7 +869,7 @@ bookingForm.addEventListener("submit", async (event) => {
     phone: fields.phone.value,
     details: fields.details.value,
     consent: fields.consent.checked,
-    turnstileToken,
+    turnstileToken: bookingTurnstile.token,
     idempotencyKey: attemptKey
   };
 
@@ -844,8 +890,7 @@ bookingForm.addEventListener("submit", async (event) => {
   }
 
   bookingSubmit.disabled = false;
-  // El token de Turnstile sirve para un solo envío, salió bien o mal.
-  resetTurnstile();
+  bookingTurnstile.reset();
 
   if (response?.ok && data?.status === "confirmed") {
     showBookingDone(data);
@@ -885,7 +930,177 @@ bookingForm.addEventListener("submit", async (event) => {
   );
 });
 
-buildServiceOptions();
+/*
+  CONSULTA POR CORREO
+  La persona deja nombre, correo, trámite (opcional) y consulta. El servidor
+  (/api/consultas) le manda el correo a Eliana con «Responder a» = el correo
+  de la persona: el de Eliana no aparece en la página. No se guarda nada en
+  el navegador.
+*/
+const CONSULTA_MAX = 2000;
+// Desde acá el contador se pone en rojo: avisa antes de llegar al tope.
+const CONSULTA_NEAR_MAX = 1800;
+const CONSULTA_UNAVAILABLE = "No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp.";
+
+const consultaTurnstile = createTurnstileField(consultaTurnstileBox, "consulta", () => {
+  if (consultaMarkMissing) refreshConsultaForm();
+});
+let consultaKey = null;
+// true después del primer intento de envío: desde ahí se marcan los campos que faltan.
+let consultaMarkMissing = false;
+
+const CONSULTA_FIELDS = {
+  name: { error: "consultaNameError", control: () => consultaForm.elements.name },
+  email: { error: "consultaEmailError", control: () => consultaForm.elements.email },
+  message: { error: "consultaMessageError", control: () => consultaForm.elements.message },
+  turnstile: { error: "consultaTurnstileError", control: () => consultaTurnstileBox }
+};
+
+function setConsultaStatus(message, { error = false, offerWhatsApp = false } = {}) {
+  consultaStatus.textContent = message;
+  consultaStatus.classList.toggle("is-error", error);
+  consultaFallback.hidden = !offerWhatsApp;
+}
+
+function updateConsultaCounter() {
+  const length = consultaForm.elements.message.value.length;
+  consultaCounter.textContent = `${length} / ${CONSULTA_MAX}`;
+  consultaCounter.classList.toggle("is-near", length >= CONSULTA_NEAR_MAX);
+}
+
+function consultaProblems() {
+  const fields = consultaForm.elements;
+  const problems = {};
+  if (fields.name.value.trim().length < 2) problems.name = "Escribí tu nombre y apellido.";
+  const email = fields.email.value.trim();
+  if (!email) problems.email = "Escribí tu correo.";
+  else if (!EMAIL_PATTERN.test(email)) {
+    problems.email = "Revisá el correo, parece incompleto (por ejemplo, nombre@gmail.com).";
+  }
+  if (!fields.message.value.trim()) problems.message = "Escribí tu consulta.";
+  if (!consultaTurnstile.token) problems.turnstile = "Esperá a que termine la verificación de seguridad.";
+  return problems;
+}
+
+function refreshConsultaForm() {
+  const problems = consultaProblems();
+  Object.entries(CONSULTA_FIELDS).forEach(([key, field]) => {
+    const message = consultaMarkMissing ? problems[key] : "";
+    const error = document.getElementById(field.error);
+    error.textContent = message || "";
+    error.hidden = !message;
+    if (key !== "turnstile") {
+      if (message) field.control().setAttribute("aria-invalid", "true");
+      else field.control().removeAttribute("aria-invalid");
+    }
+  });
+  return problems;
+}
+
+async function showConsultaStep() {
+  // Si vino de un trámite de Servicios, ya queda elegido; si no, la persona lo elige si quiere.
+  consultaService.value = selectedService || "";
+  setConsultaStatus("");
+  updateConsultaCounter();
+  showDialogStep(consultaStep);
+
+  const config = await loadConsultaConfig();
+  if (!config) {
+    setConsultaStatus(CONSULTA_UNAVAILABLE, { error: true, offerWhatsApp: true });
+    return;
+  }
+  consultaTurnstile.setup(config.turnstileSiteKey).catch(() => {
+    setConsultaStatus(CONSULTA_UNAVAILABLE, { error: true, offerWhatsApp: true });
+  });
+}
+
+function showConsultaDone(email) {
+  const strong = document.createElement("strong");
+  strong.textContent = email;
+  consultaDoneEmail.replaceChildren("Eliana te va a responder por correo a ", strong, ".");
+  showDialogStep(consultaDone);
+}
+
+consultaForm.elements.message.addEventListener("input", updateConsultaCounter);
+
+consultaForm.addEventListener("input", () => {
+  consultaKey = null;
+  if (consultaMarkMissing) refreshConsultaForm();
+});
+
+consultaService.addEventListener("change", () => {
+  setSelectedService(consultaService.value);
+});
+
+consultaForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (consultaSubmit.disabled) {
+    return;
+  }
+
+  consultaMarkMissing = true;
+  const problems = refreshConsultaForm();
+  const first = Object.keys(CONSULTA_FIELDS).find((key) => problems[key]);
+  if (first) {
+    const target = CONSULTA_FIELDS[first].control();
+    target.scrollIntoView({ block: "center" });
+    if (target !== consultaTurnstileBox) target.focus({ preventScroll: true });
+    return;
+  }
+
+  // Un reintento del mismo envío usa la misma clave y no duplica el correo.
+  consultaKey ||= randomKey();
+  const fields = consultaForm.elements;
+  const payload = {
+    service: consultaService.value,
+    name: fields.name.value,
+    email: fields.email.value,
+    message: fields.message.value,
+    turnstileToken: consultaTurnstile.token,
+    idempotencyKey: consultaKey
+  };
+
+  consultaSubmit.disabled = true;
+  setConsultaStatus("Enviando tu consulta…");
+
+  let response;
+  let data;
+  try {
+    response = await fetch("/api/consultas", {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify(payload)
+    });
+    data = await readJson(response);
+  } catch (_error) {
+    response = null;
+  }
+
+  consultaSubmit.disabled = false;
+  consultaTurnstile.reset();
+
+  if (response?.ok && data?.status === "sent") {
+    showConsultaDone(data.email);
+    consultaForm.reset();
+    consultaKey = null;
+    consultaMarkMissing = false;
+    refreshConsultaForm();
+    updateConsultaCounter();
+    return;
+  }
+  if (response?.status === 400) {
+    setConsultaStatus(Object.values(data?.fields || {})[0] || "Revisá los datos ingresados.", { error: true });
+    return;
+  }
+  if (response?.status === 403) {
+    setConsultaStatus("No pudimos completar la verificación. Marcala de nuevo y enviá.", { error: true });
+    return;
+  }
+  setConsultaStatus(CONSULTA_UNAVAILABLE, { error: true, offerWhatsApp: true });
+});
+
+buildServiceOptions(bookingService);
+buildServiceOptions(consultaService);
 setSelectedService(null);
 
 /*
@@ -900,6 +1115,13 @@ if (openBookingOnLoad) {
   const query = startParams.toString();
   history.replaceState(null, "", location.pathname + (query ? `?${query}` : "") + location.hash);
 }
+
+// El formulario de consultas aparece solo si está prendido (Turnstile y Resend configurados).
+loadConsultaConfig().then((config) => {
+  consultaStartButtons.forEach((button) => {
+    button.hidden = !config;
+  });
+});
 
 // Si la agenda está apagada, la página vuelve a ofrecer solo WhatsApp.
 loadBookingConfig().then((config) => {

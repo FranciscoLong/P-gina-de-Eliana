@@ -838,16 +838,29 @@ p {
   color: var(--white);
 }
 
-.contact-option-booking {
+.contact-option-booking,
+.contact-option-mail {
   background: var(--white);
   color: var(--green-950);
   font: inherit;
   cursor: pointer;
 }
 
-.contact-option-booking:hover {
+.contact-option-booking:hover,
+.contact-option-mail:hover {
   border-color: var(--green-900);
   background: var(--green-100);
+}
+
+/*
+  «Escribir por correo» es la tercera opción: va a lo ancho, debajo de la
+  agenda y WhatsApp, más baja. Si la agenda está apagada, WhatsApp también va
+  a lo ancho para no quedar sola en media fila.
+*/
+.contact-options > .contact-option-mail,
+.contact-options:has(> [data-booking-start][hidden]) > .contact-option {
+  grid-column: 1 / -1;
+  min-height: auto;
 }
 
 .contact-option-icon {
@@ -860,7 +873,8 @@ p {
   background: rgba(255, 255, 255, 0.14);
 }
 
-.contact-option-booking .contact-option-icon {
+.contact-option-booking .contact-option-icon,
+.contact-option-mail .contact-option-icon {
   background: var(--green-100);
 }
 
@@ -2092,6 +2106,19 @@ details p {
   .btn {
     width: 100%;
   }
+}
+
+/* El contador de la consulta: gris, y rojo cuando se acerca al tope de 2000. */
+.consulta-counter {
+  margin-top: 4px;
+  color: var(--gray-700);
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+.consulta-counter.is-near {
+  color: var(--red-700);
+  font-weight: 700;
 }
 
 /*

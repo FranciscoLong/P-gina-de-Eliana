@@ -7,9 +7,14 @@
   Interruptor general: BOOKING_ENABLED debe valer exactamente "true" y tienen
   que estar todas las credenciales. Si falta algo, las funciones responden 503
   sin tocar Google ni Resend, y la página ofrece WhatsApp.
+
+  El formulario de consultas (api/consultas.js) va aparte: no usa Google, así
+  que sigue andando aunque la agenda esté apagada. Se prende solo cuando están
+  Turnstile y Resend; CONTACT_FORM_ENABLED="false" lo apaga.
 */
 
 const TURNSTILE_ACTION = "booking";
+const CONTACT_TURNSTILE_ACTION = "consulta";
 const UNAVAILABLE_MESSAGE = "La agenda en línea no está disponible en este momento.";
 const REQUIRED_SETTINGS = [
   "GOOGLE_SERVICE_ACCOUNT_JSON",
@@ -19,10 +24,21 @@ const REQUIRED_SETTINGS = [
   "RESEND_API_KEY",
   "BOOKING_EMAIL_FROM"
 ];
+const CONTACT_UNAVAILABLE_MESSAGE = "El formulario de consultas no está disponible en este momento.";
+const CONTACT_REQUIRED_SETTINGS = [
+  "TURNSTILE_SECRET_KEY",
+  "TURNSTILE_SITE_KEY",
+  "RESEND_API_KEY",
+  "BOOKING_EMAIL_FROM"
+];
 const NO_STORE = "private, no-store, max-age=0";
 
 function bookingEnabled(env = process.env) {
   return env.BOOKING_ENABLED === "true" && REQUIRED_SETTINGS.every((key) => Boolean(env[key]));
+}
+
+function contactEnabled(env = process.env) {
+  return env.CONTACT_FORM_ENABLED !== "false" && CONTACT_REQUIRED_SETTINGS.every((key) => Boolean(env[key]));
 }
 
 function calendarIds(env = process.env) {
@@ -91,7 +107,12 @@ function clientIp(req) {
   return String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
 }
 
-async function verifyTurnstile(token, ip, { env = process.env, fetchImpl = fetch } = {}) {
+// action dice desde qué formulario se pidió el token: uno de la agenda no sirve para una consulta.
+async function verifyTurnstile(
+  token,
+  ip,
+  { env = process.env, fetchImpl = fetch, action = TURNSTILE_ACTION } = {}
+) {
   if (typeof token !== "string" || !token || token.length > 2048) {
     return false;
   }
@@ -119,11 +140,13 @@ async function verifyTurnstile(token, ip, { env = process.env, fetchImpl = fetch
     .concat(previewHosts(env));
 
   return result.success === true
-    && result.action === TURNSTILE_ACTION
+    && result.action === action
     && allowedHostnames.includes(result.hostname);
 }
 
 module.exports = {
+  CONTACT_TURNSTILE_ACTION,
+  CONTACT_UNAVAILABLE_MESSAGE,
   NO_STORE,
   REQUIRED_SETTINGS,
   TURNSTILE_ACTION,
@@ -131,6 +154,7 @@ module.exports = {
   bookingEnabled,
   calendarIds,
   clientIp,
+  contactEnabled,
   originAllowed,
   requestOrigin,
   send,
