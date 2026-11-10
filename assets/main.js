@@ -35,6 +35,9 @@ const bookingDoneEmail = document.getElementById("bookingDoneEmail");
 const bookingDoneWhatsapp = document.getElementById("bookingDoneWhatsapp");
 const bookingDoneClose = document.getElementById("bookingDoneClose");
 const consultaStartButtons = document.querySelectorAll("[data-consulta-start]");
+const consultaBlocks = document.querySelectorAll("[data-consulta-block]");
+const urgenteOpenButtons = document.querySelectorAll("[data-urgente-open]");
+const urgenteStep = document.getElementById("urgenteStep");
 const consultaStep = document.getElementById("consultaStep");
 const consultaDone = document.getElementById("consultaDone");
 const consultaBack = document.getElementById("consultaBack");
@@ -245,7 +248,7 @@ function setSelectedService(service) {
   botón enfocado por código, sin que se haya usado el teclado, puede quedar
   marcado con el recuadro rojo de foco (pasaba al abrir desde /reservar).
 */
-const DIALOG_STEPS = [channelStep, bookingStep, bookingDone, consultaStep, consultaDone];
+const DIALOG_STEPS = [channelStep, bookingStep, bookingDone, consultaStep, consultaDone, urgenteStep];
 
 function showDialogStep(step) {
   DIALOG_STEPS.forEach((element) => {
@@ -262,7 +265,10 @@ function showDialogStep(step) {
 }
 
 // Los botones generales abren sin trámite: el de una consulta anterior no se arrastra.
-function openContactDialog(service = null, { booking = false, consulta = false, fromService = false } = {}) {
+function openContactDialog(
+  service = null,
+  { booking = false, consulta = false, urgente = false, fromService = false } = {}
+) {
   setSelectedService(service);
   serviceIsFixed = fromService && Boolean(selectedService);
 
@@ -276,6 +282,8 @@ function openContactDialog(service = null, { booking = false, consulta = false, 
     showBookingStep();
   } else if (consulta) {
     showConsultaStep();
+  } else if (urgente) {
+    showDialogStep(urgenteStep);
   } else {
     showDialogStep(channelStep);
   }
@@ -323,11 +331,19 @@ consultaStartButtons.forEach((button) => {
   });
 });
 
+// El botón flotante de WhatsApp pregunta primero si es urgente y ofrece la agenda.
+urgenteOpenButtons.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    openContactDialog(null, { urgente: true });
+  });
+});
+
 closeContactDialogButton.addEventListener("click", closeContactDialog);
 bookingDoneClose.addEventListener("click", closeContactDialog);
 consultaDoneClose.addEventListener("click", closeContactDialog);
 
-// «Volver» de la consulta lleva al menú de contacto. La agenda se abre directo y no tiene «Volver».
+// «Volver» de la consulta lleva al menú de «Consultar». La agenda no tiene «Volver».
 consultaBack.addEventListener("click", () => {
   showDialogStep(channelStep);
 });
@@ -343,7 +359,7 @@ contactDialog.addEventListener("close", () => {
   showDialogStep(channelStep);
 });
 
-contactDialog.querySelectorAll("#channelStep [data-contact-whatsapp], #bookingFallback, #consultaFallback").forEach((link) => {
+contactDialog.querySelectorAll("#urgenteStep [data-contact-whatsapp], #bookingFallback, #consultaFallback").forEach((link) => {
   link.addEventListener("click", closeContactDialog);
 });
 
@@ -1019,7 +1035,7 @@ async function showConsultaStep() {
 function showConsultaDone(email) {
   const strong = document.createElement("strong");
   strong.textContent = email;
-  consultaDoneEmail.replaceChildren("Eliana te va a responder por correo a ", strong, ".");
+  consultaDoneEmail.replaceChildren("Te vamos a responder por correo a ", strong, ".");
   showDialogStep(consultaDone);
 }
 
@@ -1123,6 +1139,9 @@ if (openBookingOnLoad) {
 loadConsultaConfig().then((config) => {
   consultaStartButtons.forEach((button) => {
     button.hidden = !config;
+  });
+  consultaBlocks.forEach((block) => {
+    block.hidden = !config;
   });
 });
 

@@ -54,12 +54,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=agenda-directa-20261110-1">
+  <link rel="stylesheet" href="assets/styles.css?v=urgente-20261110-1">
   <script src="assets/hours.js?v=horario-20261110-4" defer></script>
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=agenda-directa-20261110-1" defer></script>
+  <script src="assets/main.js?v=urgente-20261110-1" defer></script>
 
   <script type="application/ld+json">
   {
@@ -746,7 +746,7 @@
             <!-- La agenda va sola y directo; escribir (WhatsApp o correo) va aparte. -->
             <div class="contact-options contact-options-single">
               <!-- Abre la ventana directamente en la agenda. -->
-              <button class="contact-option contact-option-booking" type="button" data-booking-start>
+              <button class="contact-option contact-option-booking contact-option-primary" type="button" data-booking-start>
                 <span class="contact-option-icon">
                   <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
                 </span>
@@ -757,28 +757,15 @@
               </button>
             </div>
 
+            <!-- WhatsApp queda solo en el botón flotante, para urgencias. Sin el formulario, este bloque no se muestra. -->
+            <div class="contact-write" data-consulta-block hidden>
             <h3>¿Preferís escribirnos?</h3>
             <p class="contact-selected-service">
               Consulta seleccionada:
               <strong data-selected-service>Consulta notarial</strong>
             </p>
 
-            <div class="contact-options">
-              <a
-                class="contact-option contact-option-whatsapp"
-                data-contact-whatsapp
-                href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span class="contact-option-icon">
-                  <svg aria-hidden="true" focusable="false"><use href="#icon-whatsapp"></use></svg>
-                </span>
-                <span>
-                  <strong>WhatsApp</strong>
-                  <small>Abrir una conversación con el mensaje preparado.</small>
-                </span>
-              </a>
+            <div class="contact-options contact-options-single">
               <!-- Abre la ventana en el formulario de consultas por correo. -->
               <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
                 <span class="contact-option-icon">
@@ -789,6 +776,7 @@
                   <small>Dejá tu consulta y te respondemos por correo.</small>
                 </span>
               </button>
+            </div>
             </div>
 
             <p class="contact-note">
@@ -947,29 +935,23 @@
           la agenda y la confirmación del turno.
         -->
         <div class="contact-dialog-step" id="channelStep">
-          <span class="contact-dialog-eyebrow">Contacto</span>
-          <h2 id="contactDialogTitle" tabindex="-1">¿Cómo preferís escribirnos?</h2>
+          <span class="contact-dialog-eyebrow">Consulta</span>
+          <h2 id="contactDialogTitle" tabindex="-1">¿Cómo preferís consultarnos?</h2>
           <p class="contact-dialog-service" id="dialogSelectedService">
             Seleccionaste:
             <strong data-selected-service>Consulta notarial</strong>
           </p>
 
           <div class="contact-options">
-            <a
-              class="contact-option contact-option-whatsapp"
-              data-contact-whatsapp
-              href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <button class="contact-option contact-option-booking contact-option-primary" type="button" data-booking-start>
               <span class="contact-option-icon">
-                <svg aria-hidden="true" focusable="false"><use href="#icon-whatsapp"></use></svg>
+                <svg aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
               </span>
               <span>
-                <strong>WhatsApp</strong>
-                <small>Abrir una conversación con el mensaje preparado.</small>
+                <strong>Agendar turno</strong>
+                <small>Elegí día y horario en la agenda.</small>
               </span>
-            </a>
+            </button>
             <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
               <span class="contact-option-icon">
                 <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
@@ -982,12 +964,34 @@
           </div>
 
           <p class="contact-note">
-            Podés editar el mensaje antes de enviarlo. No incluyas documentación
-            ni datos sensibles en el primer contacto.
+            No envíes documentación, datos financieros ni números de documento
+            en el primer mensaje.
           </p>
         </div>
 
-        <div class="contact-dialog-step booking-step" id="bookingStep" hidden>
+                <!-- El botón flotante de WhatsApp pasa por acá: WhatsApp es para urgencias. -->
+        <div class="contact-dialog-step urgente-step" id="urgenteStep" hidden>
+          <span class="contact-dialog-eyebrow">WhatsApp</span>
+          <h2 id="urgenteTitle" tabindex="-1">¿Es urgente?</h2>
+          <p>
+            Para consultas y trámites, agendá tu turno: así te atendemos con el
+            tiempo que tu consulta necesita. WhatsApp es solo para urgencias.
+          </p>
+          <div class="urgente-actions">
+            <button class="btn btn-dark" type="button" data-booking-start>Agendar turno</button>
+            <a
+              class="btn btn-outline"
+              data-contact-whatsapp
+              href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Es urgente: escribir por WhatsApp
+            </a>
+          </div>
+        </div>
+
+<div class="contact-dialog-step booking-step" id="bookingStep" hidden>
           <span class="contact-dialog-eyebrow">Agendar turno</span>
           <h2 id="bookingTitle" tabindex="-1">Elegí día y horario</h2>
 
@@ -1213,8 +1217,10 @@
     </div>
   </footer>
 
+  <!-- Abre «¿Es urgente?» antes de WhatsApp; sin JavaScript, el enlace va directo. -->
   <a
     class="floating-whatsapp"
+    data-urgente-open
     href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacerte%20una%20consulta%20notarial."
     target="_blank"
     rel="noopener noreferrer"

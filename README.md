@@ -73,21 +73,24 @@ La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
 
 ## Agenda y contacto desde la página
 
-La sección **Agenda** separa agendar de escribir:
+La página empuja la agenda: **si no se agendan, no se atienden.** La sección
+**Agenda** muestra:
 
-- **Agendar turno**, solo y arriba: abre la ventana directo en la agenda
-  («Elegí día y horario»). El botón de la portada hace lo mismo. Si la agenda
-  está apagada, los dos se ocultan.
-- **¿Preferís escribirnos?**: **WhatsApp** al +598 91 048 471, con el mensaje
-  preparado según el trámite, y **Escribir por correo**, el formulario de
-  consultas (ver abajo).
+- **Agendar turno**, arriba y destacado (verde lleno): abre la ventana directo
+  en la agenda («Elegí día y horario»). El botón de la portada hace lo mismo.
+  Si la agenda está apagada, los dos se ocultan.
+- **¿Preferís escribirnos?**: **Escribir por correo**, el formulario de
+  consultas (ver abajo). Sin el formulario, este bloque no se muestra.
 
-Los **Consultar** de Servicios y el enlace «contactarme» abren el menú de
-contacto de la ventana («¿Cómo preferís escribirnos?»), con WhatsApp y el
-correo, y el trámite ya elegido. Ese menú no ofrece la agenda: para agendar
-está «Agendar turno». Si se entra desde el botón general, la agenda pide el
-motivo con un select. El enlace de WhatsApp funciona aunque JavaScript no
-esté disponible.
+Los **Consultar** de Servicios y el enlace «contactarme» abren el menú
+**«Consulta / ¿Cómo preferís consultarnos?»**, con **Agendar turno**
+(destacado) y **Escribir por correo**, y el trámite ya elegido.
+
+**WhatsApp es solo para urgencias** y está únicamente en el botón flotante.
+Al tocarlo, la ventana pregunta **«¿Es urgente?»** y ofrece **Agendar turno**
+o **Es urgente: escribir por WhatsApp** (sin agenda, solo WhatsApp). Sin
+JavaScript, el botón va directo a WhatsApp. WhatsApp también aparece como
+**Agendar por WhatsApp** cuando la agenda falla, y en el botón de algún aviso.
 
 ### Consulta por correo
 
