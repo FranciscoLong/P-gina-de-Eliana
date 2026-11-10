@@ -7,17 +7,25 @@ const {
   periodFor,
   sentence,
   rangeText,
-  openingHours,
-  updateStructuredData
+  openingHours
 } = require("../assets/hours.js");
 const { SCHEDULES } = require("../api/_lib/booking.js");
 
 test("la agenda toma sus tramos de assets/hours.js, la única fuente", () => {
+  // Que los valores coincidan no alcanza: tiene que leerlos de ahí y no tener una copia propia.
+  const source = fs.readFileSync(path.join(__dirname, "..", "api", "_lib", "booking.js"), "utf8");
+  assert.match(source, /require\("\.\.\/\.\.\/assets\/hours\.js"\)/);
+  assert.doesNotMatch(source, /\["\d{2}:\d{2}", "\d{2}:\d{2}"\]/, "booking.js tiene horarios escritos");
   assert.deepEqual(
     SCHEDULES.map(({ from, windows, withGap }) => ({ from, windows, withGap })),
     SITE_HOURS.map(({ from, windows, withGap }) => ({ from, windows, withGap }))
   );
   for (const period of SITE_HOURS) assert.equal(typeof period.withGap, "boolean", period.from);
+});
+
+test("los tramos de la agenda no cambian aunque se toque SITE_HOURS", () => {
+  assert.ok(Object.isFrozen(SCHEDULES[0].windows) && Object.isFrozen(SCHEDULES[0].windows[0]));
+  assert.notEqual(SCHEDULES[0].windows, SITE_HOURS[0].windows);
 });
 
 test("cada tramo rige desde su día hasta que empieza el siguiente", () => {
@@ -51,32 +59,28 @@ test("desde el 1 de diciembre la mañana es solo con agenda y la tarde, atenció
   assert.equal(periodFor("2026-11-24").notes, undefined);
 });
 
-test("los datos para Google llevan el horario del día: desde diciembre abre a las 9:00", () => {
-  assert.deepEqual(
-    openingHours(periodFor("2026-12-01").windows).map(({ opens, closes }) => [opens, closes]),
-    [["09:00", "12:30"], ["15:00", "19:00"]]
-  );
-  assert.deepEqual(
-    openingHours(periodFor("2026-11-10").windows).map(({ opens, closes }) => [opens, closes]),
-    [["15:00", "19:00"]]
-  );
+test("los datos para Google dicen cada tramo con su vigencia: desde diciembre abre a las 9:00", () => {
+  const specs = openingHours();
+  const december = specs.filter((spec) => spec.validFrom === "2026-12-01");
+  assert.deepEqual(december.map(({ opens, closes }) => [opens, closes]), [["09:00", "12:30"], ["15:00", "19:00"]]);
+  assert.ok(december.every((spec) => !("validThrough" in spec)));
+  const closure = specs.filter((spec) => spec.validFrom === "2026-11-02");
+  assert.deepEqual(closure.map(({ opens, closes, validThrough }) => [opens, closes, validThrough]), [["15:00", "19:00", "2026-11-23"]]);
+  assert.ok(specs.filter((spec) => !("validFrom" in spec)).every((spec) => spec.validThrough === "2026-11-01"));
 });
 
-test("se reescribe el horario de los datos estructurados de index.html, y nada más", () => {
+test("los datos estructurados de index.html son los de assets/hours.js", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
-  const scripts = blocks.map(([, text]) => ({ textContent: text }));
-  const doc = { querySelectorAll: () => scripts };
-  const before = scripts.map((script) => JSON.parse(script.textContent));
-  updateStructuredData(doc, periodFor("2026-12-01").windows);
-  const after = scripts.map((script) => JSON.parse(script.textContent));
-  const withHours = after.filter((data) => "openingHoursSpecification" in data);
-  assert.equal(withHours.length, 1);
-  assert.equal(withHours[0].openingHoursSpecification[0].opens, "09:00");
-  const { openingHoursSpecification: _, ...restAfter } = withHours[0];
-  const { openingHoursSpecification: __, ...restBefore } = before[after.indexOf(withHours[0])];
-  assert.deepEqual(restAfter, restBefore);
-  assert.deepEqual(after.filter((data) => !("openingHoursSpecification" in data)), before.filter((data) => !("openingHoursSpecification" in data)));
+  const data = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map(([, text]) => JSON.parse(text))
+    .filter((block) => "openingHoursSpecification" in block);
+  assert.equal(data.length, 1);
+  const expected = openingHours();
+  assert.deepEqual(
+    data[0].openingHoursSpecification,
+    expected,
+    `El horario de los datos estructurados no coincide con assets/hours.js. Pegá esto en index.html:\n"openingHoursSpecification": ${JSON.stringify(expected, null, 2)}`
+  );
 });
 
 /*

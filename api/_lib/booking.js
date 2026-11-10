@@ -24,15 +24,24 @@ const UTC_OFFSET = "-03:00";
 const HORIZON_DAYS = 45;
 /*
   Horario de la agenda por tramos de fechas. La fuente es una sola,
-  SITE_HOURS en assets/hours.js: de ahí salen también el horario que muestra
+  SITE_HOURS en assets/hours.js (un archivo público: el horario no es
+  secreto). Ojo: si ese archivo no carga en Node, la agenda entera da error;
+  las pruebas lo cargan, así que node --test lo detecta antes de publicar: de ahí salen también el horario que muestra
   la página y el de los datos para Google, así que se cambia en un solo lugar.
   Cada tramo rige desde su día (fecha de Uruguay) hasta que empieza el
   siguiente; withGap dice si entre turno y turno queda BOOKING_GAP_MINUTES.
 */
 const { SITE_HOURS } = require("../../assets/hours.js");
 
+// Copia congelada a fondo: lo que alguien cambie en SITE_HOURS en ejecución no toca la agenda.
 const SCHEDULES = Object.freeze(
-  SITE_HOURS.map(({ from, windows, withGap }) => Object.freeze({ from, windows, withGap }))
+  SITE_HOURS.map(({ from, windows, withGap }) =>
+    Object.freeze({
+      from,
+      windows: Object.freeze(windows.map((window) => Object.freeze([...window]))),
+      withGap
+    })
+  )
 );
 const DEFAULT_MIN_NOTICE_HOURS = 24;
 const DEFAULT_DURATION_MINUTES = 45;

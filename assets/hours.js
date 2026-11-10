@@ -3,7 +3,11 @@
   De estos tramos de fechas salen:
   - los turnos que ofrece la agenda (api/_lib/booking.js los lee de acá);
   - el horario de la página: la franja de arriba, «Dónde encontrarme» y el pie;
-  - el horario de los datos para Google (openingHoursSpecification).
+  - el horario de los datos para Google (openingHoursSpecification de
+    index.html): va escrito fijo, con la vigencia de cada tramo, para que lo
+    lea igual cualquier buscador, ejecute JavaScript o no. Una prueba exige
+    que sea exactamente openingHours(SITE_HOURS); si no coincide, el mensaje
+    trae el bloque correcto para pegar.
   Cada tramo rige desde su día (fecha de Uruguay) hasta que empieza el
   siguiente. windows son las franjas del día; withGap, si la agenda deja
   BOOKING_GAP_MINUTES entre turno y turno. Después de editar, renovar el ?v=
@@ -22,7 +26,6 @@
   const period = hours.periodFor(hours.uruguayDay());
   if (!period) return;
   const { windows, notes = [] } = period;
-  hours.updateStructuredData(document, windows);
   document.querySelectorAll("[data-hours]").forEach((element) => {
     if (element.dataset.hours === "list") {
       const items = windows.map(([from, to], index) => {
@@ -79,29 +82,26 @@
   }
 
   const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const FIRST_DAY = "2000-01-01";
 
-  // El horario para Google: una franja por cada una del día, de lunes a viernes.
-  function openingHours(windows) {
-    return windows.map(([opens, closes]) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: WEEKDAYS,
-      opens,
-      closes
-    }));
+  function dayBefore(ymd) {
+    const date = new Date(`${ymd}T12:00:00Z`);
+    date.setUTCDate(date.getUTCDate() - 1);
+    return date.toISOString().slice(0, 10);
   }
 
-  // Reescribe el horario en los datos estructurados de la página (los que lo tienen).
-  function updateStructuredData(doc, windows) {
-    doc.querySelectorAll('script[type="application/ld+json"]').forEach((script) => {
-      let data;
-      try {
-        data = JSON.parse(script.textContent);
-      } catch {
-        return;
-      }
-      if (!data || !("openingHoursSpecification" in data)) return;
-      data.openingHoursSpecification = openingHours(windows);
-      script.textContent = JSON.stringify(data, null, 2);
+  // El horario para Google: cada franja de cada tramo, con desde y hasta cuándo rige.
+  function openingHours(periods = SITE_HOURS) {
+    return periods.flatMap((period, index) => {
+      const next = periods[index + 1];
+      return period.windows.map(([opens, closes]) => ({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: WEEKDAYS,
+        opens,
+        closes,
+        ...(period.from === FIRST_DAY ? {} : { validFrom: period.from }),
+        ...(next ? { validThrough: dayBefore(next.from) } : {})
+      }));
     });
   }
 
@@ -111,7 +111,6 @@
     periodFor,
     rangeText,
     sentence,
-    openingHours,
-    updateStructuredData
+    openingHours
   };
 });
