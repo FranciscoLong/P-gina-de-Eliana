@@ -17,7 +17,6 @@ const dialogSelectedService = document.getElementById("dialogSelectedService");
 const channelStep = document.getElementById("channelStep");
 const bookingStep = document.getElementById("bookingStep");
 const bookingDone = document.getElementById("bookingDone");
-const bookingBack = document.getElementById("bookingBack");
 const bookingForm = document.getElementById("bookingForm");
 const bookingServiceFixed = document.getElementById("bookingServiceFixed");
 const bookingServiceField = document.getElementById("bookingServiceField");
@@ -36,6 +35,7 @@ const bookingDoneEmail = document.getElementById("bookingDoneEmail");
 const bookingDoneWhatsapp = document.getElementById("bookingDoneWhatsapp");
 const bookingDoneClose = document.getElementById("bookingDoneClose");
 const consultaStartButtons = document.querySelectorAll("[data-consulta-start]");
+const bookingBlocks = document.querySelectorAll("[data-booking-block]");
 const consultaStep = document.getElementById("consultaStep");
 const consultaDone = document.getElementById("consultaDone");
 const consultaBack = document.getElementById("consultaBack");
@@ -303,7 +303,9 @@ openContactButtons.forEach((button) => {
 });
 
 bookingStartButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
+    // El de la portada es un enlace a #contactar, para quien no tiene JavaScript.
+    event.preventDefault();
     if (contactDialog.contains(button)) {
       showBookingStep();
     } else {
@@ -326,10 +328,9 @@ closeContactDialogButton.addEventListener("click", closeContactDialog);
 bookingDoneClose.addEventListener("click", closeContactDialog);
 consultaDoneClose.addEventListener("click", closeContactDialog);
 
-[bookingBack, consultaBack].forEach((button) => {
-  button.addEventListener("click", () => {
-    showDialogStep(channelStep);
-  });
+// «Volver» de la consulta lleva al menú de «Consultar». La agenda se abre directo y no tiene «Volver».
+consultaBack.addEventListener("click", () => {
+  showDialogStep(channelStep);
 });
 
 contactDialog.addEventListener("click", (event) => {
@@ -1019,7 +1020,7 @@ async function showConsultaStep() {
 function showConsultaDone(email) {
   const strong = document.createElement("strong");
   strong.textContent = email;
-  consultaDoneEmail.replaceChildren("Eliana te va a responder por correo a ", strong, ".");
+  consultaDoneEmail.replaceChildren("Te vamos a responder por correo a ", strong, ".");
   showDialogStep(consultaDone);
 }
 
@@ -1119,23 +1120,40 @@ if (openBookingOnLoad) {
   history.replaceState(null, "", location.pathname + (query ? `?${query}` : "") + location.hash);
 }
 
-// El formulario de consultas aparece solo si está prendido (Turnstile y Resend configurados).
-loadConsultaConfig().then((config) => {
-  consultaStartButtons.forEach((button) => {
-    button.hidden = !config;
+/*
+  Cada fila de opciones se acomoda a lo que quedó visible: sin opciones se
+  oculta y con una sola va a lo ancho (is-single). Se hace acá y no con
+  :has() en el CSS, que los navegadores viejos no entienden.
+*/
+function syncOptionRows() {
+  document.querySelectorAll(".contact-options").forEach((row) => {
+    const visible = [...row.children].filter(
+      (child) => child.classList.contains("contact-option") && !child.hidden
+    ).length;
+    row.hidden = visible === 0;
+    row.classList.toggle("is-single", visible === 1);
   });
-});
+}
 
-// Si la agenda está apagada, la página vuelve a ofrecer solo WhatsApp.
-loadBookingConfig().then((config) => {
-  if (!config) {
-    bookingStartButtons.forEach((button) => {
-      button.hidden = true;
-    });
-    return;
-  }
+/*
+  La agenda y el formulario de consultas se prenden por separado. Apagada la
+  agenda, se ocultan sus botones y la línea «¿Venís al escritorio?»;
+  apagado el formulario, su opción. WhatsApp está siempre.
+*/
+Promise.all([loadBookingConfig(), loadConsultaConfig()]).then(([bookingConfig, consultaConfig]) => {
+  bookingStartButtons.forEach((button) => {
+    button.hidden = !bookingConfig;
+  });
+  consultaStartButtons.forEach((button) => {
+    button.hidden = !consultaConfig;
+  });
+  bookingBlocks.forEach((block) => {
+    block.hidden = !bookingConfig;
+  });
+  syncOptionRows();
+
   // Si ya la abrió a mano mientras cargaba, reabrirla le borraría lo elegido.
-  if (openBookingOnLoad && !contactDialog.open) {
+  if (bookingConfig && openBookingOnLoad && !contactDialog.open) {
     openContactDialog(null, { booking: true });
   }
 });

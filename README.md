@@ -73,16 +73,22 @@ La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
 
 ## Agenda y contacto desde la página
 
-La sección **Agenda** ofrece tres vías:
+- **Agendar turno** está en la entrada (la portada): abre la ventana directo
+  en la agenda («Elegí día y horario»). Si la agenda está apagada, se oculta.
+- La sección **Contacto y ubicación** (`#contactar`, «Contacto» en el menú y en
+  el pie) es para escribir: **¿Cómo preferís escribirnos?**, con **WhatsApp**
+  al +598 91 048 471 (mensaje preparado según el trámite) y **Escribir por
+  correo** (el formulario, ver abajo). Debajo, una línea recuerda la agenda:
+  «¿Venís al escritorio? Agendá tu turno: te atendemos a la hora que elijas,
+  sin esperas.» (sin agenda, no se muestra). Al lado, **Dónde encontrarnos**: dirección, horario y mapa.
+- Los **Consultar** de Servicios y el enlace «contactarme» abren el menú
+  **«Consulta / ¿Cómo preferís consultarnos?»**, solo para escribir: WhatsApp
+  y correo, con el trámite ya elegido.
+- El **botón flotante** va directo a WhatsApp.
+- `/reservar` (el QR de los carteles) abre la agenda directo.
 
-- **Agendar turno** en la agenda en línea.
-- **WhatsApp** al +598 91 048 471, con el mensaje preparado según el trámite.
-- **Escribir por correo**: el formulario de consultas (ver abajo).
-
-Al elegir un servicio, la página abre una ventana con las tres vías. Si el turno
-se pide desde un trámite de Servicios, la agenda lo muestra fijo; si se entra
-desde el botón general, pide el motivo con un select. El enlace de WhatsApp
-funciona aunque JavaScript no esté disponible.
+El enlace de WhatsApp funciona aunque JavaScript no esté disponible. La página
+habla en plural, por el equipo (escribanía e inmobiliaria).
 
 ### Consulta por correo
 
@@ -323,4 +329,4 @@ para mostrar estrellas.
 - **Dirección:** Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay
 - **Teléfono / WhatsApp:** +598 91 048 471
 - **Correo:** esc.isbarbo@gmail.com (no se publica en la página: las consultas llegan por el formulario)
-- **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda»)
+- **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda en línea», más arriba)
