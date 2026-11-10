@@ -134,7 +134,9 @@ function bookingBody(overrides = {}) {
 test.beforeEach((t) => {
   t.mock.timers.enable({ apis: ["Date"], now: MONDAY_8AM });
   for (const key of Object.keys(process.env)) {
-    if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key === "VERCEL_ENV") delete process.env[key];
+    if (key.startsWith("BOOKING_") || key.startsWith("TURNSTILE_") || key.startsWith("CONTACT_") || key === "VERCEL_ENV") {
+      delete process.env[key];
+    }
   }
   Object.assign(process.env, BASE_ENV);
   Object.assign(network, { requests: [], busy: [], events: new Map(), allDay: [], turnstile: true, resendStatus: 200, googleDown: false });
@@ -144,7 +146,12 @@ test("con el interruptor apagado no se toca Google y la configuración dice que 
   process.env.BOOKING_ENABLED = "false";
   assert.equal((await call(availability)).status, 503);
   assert.equal((await call(bookings, { method: "POST", body: bookingBody() })).status, 503);
-  assert.deepEqual((await call(bookingConfig)).body, { enabled: false, turnstileSiteKey: "" });
+  // La agenda apagada no apaga el formulario de consultas, que no usa Google.
+  assert.deepEqual((await call(bookingConfig)).body, {
+    enabled: false,
+    contactEnabled: true,
+    turnstileSiteKey: BASE_ENV.TURNSTILE_SITE_KEY
+  });
   assert.equal(network.requests.length, 0);
 });
 

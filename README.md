@@ -28,16 +28,18 @@ sin dependencias).
 │   ├── hours.js                     Horario por fechas: agenda, página y datos para Google
 │   └── imágenes y favicons
 ├── api/                             Funciones de Vercel de la agenda
-│   ├── booking-config.js            Si la agenda está prendida y la clave de Turnstile
+│   ├── booking-config.js            Si la agenda y el formulario están prendidos, y la clave de Turnstile
 │   ├── availability.js              Horarios libres y ocupados
 │   ├── bookings.js                  Confirmación del turno
 │   ├── anular-turno.js              Página para anular un turno desde el correo
+│   ├── consultas.js                 Formulario de consultas por correo
 │   ├── _security.js                 Interruptor, origen y verificación de Turnstile
 │   └── _lib/                        Código compartido; el guion bajo evita que se publique
 │       ├── booking.js               Reglas: horario, duración, anticipación, trámites
 │       ├── google-calendar.js       Cliente de Calendar con cuenta de servicio
 │       ├── reservations.js          Creación y anulación del turno sin duplicados
 │       ├── booking-emails.js        Correos de confirmación y aviso
+│       ├── contact.js               Validación y correo de las consultas
 │       └── client-calendar.js       Enlace de Google Calendar y archivo .ics
 ├── tests/                           Pruebas unitarias (Google y correo simulados)
 ├── carteles/                        QR de /reservar y aviso A4 para imprimir (no se publica)
@@ -71,15 +73,37 @@ La regla vive comentada en `assets/styles.css`, bajo `FILOS DE COLOR`.
 
 ## Agenda y contacto desde la página
 
-La sección **Agenda** ofrece dos vías:
+La sección **Agenda** ofrece tres vías:
 
 - **Agendar turno** en la agenda en línea.
 - **WhatsApp** al +598 91 048 471, con el mensaje preparado según el trámite.
+- **Escribir por correo**: el formulario de consultas (ver abajo).
 
-Al elegir un servicio, la página abre una ventana con ambas vías. Si el turno
+Al elegir un servicio, la página abre una ventana con las tres vías. Si el turno
 se pide desde un trámite de Servicios, la agenda lo muestra fijo; si se entra
 desde el botón general, pide el motivo con un select. El enlace de WhatsApp
 funciona aunque JavaScript no esté disponible.
+
+### Consulta por correo
+
+**El correo de Eliana no aparece en la página** (ni a la vista ni en los
+datos para Google), para que los robots que juntan direcciones no lo
+encuentren. Las consultas por correo llegan por un formulario:
+
+- La persona deja **nombre y apellido** y **su correo** (obligatorios), el
+  **trámite** (opcional; si vino desde Servicios, ya viene elegido) y **su
+  consulta**, de hasta **2000 caracteres** con un contador.
+- `api/consultas.js` valida los datos, verifica Turnstile (con su propia
+  action, `consulta`: un token de la agenda no sirve) y le manda a Eliana un
+  correo con **«Responder a» = el correo de la persona**. Eliana toca
+  «Responder» y recién ahí la persona ve su correo.
+- A la persona **no** se le manda copia: alguien podría poner el correo de otro
+  y usar el formulario para mandarle correos. Ve la confirmación en pantalla.
+- Usa las mismas claves que los correos de la agenda (Turnstile y Resend) y va
+  al mismo destino (`BOOKING_NOTIFY_EMAIL` o el correo de Eliana). **No
+  depende de la agenda**: sigue andando aunque `BOOKING_ENABLED` esté apagado.
+  Para apagarlo, `CONTACT_FORM_ENABLED=false` en Vercel; sin las claves, la
+  página no muestra la opción.
 
 ## Agenda en línea
 
@@ -186,7 +210,8 @@ si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
 | `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | Claves de Cloudflare Turnstile. |
 | `RESEND_API_KEY` | La carga la integración de Resend del Marketplace. |
 | `BOOKING_EMAIL_FROM` | Remitente con dominio verificado en Resend. |
-| `BOOKING_NOTIFY_EMAIL` | Opcional: a quién avisar de cada turno (por defecto, el correo de Eliana). |
+| `BOOKING_NOTIFY_EMAIL` | Opcional: a quién avisar de cada turno y de cada consulta (por defecto, el correo de Eliana). |
+| `CONTACT_FORM_ENABLED` | Opcional: `false` apaga el formulario de consultas por correo. Sin la variable, anda si están Turnstile y Resend. |
 | `BOOKING_ALLOWED_ORIGINS` | `https://www.escribaniaisbarbo.com.uy` |
 | `BOOKING_MIN_NOTICE_HOURS` | Opcional: anticipación mínima en horas (24 por defecto). |
 | `BOOKING_DURATION_MINUTES` | Opcional: duración del turno (45 por defecto). |
@@ -296,5 +321,5 @@ para mostrar estrellas.
 
 - **Dirección:** Sarandí 294 esquina 18 de Julio, Rosario, Colonia, Uruguay
 - **Teléfono / WhatsApp:** +598 91 048 471
-- **Correo:** esc.isbarbo@gmail.com
+- **Correo:** esc.isbarbo@gmail.com (no se publica en la página: las consultas llegan por el formulario)
 - **Horario:** por tramos de fechas, en `assets/hours.js` (ver «Agenda»)

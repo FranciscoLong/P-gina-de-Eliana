@@ -97,7 +97,7 @@ function officeNotification(booking, eventLink, env = process.env) {
   const when = formatSlot(booking.slot.start);
 
   return {
-    to: env.BOOKING_NOTIFY_EMAIL || OFFICE_EMAIL,
+    to: officeInbox(env),
     replyTo: booking.email,
     subject: `Nuevo turno: ${booking.service} · ${when}`,
     text: [
@@ -125,7 +125,7 @@ function cancellationNotice(event, env = process.env) {
   const title = bookingTitle(event);
 
   return {
-    to: env.BOOKING_NOTIFY_EMAIL || OFFICE_EMAIL,
+    to: officeInbox(env),
     replyTo: OFFICE_EMAIL,
     subject: `Turno anulado: ${title} · ${when}`,
     text: [
@@ -177,8 +177,14 @@ async function sendEmail(message, idempotencyKey, { env = process.env, fetchImpl
   }
 }
 
+// A quién le llegan los avisos de la página (turnos y consultas).
+function officeInbox(env = process.env) {
+  return env.BOOKING_NOTIFY_EMAIL || OFFICE_EMAIL;
+}
+
 module.exports = {
   WHATSAPP_NUMBER,
+  officeInbox,
   cancellationNotice,
   clientConfirmation,
   formatSlot,

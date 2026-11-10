@@ -54,12 +54,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=horario-20261110-1">
+  <link rel="stylesheet" href="assets/styles.css?v=consulta-20261110-1">
   <script src="assets/hours.js?v=horario-20261110-4" defer></script>
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=resenas-20261022-3" defer></script>
+  <script src="assets/main.js?v=consulta-20261110-1" defer></script>
 
   <script type="application/ld+json">
   {
@@ -70,7 +70,6 @@
     "description": "Escribana pública y servicios notariales en Rosario, departamento de Colonia, Uruguay.",
     "url": "https://www.escribaniaisbarbo.com.uy/",
     "telephone": "+59891048471",
-    "email": "esc.isbarbo@gmail.com",
     "image": "https://www.escribaniaisbarbo.com.uy/assets/og-isbarbo-gfeller.jpg",
     "logo": "https://www.escribaniaisbarbo.com.uy/assets/logo-isbarbo-gfeller.webp",
     "priceRange": "$$",
@@ -330,10 +329,9 @@
   <div class="topbar">
     <div class="container topbar-content">
       <span data-hours="topbar">Lunes a viernes de 9:30 a 12:30 hs y de 15:00 a 19:00 hs</span>
+      <!-- El correo de Eliana no va en la página: las consultas llegan por el formulario. -->
       <span>
         <a href="tel:+59891048471">+598 91 048 471</a>
-        ·
-        <a href="mailto:esc.isbarbo@gmail.com">esc.isbarbo@gmail.com</a>
       </span>
     </div>
   </div>
@@ -777,6 +775,16 @@
                   <small>Abrir una conversación con el mensaje preparado.</small>
                 </span>
               </a>
+              <!-- Abre la ventana en el formulario de consultas por correo. -->
+              <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
+                <span class="contact-option-icon">
+                  <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
+                </span>
+                <span>
+                  <strong>Escribir por correo</strong>
+                  <small>Dejá tu consulta y te respondemos por correo.</small>
+                </span>
+              </button>
             </div>
 
             <p class="contact-note">
@@ -968,6 +976,15 @@
                 <small>Abrir una conversación con el mensaje preparado.</small>
               </span>
             </a>
+            <button class="contact-option contact-option-mail" type="button" data-consulta-start hidden>
+              <span class="contact-option-icon">
+                <svg aria-hidden="true" focusable="false"><use href="#icon-email"></use></svg>
+              </span>
+              <span>
+                <strong>Escribir por correo</strong>
+                <small>Dejá tu consulta y te respondemos por correo.</small>
+              </span>
+            </button>
           </div>
 
           <p class="contact-note">
@@ -1083,6 +1100,67 @@
             <a id="bookingDoneWhatsapp" href="https://wa.me/59891048471" target="_blank" rel="noopener noreferrer">escribime por WhatsApp</a>.
           </p>
           <button class="btn btn-dark" id="bookingDoneClose" type="button">Cerrar</button>
+        </div>
+        <!-- CONSULTA POR CORREO (api/consultas.js): el correo de Eliana no se muestra. -->
+        <div class="contact-dialog-step booking-step consulta-step" id="consultaStep" hidden>
+          <button class="booking-back" id="consultaBack" type="button">← Volver</button>
+          <span class="contact-dialog-eyebrow">Escribir por correo</span>
+          <h2 id="consultaTitle" tabindex="-1">Dejá tu consulta</h2>
+          <form class="booking-form" id="consultaForm" novalidate>
+            <div class="booking-form-body">
+              <div class="booking-contact-fields">
+                <div class="booking-field">
+                  <label for="consultaName">Nombre y apellido</label>
+                  <input id="consultaName" name="name" autocomplete="name" autocapitalize="words" maxlength="120" required aria-describedby="consultaNameError">
+                  <p class="booking-field-error" id="consultaNameError" hidden></p>
+                </div>
+                <div class="booking-field">
+                  <label for="consultaEmail">Tu correo electrónico</label>
+                  <input id="consultaEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="254" required aria-describedby="consultaEmailError">
+                  <p class="booking-field-error" id="consultaEmailError" hidden></p>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="consultaService">Trámite (opcional)</label>
+                  <select id="consultaService" name="service">
+                    <option value="">Elegí un trámite</option>
+                  </select>
+                </div>
+                <div class="booking-field booking-wide">
+                  <label for="consultaMessage">Tu consulta</label>
+                  <textarea id="consultaMessage" name="message" maxlength="2000" rows="7" required aria-describedby="consultaCounter consultaSensitive consultaMessageError"></textarea>
+                  <p class="consulta-counter" id="consultaCounter">0 / 2000</p>
+                  <p class="booking-field-error" id="consultaMessageError" hidden></p>
+                </div>
+              </div>
+              <p class="booking-sensitive" id="consultaSensitive">
+                No envíes documentación, datos financieros ni números de documento
+                en el primer mensaje.
+              </p>
+              <div class="booking-turnstile" id="consultaTurnstile"></div>
+              <p class="booking-field-error" id="consultaTurnstileError" hidden></p>
+            </div>
+            <div class="booking-actions">
+              <p class="booking-status" id="consultaStatus" role="status" aria-live="polite"></p>
+              <a
+                class="btn btn-outline booking-fallback"
+                id="consultaFallback"
+                data-contact-whatsapp
+                href="https://wa.me/59891048471?text=Hola%20Eliana%2C%20quisiera%20hacer%20una%20consulta%20notarial."
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+              >
+                Escribinos por WhatsApp
+              </a>
+              <button class="btn btn-dark" id="consultaSubmit" type="submit">Enviar consulta</button>
+            </div>
+          </form>
+        </div>
+        <div class="contact-dialog-step booking-done" id="consultaDone" hidden>
+          <span class="contact-dialog-eyebrow">Escribir por correo</span>
+          <h2 id="consultaDoneTitle" tabindex="-1">¡Listo! Recibimos tu consulta.</h2>
+          <p id="consultaDoneEmail"></p>
+          <button class="btn btn-dark" id="consultaDoneClose" type="button">Cerrar</button>
         </div>
       </div>
     </dialog>
