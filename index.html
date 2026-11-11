@@ -54,12 +54,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="assets/styles.css?v=contacto-20261110-1">
+  <link rel="stylesheet" href="assets/styles.css?v=titulos-20261111-1">
   <script src="assets/hours.js?v=horario-20261110-4" defer></script>
   <script src="assets/notices-data.js?v=avisos-20261022-2" defer></script>
   <script src="assets/notices.js?v=avisos-20261022-1" defer></script>
   <script src="assets/service-messages.js?v=ventana-20261006-1" defer></script>
-  <script src="assets/main.js?v=contacto-20261110-1" defer></script>
+  <script src="assets/main.js?v=titulos-20261111-1" defer></script>
 
   <script type="application/ld+json">
   {
@@ -463,8 +463,7 @@
         </div>
 
         <div class="intro-copy">
-          <span class="eyebrow">Sobre mí</span>
-          <h2>Escribana y Rematadora</h2>
+          <h2>Sobre mí</h2>
           <p>
             Soy Escribana Pública, egresada de la Universidad de la República
             en 2018, y Rematadora, graduada en el Instituto Aldey en 2017.
@@ -488,13 +487,8 @@
     <section class="section section-muted" id="servicios">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Trámites y consultas</span>
-          <h2>Servicios notariales</h2>
-          <p>
-            Explorá los servicios notariales disponibles y elegí la vía de
-            contacto que te resulte más cómoda. Si tenés dudas, podés
-            <a href="#contactar" data-contact-open>contactarme</a> para recibir orientación.
-          </p>
+          <h2>Servicios</h2>
+          <p>Tocá un trámite para consultarnos.</p>
         </div>
 
         <div class="services-grid">
@@ -664,8 +658,7 @@
     <section class="section section-muted" id="preguntas">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Información útil</span>
-          <h2>Algunas dudas frecuentes</h2>
+          <h2>Preguntas frecuentes</h2>
         </div>
 
         <div class="faq-list">
@@ -726,12 +719,7 @@
     <section class="section section-muted" id="contactar">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Contacto y ubicación</span>
-          <h2>Contactanos</h2>
-          <p>
-            Escribinos por WhatsApp o por correo. En esta misma sección están la
-            dirección, el horario y cómo llegar al escritorio.
-          </p>
+          <h2>Contacto y ubicación</h2>
         </div>
 
         <!--
@@ -747,7 +735,8 @@
               WhatsApp o correo. Abajo, una línea recuerda la agenda.
             -->
             <h3>¿Cómo preferís escribirnos?</h3>
-            <p class="contact-selected-service">
+            <!-- Se muestra solo cuando se eligió un trámite en Servicios. -->
+            <p class="contact-selected-service" id="sectionSelectedService" hidden>
               Consulta seleccionada:
               <strong data-selected-service>Consulta notarial</strong>
             </p>
@@ -850,8 +839,7 @@
     <section class="section reviews" id="opiniones" aria-labelledby="opinionesTitulo">
       <div class="container">
         <div class="section-heading">
-          <span class="eyebrow">Opiniones</span>
-          <h2 id="opinionesTitulo">Reseñas en Google</h2>
+          <h2 id="opinionesTitulo">Opiniones</h2>
           <p class="reviews-rating">
             <span class="review-stars" aria-hidden="true">★★★★★</span>
             5,0 en Google · 9 reseñas
@@ -943,7 +931,6 @@
           la agenda y la confirmación del turno.
         -->
         <div class="contact-dialog-step" id="channelStep">
-          <span class="contact-dialog-eyebrow">Consulta</span>
           <h2 id="contactDialogTitle" tabindex="-1">¿Cómo preferís consultarnos?</h2>
           <p class="contact-dialog-service" id="dialogSelectedService">
             Seleccionaste:
@@ -984,7 +971,6 @@
         </div>
 
         <div class="contact-dialog-step booking-step" id="bookingStep" hidden>
-          <span class="contact-dialog-eyebrow">Agendar turno</span>
           <h2 id="bookingTitle" tabindex="-1">Elegí día y horario</h2>
 
           <form class="booking-form" id="bookingForm" novalidate>
@@ -1076,7 +1062,6 @@
         </div>
 
         <div class="contact-dialog-step booking-done" id="bookingDone" hidden>
-          <span class="contact-dialog-eyebrow">Agenda</span>
           <h2 id="bookingDoneTitle" tabindex="-1">Turno confirmado</h2>
           <p class="booking-done-summary">
             <strong id="bookingDoneService"></strong><br>
@@ -1093,7 +1078,6 @@
         <!-- CONSULTA POR CORREO (api/consultas.js): el correo de Eliana no se muestra. -->
         <div class="contact-dialog-step booking-step consulta-step" id="consultaStep" hidden>
           <button class="booking-back" id="consultaBack" type="button">← Volver</button>
-          <span class="contact-dialog-eyebrow">Escribir por correo</span>
           <h2 id="consultaTitle" tabindex="-1">Dejá tu consulta</h2>
           <form class="booking-form" id="consultaForm" novalidate>
             <div class="booking-form-body">
@@ -1153,7 +1137,6 @@
           </form>
         </div>
         <div class="contact-dialog-step booking-done" id="consultaDone" hidden>
-          <span class="contact-dialog-eyebrow">Escribir por correo</span>
           <h2 id="consultaDoneTitle" tabindex="-1">¡Listo! Recibimos tu consulta.</h2>
           <p id="consultaDoneEmail"></p>
           <button class="btn btn-dark" id="consultaDoneClose" type="button">Cerrar</button>

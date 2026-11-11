@@ -109,16 +109,6 @@ button {
   background: var(--gray-100);
 }
 
-.eyebrow {
-  display: inline-block;
-  margin-bottom: 12px;
-  color: var(--red-700);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 h1,
 h2,
 h3 {
@@ -351,10 +341,6 @@ p {
   z-index: 2;
   max-width: 780px;
   padding: 110px 0;
-}
-
-.hero .eyebrow {
-  color: var(--red-700);
 }
 
 .hero h1,
@@ -1049,16 +1035,6 @@ body.modal-open {
   transform: rotate(90deg);
 }
 
-.contact-dialog-eyebrow {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: var(--red-700);
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
 /* Los títulos de cada paso reciben el foco al cambiar de paso: sin recuadro. */
 .contact-dialog [tabindex="-1"]:focus,
 .notice-dialog [tabindex="-1"]:focus {
@@ -1114,11 +1090,6 @@ body.modal-open {
   min-height: 0;
   display: flex;
   flex-direction: column;
-}
-
-.booking-step .contact-dialog-eyebrow {
-  margin-bottom: 2px;
-  font-size: 0.68rem;
 }
 
 .booking-step h2 {
@@ -1769,12 +1740,10 @@ body.modal-open {
 
 .location-list span {
   display: block;
-  margin-bottom: 3px;
-  color: var(--red-700);
-  font-size: 0.76rem;
+  margin-bottom: 2px;
+  color: var(--green-900);
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 /* El mapa cierra la seccion a lo ancho, debajo de las dos tarjetas. */
