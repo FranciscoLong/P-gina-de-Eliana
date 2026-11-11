@@ -8,7 +8,9 @@
   turnos verdaderos. La anulación ocurre con el POST del botón.
 
   La página reutiliza los estilos de la confirmación del turno en la agenda
-  (styles.css) y la misma carga de fuentes que index.html.
+  (styles.css) y la misma carga de fuentes que index.html. Las fuentes y el
+  ?v= de styles.css tienen que ser los mismos que en index.html: lo verifica
+  tests/paginas-iguales.test.js.
 */
 
 const { WHATSAPP_NUMBER, cancellationNotice, formatSlot, sendEmail } = require("./_lib/booking-emails");
@@ -55,7 +57,7 @@ function page(res, status, title, body) {
   <title>${escapeHtml(title)} | Eliana Isbarbo Gfeller</title>
   <link rel="icon" href="/assets/favicon.png" type="image/png">
   <link href="${FONTS_URL}" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css?v=tipografia-20261111-2">
   <style>
     .cancel-page { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--gray-100); }
     .cancel-card { width: min(100%, 520px); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); }
