@@ -323,15 +323,6 @@ para mostrar estrellas.
       estructurados.
 - [ ] Armar una plantilla prolija (HTML) para los correos de la agenda, con la
       versión en texto plano como alternativa.
-- [ ] **Títulos y búsquedas en Google.** Desde el 2026-11-11 los títulos de las
-      secciones son el mismo nombre que el menú («Sobre mí», «Servicios»,
-      «Preguntas frecuentes», «Contacto y ubicación», «Opiniones»). Antes
-      decían «Escribana y Rematadora», «Servicios notariales» y «Reseñas en
-      Google», que tienen palabras que la gente busca. Google les da peso a los
-      títulos: evaluar volver a alguno (por ejemplo, «Servicios notariales») si
-      baja la posición en las búsquedas. La palabra «Escribana» sigue en el
-      título principal de la página. Ver también
-      `MEJORAS-SEO-PREVIO-PUBLICACION.md`.
 
 ## Datos de la escribanía
 

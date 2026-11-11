@@ -66,7 +66,6 @@ function page(res, status, title, body) {
 <body>
   <main class="cancel-page">
     <div class="contact-dialog-panel booking-done cancel-card">
-      <span class="contact-dialog-eyebrow">Turnos</span>
       <h2>${escapeHtml(title)}</h2>
       ${body}
     </div>

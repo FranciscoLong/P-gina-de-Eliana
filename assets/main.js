@@ -451,6 +451,8 @@ function buildServiceOptions(select) {
     const group = document.createElement("optgroup");
     group.label = card.querySelector("h3").textContent.trim();
     card.querySelectorAll("[data-service]").forEach((link) => {
+      // «Otra consulta notarial» va una sola vez, al final de la lista.
+      if (link.dataset.service === DEFAULT_SERVICE) return;
       group.append(new Option(link.dataset.service, link.dataset.service));
     });
     select.append(group);
