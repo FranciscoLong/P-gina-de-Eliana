@@ -1509,7 +1509,8 @@ body.modal-open {
 
 .review-stars {
   color: #e2a20c;
-  letter-spacing: var(--tracking-caps);
+  /* Espaciado propio de las estrellas, aparte del de las mayúsculas. */
+  letter-spacing: 0.12em;
 }
 
 /*
@@ -1965,12 +1966,13 @@ details p {
 }
 
 /*
-  Con seis enlaces (desde que se sumo Opiniones) el menu horizontal entra en
-  una sola linea recien desde los 782px de viewport. Por debajo de 840px se
-  colapsa en el desplegable: el margen cubre la carga de la tipografia, que
-  antes de llegar se dibuja con una fuente mas ancha.
+  Con seis enlaces el menu horizontal entra en una sola linea desde los 820px
+  de viewport con Inter, y desde los 860px con la letra de reemplazo, que se
+  ve mientras Inter carga (medido el 2026-11-11, con la tipografia de 1rem en
+  negrita). Por debajo de 880px se colapsa en el desplegable. Si cambian los
+  enlaces o su letra, volver a medir.
 */
-@media (max-width: 840px) {
+@media (max-width: 880px) {
   .nav-links {
     position: absolute;
     top: calc(100% + 8px);
@@ -2206,14 +2208,13 @@ details p {
 }
 
 /*
-  En pantallas táctiles «Consultar» se ve siempre: sin transparencia (al 55 %
-  el rojo quedaba en 3 a 1 contra el blanco, poco para leer) y un poco más
-  grande.
+  En pantallas táctiles «Consultar» se ve siempre, sin transparencia (al 55 %
+  el rojo quedaba en 3 a 1 contra el blanco, poco para leer). El tamaño es el
+  de siempre (--fs-small).
 */
 @media (hover: none) {
   .service-cta {
     opacity: 1;
-    font-size: var(--fs-small);
   }
 }
 
@@ -2238,7 +2239,8 @@ details p {
   }
 
   .notice-dialog .notice-card h2 {
-    font-size: var(--fs-subtitle);
+    /* Tope fijo: en una pantalla baja y ancha, el tamaño que crece con el ancho no entraría. */
+    font-size: min(var(--fs-subtitle), 1.9rem);
   }
 
   .notice-dialog .notice-card h2 + .notice-text {
