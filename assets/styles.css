@@ -148,21 +148,6 @@ p {
   hyphens: none;
 }
 
-/* Links que cruzan de una sección a otra: se leen como link, sin negrita. */
-.section-heading p a {
-  color: var(--green-900);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
-}
-
-.section-heading p a:hover,
-.section-heading p a:focus-visible {
-  color: var(--red-700);
-  text-decoration-thickness: 2px;
-}
-
 .topbar {
   padding: 8px 0;
   background: var(--green-950);
