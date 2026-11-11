@@ -162,5 +162,6 @@ test("los saltos de línea solo se conservan en la consulta", () => {
 test("la lista de trámites del servidor coincide con los enlaces de Servicios", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const fromHtml = [...html.matchAll(/data-service="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual([...new Set(fromHtml)].sort(), SERVICES.filter((s) => s !== "Consulta notarial").sort());
+  // «Otra consulta notarial» (en Otros trámites) usa el trámite general, «Consulta notarial».
+  assert.deepEqual([...new Set(fromHtml)].sort(), [...SERVICES].sort());
 });

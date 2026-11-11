@@ -10,7 +10,15 @@ HTML, CSS y JavaScript puro, publicado en Vercel desde `main`, con funciones en
   diseño), proponerle a Francisco el cambio con el texto exacto y esperar su
   confirmación. Los cambios invisibles (datos estructurados, metadatos) pueden
   ir directo.
-- Los textos de la página usan voseo ("Elegí", "Contanos").
+- Los textos de la página usan voseo ("Elegí", "Contanos") y hablan en
+  plural, por el equipo (escribanía e inmobiliaria): "te respondemos",
+  "Escribinos".
+- **Títulos y textos nuevos, pensando en Google:** Google les da peso a los
+  títulos. Al escribir uno nuevo, usar las palabras que la gente busca
+  ("escribana", "servicios notariales", "Rosario", el nombre del trámite) sin
+  forzarlas, y no cambiar un título que las tiene por uno genérico. Por eso la
+  sección de servicios se llama "Servicios notariales" (2026-11-11). Ver
+  `MEJORAS-SEO-PREVIO-PUBLICACION.md`.
 - Los turnos se nombran con **agenda**, no con reserva: "turno agendado",
   "Agendá tu turno", "solo con agenda". Vale para la página, los avisos, los
   carteles y los correos. La dirección `/reservar` y los nombres internos no

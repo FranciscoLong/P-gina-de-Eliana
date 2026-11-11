@@ -14,6 +14,7 @@ const whatsappLinks = document.querySelectorAll("[data-contact-whatsapp]");
 const contactDialog = document.getElementById("contactDialog");
 const closeContactDialogButton = document.getElementById("closeContactDialog");
 const dialogSelectedService = document.getElementById("dialogSelectedService");
+const sectionSelectedService = document.getElementById("sectionSelectedService");
 const channelStep = document.getElementById("channelStep");
 const bookingStep = document.getElementById("bookingStep");
 const bookingDone = document.getElementById("bookingDone");
@@ -231,8 +232,9 @@ function setSelectedService(service) {
     label.textContent = currentService();
   });
 
-  // En la ventana, "Seleccionaste" solo tiene sentido si se eligió algo.
+  // "Seleccionaste" (ventana) y "Consulta seleccionada" (sección) solo tienen sentido si se eligió algo.
   dialogSelectedService.hidden = !selectedService;
+  sectionSelectedService.hidden = !selectedService;
 
   whatsappLinks.forEach((link) => {
     link.href = buildWhatsAppUrl(buildWhatsAppMessage(currentService()));
@@ -449,6 +451,8 @@ function buildServiceOptions(select) {
     const group = document.createElement("optgroup");
     group.label = card.querySelector("h3").textContent.trim();
     card.querySelectorAll("[data-service]").forEach((link) => {
+      // «Otra consulta notarial» va una sola vez, al final de la lista.
+      if (link.dataset.service === DEFAULT_SERVICE) return;
       group.append(new Option(link.dataset.service, link.dataset.service));
     });
     select.append(group);
