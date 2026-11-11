@@ -17,7 +17,7 @@ const { createCalendarClient } = require("./_lib/google-calendar");
 const { NO_STORE, bookingEnabled, calendarIds, originAllowed } = require("./_security");
 
 const calendar = createCalendarClient();
-const FONTS_URL = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;family=Handlee&amp;family=Inter:wght@400;500;600;700&amp;display=swap";
+const FONTS_URL = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&amp;family=Handlee&amp;family=Inter:wght@400;700&amp;display=swap";
 
 const ERRORS = {
   invalid: {
@@ -59,7 +59,7 @@ function page(res, status, title, body) {
   <style>
     .cancel-page { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--gray-100); }
     .cancel-card { width: min(100%, 520px); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); }
-    .cancel-card h2 { font-size: clamp(1.9rem, 6vw, 2.4rem); }
+    .cancel-card h2 { font-size: var(--fs-subtitle); }
     .cancel-card form { margin-bottom: 18px; }
   </style>
 </head>
