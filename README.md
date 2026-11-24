@@ -274,6 +274,26 @@ desde el dominio sin `www` se configura en `vercel.json` y conserva la ruta y
 los parámetros. Los documentos de trabajo y las pruebas quedan fuera del
 despliegue mediante `.vercelignore`.
 
+## Estadísticas de visitas
+
+La página usa **Vercel Web Analytics**, activado el 2026-11-24. Se ve en el
+panel de Vercel, en el proyecto, pestaña **Analytics**: visitas, visitantes,
+países, de dónde llegan y si usan celular o computadora. No usa cookies ni
+guarda datos personales, por eso no hace falta pedir permiso a los visitantes.
+
+- Está en `index.html`, en el comentario "Estadísticas de visitas". La página
+  para anular un turno no lo lleva, porque su dirección tiene el código del
+  turno.
+- En el plan gratis (Hobby) es gratis: incluye 50.000 eventos por mes,
+  compartidos entre todos los proyectos de la cuenta, y muestra el último mes.
+  Si se pasa del límite no se cobra; deja de juntar datos hasta el mes
+  siguiente. Los eventos personalizados (por ejemplo, contar clics en un
+  botón) son solo del plan Pro.
+- El gráfico **Requests Count** de **Observability** es otra cosa: cuenta cada
+  archivo que pide el navegador (la página, los estilos, las fotos, las
+  fuentes, las llamadas a la agenda) y también a los robots de Google. Una sola
+  visita suma varias solicitudes.
+
 ## Validación local
 
 ```bash
