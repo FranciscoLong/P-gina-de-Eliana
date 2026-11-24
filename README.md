@@ -271,7 +271,10 @@ El sitio se publica automáticamente con **Vercel** desde la rama `main`. Cada
 
 El host canónico es `www.escribaniaisbarbo.com.uy`. La redirección permanente
 desde el dominio sin `www` se configura en `vercel.json` y conserva la ruta y
-los parámetros. Los documentos de trabajo y las pruebas quedan fuera del
+los parámetros. También se redirige `p-gina-de-eliana.vercel.app`, la
+dirección que Vercel le da al proyecto, porque ahí la agenda no funciona: solo
+acepta pedidos desde el dominio de la escribanía. Las direcciones de las
+Preview son otras y no se redirigen. Los documentos de trabajo y las pruebas quedan fuera del
 despliegue mediante `.vercelignore`.
 
 ## Estadísticas de visitas
