@@ -39,7 +39,7 @@ sin dependencias).
 │       ├── booking-emails.js        Correos de confirmación y aviso
 │       └── client-calendar.js       Enlace de Google Calendar y archivo .ics
 ├── tests/                           Pruebas unitarias (Google y correo simulados)
-├── carteles/                        QR de /reservar y aviso A4 para imprimir (no se publica)
+├── carteles/                        QR de /reservar, carteles e imagen para WhatsApp (no se publica)
 ├── CLAUDE.md                        Instrucciones para agentes (reseñas, reglas)
 └── README.md
 ```
@@ -160,6 +160,24 @@ si la página cambia, se ajusta la redirección y el cartel sigue sirviendo.
   carteles iguales de "Agendá tu turno" (se pega entera o se corta por la
   línea punteada). El PDF se regenera con el mismo comando, cambiando el
   nombre del archivo.
+- La imagen para el estado de WhatsApp está en
+  `carteles/estado-whatsapp-agenda.html` (1080 × 1920 px). No lleva QR,
+  porque se mira en el teléfono: la dirección va escrita y el enlace se pone
+  en el texto del estado. Tiene dos PNG: `estado-whatsapp-agenda.png`, con el
+  aviso del 1 de diciembre, y `estado-whatsapp-agenda-informativo.png`, sin
+  ese aviso, para usar después. Después de editar el HTML, se regeneran con
+  Chrome; la informativa se arma abriendo el HTML con `#informativo` al final:
+
+  ```bash
+  cd carteles
+  chrome="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  for v in "" "-informativo"; do
+    "$chrome" --headless --hide-scrollbars --force-device-scale-factor=1 \
+      --virtual-time-budget=8000 --window-size=1080,1920 \
+      --screenshot="$PWD/estado-whatsapp-agenda$v.png" \
+      "file://$PWD/estado-whatsapp-agenda.html${v:+#informativo}"
+  done
+  ```
 
 ### Configuración en Vercel
 
